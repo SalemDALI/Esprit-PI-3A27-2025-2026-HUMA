@@ -285,5 +285,17 @@ public class EspaceParticipantsController {
     }
 
     // ======================== RETOUR ========================
-
+    @FXML
+    public void retourAccueil() {
+        try {
+            Stage stage = (Stage) formationSelectionneeField.getScene().getWindow();
+            Scene scene = new Scene(
+                    FXMLLoader.load(getClass().getResource("/Home.fxml"))
+            );
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
