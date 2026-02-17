@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="700.0" prefWidth="950.0"
+            styleClass="root"
+            stylesheets="@dashboard.css"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.GestionFormationsController">
+
+    <!-- HEADER ANTHRACITE -->
+    <top>
+        <VBox styleClass="header" BorderPane.alignment="CENTER">
+            <HBox alignment="CENTER_LEFT" spacing="15.0">
+                <Button text="Retour" onAction="#retourAccueil"
+                        style="-fx-background-color: #888888; -fx-text-fill: white;
+                               -fx-padding: 8px 16px; -fx-background-radius: 6px; -fx-cursor: hand;" />
+                <Label text="HUMA" style="-fx-text-fill: #50C878;
+                       -fx-font-size: 20px; -fx-font-weight: bold;" />
+                <Label text="|" style="-fx-text-fill: #888; -fx-font-size: 18px;" />
+                <Label styleClass="header-title" text="Gestion des Formations" />
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <HBox spacing="20.0" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+
+            <!-- GAUCHE : FORMULAIRE -->
+            <VBox spacing="14.0" style="-fx-min-width: 330px; -fx-max-width: 330px;">
+
+                <Label text="Formulaire Formation" styleClass="section-title">
+                    <font><Font name="System Bold" size="17.0" /></font>
+                </Label>
+
+                <VBox spacing="11.0" styleClass="stat-box" style="-fx-padding: 18px;">
+
+                    <VBox spacing="4.0">
+                        <Label text="Sujet *" styleClass="request-name" />
+                        <TextField fx:id="sujetField" promptText="Ex: Java Avance"
+                                   style="-fx-padding: 8px; -fx-background-radius: 6px;
+                                          -fx-border-color: #ddd; -fx-border-radius: 6px;" />
+                    </VBox>
+
+                    <VBox spacing="4.0">
+                        <Label text="Formateur *" styleClass="request-name" />
+                        <TextField fx:id="formateurField" promptText="Ex: Mohamed Ali"
+                                   style="-fx-padding: 8px; -fx-background-radius: 6px;
+                                          -fx-border-color: #ddd; -fx-border-radius: 6px;" />
+                    </VBox>
+
+                    <VBox spacing="4.0">
+                        <Label text="Type *" styleClass="request-name" />
+                        <ComboBox fx:id="typeCombo" promptText="Choisir le type"
+                                  prefWidth="294.0" />
+                    </VBox>
+
+                    <VBox spacing="4.0">
+                        <Label text="Date de Debut *" styleClass="request-name" />
+                        <DatePicker fx:id="dateDebutPicker" prefWidth="294.0" />
+                    </VBox>
+
+                    <VBox spacing="4.0">
+                        <Label text="Duree (jours) *" styleClass="request-name" />
+                        <TextField fx:id="dureeField" promptText="Ex: 5"
+                                   style="-fx-padding: 8px; -fx-background-radius: 6px;
+                                          -fx-border-color: #ddd; -fx-border-radius: 6px;" />
+                    </VBox>
+
+                    <VBox spacing="4.0">
+                        <Label text="Localisation *" styleClass="request-name" />
+                        <TextField fx:id="localisationField" promptText="Ex: Tunis"
+                                   style="-fx-padding: 8px; -fx-background-radius: 6px;
+                                          -fx-border-color: #ddd; -fx-border-radius: 6px;" />
+                    </VBox>
+
+                    <TextField fx:id="idFormationField" visible="false" managed="false" />
+
+                    <!-- BOUTONS couleurs HUMA -->
+                    <HBox spacing="8.0" alignment="CENTER" style="-fx-padding: 8px 0 0 0;">
+                        <Button text="Ajouter" onAction="#ajouterFormation"
+                                style="-fx-background-color: #50C878; -fx-text-fill: white;
+                                       -fx-padding: 10px 20px; -fx-background-radius: 6px;
+                                       -fx-cursor: hand; -fx-font-weight: bold;" />
+                        <Button text="Modifier" onAction="#modifierFormation"
+                                style="-fx-background-color: #FF7F50; -fx-text-fill: white;
+                                       -fx-padding: 10px 20px; -fx-background-radius: 6px;
+                                       -fx-cursor: hand; -fx-font-weight: bold;" />
+                        <Button text="Reset" onAction="#reinitialiserFormulaire"
+                                style="-fx-background-color: #888888; -fx-text-fill: white;
+                                       -fx-padding: 10px 12px; -fx-background-radius: 6px;
+                                       -fx-cursor: hand;" />
+                    </HBox>
+
+                </VBox>
+            </VBox>
+
+            <!-- DROITE : LISTE -->
+            <VBox spacing="14.0" HBox.hgrow="ALWAYS">
+
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                    <Label text="Liste des Formations" styleClass="section-title"
+                           HBox.hgrow="ALWAYS">
+                        <font><Font name="System Bold" size="17.0" /></font>
+                    </Label>
+                    <Label fx:id="totalFormationsLabel" text="0"
+                           style="-fx-font-size: 22px; -fx-font-weight: bold;
+                                  -fx-text-fill: #50C878;" />
+                    <Label text="formation(s)"
+                           style="-fx-font-size: 12px; -fx-text-fill: #888;" />
+                </HBox>
+
+                <HBox spacing="8.0" alignment="CENTER_LEFT">
+                    <TextField fx:id="rechercheField"
+                               promptText="Rechercher (sujet, formateur, lieu)..."
+                               HBox.hgrow="ALWAYS"
+                               style="-fx-padding: 8px; -fx-background-radius: 6px;
+                                      -fx-border-color: #ddd; -fx-border-radius: 6px;" />
+                    <Button text="Actualiser" onAction="#actualiserListe"
+                            style="-fx-background-color: #303030; -fx-text-fill: white;
+                                   -fx-padding: 8px 16px; -fx-background-radius: 6px;
+                                   -fx-cursor: hand; -fx-font-weight: bold;" />
+                </HBox>
+
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                            style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                    <VBox fx:id="formationsContainer" spacing="10.0">
+                        <padding>
+                            <Insets bottom="5.0" left="2.0" right="5.0" top="5.0" />
+                        </padding>
+                    </VBox>
+                </ScrollPane>
+
+            </VBox>
+        </HBox>
+    </center>
+
+</BorderPane>

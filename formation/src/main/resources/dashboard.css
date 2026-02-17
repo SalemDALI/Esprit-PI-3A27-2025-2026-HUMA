@@ -1,0 +1,267 @@
+/* ========================================
+   CHARTE GRAPHIQUE HUMA
+   #50C878 - Émeraude (principal)
+   #303030 - Gris Anthracite (textes)
+   #F5F5F5 - Blanc Cassé (fond)
+   #FF7F50 - Orange Corail (accent)
+   ======================================== */
+
+/* Root */
+.root {
+    -fx-background-color: #F5F5F5;
+    -fx-font-family: 'Segoe UI', 'System', sans-serif;
+}
+
+/* ========== HEADER ========== */
+.header {
+    -fx-background-color: #303030;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 3);
+}
+
+.header-title {
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+/* ========== SECTION TITLES ========== */
+.section-title {
+    -fx-text-fill: #303030;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 6px 0;
+    -fx-border-width: 0 0 3px 0;
+    -fx-border-color: #50C878;
+}
+
+.section-subtitle {
+    -fx-text-fill: #303030;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+/* ========== STAT BOXES (cards blanches) ========== */
+.stats-container {
+    -fx-padding: 10px 0;
+}
+
+.stat-box {
+    -fx-background-color: white;
+    -fx-padding: 15px;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 6, 0, 0, 2);
+    -fx-min-width: 100px;
+}
+
+.stat-box:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(80,200,120,0.4), 10, 0, 0, 3);
+    -fx-cursor: hand;
+}
+
+.stat-value {
+    -fx-text-fill: #303030;
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+}
+
+.stat-label {
+    -fx-text-fill: #888888;
+    -fx-font-size: 12px;
+}
+
+/* ========== REQUEST ITEMS (cards formation/participant) ========== */
+.request-item {
+    -fx-background-color: white;
+    -fx-padding: 15px;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.07), 6, 0, 0, 2);
+    -fx-spacing: 8px;
+}
+
+.request-item:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(80,200,120,0.35), 10, 0, 0, 3);
+    -fx-background-color: #fafafa;
+}
+
+.request-name {
+    -fx-text-fill: #303030;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.request-detail {
+    -fx-text-fill: #888888;
+    -fx-font-size: 12px;
+}
+
+/* ========== BADGES ========== */
+.request-badge {
+    -fx-padding: 4px 10px;
+    -fx-background-radius: 12px;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+/* Validé = Émeraude */
+.request-badge.approved {
+    -fx-background-color: #d6f5e3;
+    -fx-text-fill: #1a7a3a;
+}
+
+/* En attente = Orange Corail */
+.request-badge.pending {
+    -fx-background-color: #ffe8df;
+    -fx-text-fill: #c0461a;
+}
+
+/* ========== BOUTONS ========== */
+
+/* Bouton Retour */
+.btn-retour {
+    -fx-background-color: #888888;
+    -fx-text-fill: white;
+    -fx-padding: 8px 16px;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+.btn-retour:hover {
+    -fx-background-color: #666666;
+}
+
+/* Bouton Principal = Émeraude */
+.btn-primary {
+    -fx-background-color: #50C878;
+    -fx-text-fill: white;
+    -fx-padding: 10px 25px;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+.btn-primary:hover {
+    -fx-background-color: #3daf65;
+}
+
+/* Bouton Accent = Orange Corail */
+.btn-accent {
+    -fx-background-color: #FF7F50;
+    -fx-text-fill: white;
+    -fx-padding: 10px 25px;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+.btn-accent:hover {
+    -fx-background-color: #e06030;
+}
+
+/* Bouton Danger = Rouge */
+.btn-danger {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-padding: 6px 15px;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+}
+.btn-danger:hover {
+    -fx-background-color: #c0392b;
+}
+
+/* ========== INPUTS ========== */
+.text-field {
+    -fx-background-color: white;
+    -fx-border-color: #dddddd;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px;
+}
+
+.text-field:focused {
+    -fx-border-color: #50C878;
+    -fx-effect: dropshadow(three-pass-box, rgba(80,200,120,0.3), 5, 0, 0, 0);
+}
+
+/* ========== COMBO BOX ========== */
+.combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #dddddd;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+.combo-box:focused {
+    -fx-border-color: #50C878;
+}
+.combo-box-popup .list-cell:filled:selected {
+    -fx-background-color: #50C878;
+    -fx-text-fill: white;
+}
+
+/* ========== DATE PICKER ========== */
+.date-picker {
+    -fx-background-color: white;
+    -fx-border-color: #dddddd;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+.date-picker:focused {
+    -fx-border-color: #50C878;
+}
+.date-picker .cell:filled:selected {
+    -fx-background-color: #50C878;
+    -fx-text-fill: white;
+}
+
+/* ========== SCROLL BAR ========== */
+.scroll-bar:vertical {
+    -fx-background-color: #F5F5F5;
+    -fx-pref-width: 8px;
+}
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #50C878;
+    -fx-background-radius: 5px;
+}
+.scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #3daf65;
+}
+.scroll-bar:horizontal {
+    -fx-background-color: #F5F5F5;
+    -fx-pref-height: 8px;
+}
+.scroll-bar:horizontal .thumb {
+    -fx-background-color: #50C878;
+    -fx-background-radius: 5px;
+}
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+/* ========== SCROLL PANE ========== */
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* ========== SEPARATOR ========== */
+.separator .line {
+    -fx-border-color: #e0e0e0;
+}
+
+/* ========== LIST VIEW ========== */
+.requests-list {
+    -fx-background-color: transparent;
+    -fx-padding: 5px;
+}
+.requests-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 5px 0;
+}
+.requests-list .list-cell:filled:selected {
+    -fx-background-color: transparent;
+}

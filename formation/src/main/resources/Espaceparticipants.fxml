@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="700.0" prefWidth="1000.0"
+            styleClass="root"
+            stylesheets="@dashboard.css"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.EspaceParticipantsController">
+
+    <!-- HEADER ANTHRACITE -->
+    <top>
+        <VBox styleClass="header" BorderPane.alignment="CENTER">
+            <HBox alignment="CENTER_LEFT" spacing="15.0">
+                <Button text="Retour" onAction="#retourAccueil"
+                        style="-fx-background-color: #888888; -fx-text-fill: white;
+                               -fx-padding: 8px 16px; -fx-background-radius: 6px; -fx-cursor: hand;" />
+                <Label text="HUMA" style="-fx-text-fill: #50C878;
+                       -fx-font-size: 20px; -fx-font-weight: bold;" />
+                <Label text="|" style="-fx-text-fill: #888; -fx-font-size: 18px;" />
+                <Label styleClass="header-title" text="Espace Participants" />
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <HBox spacing="20.0" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+
+            <!-- GAUCHE : FORMULAIRE -->
+            <VBox spacing="15.0" style="-fx-min-width: 320px; -fx-max-width: 320px;">
+
+                <Label text="Inscription a une Formation" styleClass="section-title">
+                    <font><Font name="System Bold" size="17.0" /></font>
+                </Label>
+
+                <VBox spacing="12.0" styleClass="stat-box" style="-fx-padding: 18px;">
+
+                    <VBox spacing="5.0">
+                        <Label text="Formation Selectionnee" styleClass="request-name" />
+                        <TextField fx:id="formationSelectionneeField" editable="false"
+                                   promptText="Cliquez sur une formation ci-contre"
+                                   style="-fx-padding: 8px; -fx-background-radius: 6px;
+                                          -fx-background-color: #f0f0f0;" />
+                        <TextField fx:id="formationIdField" visible="false" managed="false" />
+                    </VBox>
+
+                    <VBox spacing="5.0">
+                        <Label text="Date d'Inscription" styleClass="request-name" />
+                        <TextField fx:id="dateInscriptionField" editable="false"
+                                   style="-fx-padding: 8px; -fx-background-radius: 6px;
+                                          -fx-background-color: #f0f0f0;" />
+                    </VBox>
+
+                    <VBox spacing="5.0">
+                        <Label text="Statut" styleClass="request-name" />
+                        <TextField fx:id="statutField" text="En attente" editable="false"
+                                   style="-fx-padding: 8px; -fx-background-radius: 6px;
+                                          -fx-background-color: #f0f0f0;" />
+                    </VBox>
+
+                    <!-- BOUTON ÉMERAUDE -->
+                    <Button text="S'inscrire a la Formation"
+                            onAction="#inscrireParticipant"
+                            style="-fx-background-color: #50C878; -fx-text-fill: white;
+                                   -fx-padding: 12px 20px; -fx-background-radius: 6px;
+                                   -fx-cursor: hand; -fx-font-weight: bold; -fx-font-size: 14px;"
+                            maxWidth="Infinity" />
+
+                </VBox>
+
+                <!-- Mes inscriptions -->
+                <Label text="Mes Inscriptions" styleClass="section-title">
+                    <font><Font name="System Bold" size="16.0" /></font>
+                </Label>
+
+                <ScrollPane fitToWidth="true" prefHeight="240.0"
+                            style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                    <VBox fx:id="mesInscriptionsContainer" spacing="8.0" style="-fx-padding: 5px;" />
+                </ScrollPane>
+
+            </VBox>
+
+            <!-- DROITE : CATALOGUE -->
+            <VBox spacing="15.0" HBox.hgrow="ALWAYS">
+
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                    <Label text="Catalogue des Formations" styleClass="section-title"
+                           HBox.hgrow="ALWAYS">
+                        <font><Font name="System Bold" size="17.0" /></font>
+                    </Label>
+                    <Label fx:id="totalFormationsLabel" text="0"
+                           style="-fx-font-size: 22px; -fx-font-weight: bold;
+                                  -fx-text-fill: #FF7F50;" />
+                </HBox>
+
+                <HBox spacing="8.0" alignment="CENTER_LEFT">
+                    <TextField fx:id="rechercheField"
+                               promptText="Rechercher une formation..."
+                               HBox.hgrow="ALWAYS"
+                               style="-fx-padding: 8px; -fx-background-radius: 6px;
+                                      -fx-border-color: #ddd; -fx-border-radius: 6px;" />
+                    <Button text="Actualiser" onAction="#actualiserCatalogue"
+                            style="-fx-background-color: #303030; -fx-text-fill: white;
+                                   -fx-padding: 8px 16px; -fx-background-radius: 6px;
+                                   -fx-cursor: hand; -fx-font-weight: bold;" />
+                </HBox>
+
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                            style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                    <FlowPane fx:id="catalogueContainer" hgap="15.0" vgap="15.0"
+                              style="-fx-padding: 10px;" prefWrapLength="600.0" />
+                </ScrollPane>
+
+            </VBox>
+        </HBox>
+    </center>
+
+</BorderPane>

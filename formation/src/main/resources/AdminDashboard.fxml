@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="700.0" prefWidth="1100.0"
+            styleClass="root"
+            stylesheets="@dashboard.css"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.AdminDashboardController">
+
+    <!-- HEADER ANTHRACITE -->
+    <top>
+        <VBox styleClass="header" BorderPane.alignment="CENTER">
+            <HBox alignment="CENTER_LEFT" spacing="15.0">
+                <Button text="Retour" onAction="#retourAccueil"
+                        style="-fx-background-color: #888888; -fx-text-fill: white;
+                               -fx-padding: 8px 16px; -fx-background-radius: 6px; -fx-cursor: hand;" />
+                <Label text="HUMA" style="-fx-text-fill: #50C878;
+                       -fx-font-size: 20px; -fx-font-weight: bold;" />
+                <Label text="|" style="-fx-text-fill: #888; -fx-font-size: 18px;" />
+                <Label styleClass="header-title" text="Tableau de Bord Administrateur" />
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="18.0" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+
+            <!-- STATS: couleurs HUMA -->
+            <HBox spacing="15.0" alignment="CENTER_LEFT">
+
+                <VBox alignment="CENTER" styleClass="stat-box" HBox.hgrow="ALWAYS"
+                      style="-fx-border-color: #50C878; -fx-border-width: 0 0 4px 0;">
+                    <Label fx:id="totalFormationsLabel" text="0" styleClass="stat-value"
+                           style="-fx-text-fill: #50C878;" />
+                    <Label text="Formations" styleClass="stat-label" />
+                </VBox>
+
+                <VBox alignment="CENTER" styleClass="stat-box" HBox.hgrow="ALWAYS"
+                      style="-fx-border-color: #303030; -fx-border-width: 0 0 4px 0;">
+                    <Label fx:id="totalParticipantsLabel" text="0" styleClass="stat-value"
+                           style="-fx-text-fill: #303030;" />
+                    <Label text="Participants" styleClass="stat-label" />
+                </VBox>
+
+                <VBox alignment="CENTER" styleClass="stat-box" HBox.hgrow="ALWAYS"
+                      style="-fx-border-color: #FF7F50; -fx-border-width: 0 0 4px 0;">
+                    <Label fx:id="enAttenteLabel" text="0" styleClass="stat-value"
+                           style="-fx-text-fill: #FF7F50;" />
+                    <Label text="En Attente" styleClass="stat-label" />
+                </VBox>
+
+                <VBox alignment="CENTER" styleClass="stat-box" HBox.hgrow="ALWAYS"
+                      style="-fx-border-color: #50C878; -fx-border-width: 0 0 4px 0;">
+                    <Label fx:id="validesLabel" text="0" styleClass="stat-value"
+                           style="-fx-text-fill: #50C878;" />
+                    <Label text="Valides" styleClass="stat-label" />
+                </VBox>
+
+            </HBox>
+
+            <!-- RECHERCHE -->
+            <HBox spacing="10.0" alignment="CENTER_LEFT">
+                <TextField fx:id="rechercheField"
+                           promptText="Rechercher une formation ou un participant..."
+                           HBox.hgrow="ALWAYS"
+                           style="-fx-padding: 10px; -fx-background-radius: 6px;
+                                  -fx-border-color: #ddd; -fx-border-radius: 6px;
+                                  -fx-font-size: 13px;" />
+                <Button text="Actualiser" onAction="#actualiserDonnees"
+                        style="-fx-background-color: #303030; -fx-text-fill: white;
+                               -fx-padding: 10px 20px; -fx-background-radius: 6px;
+                               -fx-cursor: hand; -fx-font-weight: bold;" />
+            </HBox>
+
+            <!-- LISTE FORMATIONS + PARTICIPANTS -->
+            <VBox spacing="10.0" VBox.vgrow="ALWAYS">
+                <Label text="Formations et leurs Participants" styleClass="section-title">
+                    <font><Font name="System Bold" size="17.0" /></font>
+                </Label>
+
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                            style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                    <VBox fx:id="formationsContainer" spacing="15.0">
+                        <padding>
+                            <Insets bottom="5.0" left="2.0" right="5.0" top="5.0" />
+                        </padding>
+                    </VBox>
+                </ScrollPane>
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>
