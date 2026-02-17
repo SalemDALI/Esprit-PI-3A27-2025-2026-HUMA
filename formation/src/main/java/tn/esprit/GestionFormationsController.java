@@ -260,5 +260,17 @@ public class GestionFormationsController {
 
     // ======================== RETOUR ========================
     // ======================== RETOUR ========================
-
+    @FXML
+    public void retourAccueil() {
+        try {
+            Stage stage = (Stage) sujetField.getScene().getWindow();
+            javafx.scene.Scene scene = new javafx.scene.Scene(
+                    javafx.fxml.FXMLLoader.load(getClass().getResource("/Home.fxml"))
+            );
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
