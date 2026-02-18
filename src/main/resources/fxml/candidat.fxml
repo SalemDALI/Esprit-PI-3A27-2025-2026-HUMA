@@ -22,12 +22,11 @@
             <Label text="Offres disponibles" styleClass="title"/>
             <Label fx:id="lblPageMessage" text="" styleClass="page-message"/>
 
-            <TableView fx:id="tableOffres" prefHeight="220" styleClass="modern-table">
-                <columns>
-                    <TableColumn text="Titre" fx:id="colTitre"/>
-                    <TableColumn text="Departement" fx:id="colDept"/>
-                </columns>
-            </TableView>
+            <ScrollPane fitToWidth="true" prefHeight="220" styleClass="cards-scroll">
+                <content>
+                    <VBox fx:id="tableOffres" spacing="10" styleClass="cards-container"/>
+                </content>
+            </ScrollPane>
 
             <HBox spacing="10" styleClass="action-row">
                 <Button text="Uploader CV (PDF)" styleClass="btn btn-warning" onAction="#uploadCv"/>
@@ -38,13 +37,11 @@
 
             <Label text="Suivi de mes candidatures" styleClass="title"/>
 
-            <TableView fx:id="tableCandidatures" prefHeight="220" styleClass="modern-table">
-                <columns>
-                    <TableColumn text="Offre" fx:id="colOffreCandidature"/>
-                    <TableColumn text="Date" fx:id="colDateCandidature"/>
-                    <TableColumn text="Statut" fx:id="colStatutCandidature"/>
-                </columns>
-            </TableView>
+            <ScrollPane fitToWidth="true" prefHeight="220" styleClass="cards-scroll">
+                <content>
+                    <VBox fx:id="tableCandidatures" spacing="10" styleClass="cards-container"/>
+                </content>
+            </ScrollPane>
 
             <Button text="Actualiser suivi" styleClass="btn" onAction="#refreshSuiviCandidatures"/>
 

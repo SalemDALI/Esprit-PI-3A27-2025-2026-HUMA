@@ -7,9 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import services.ServiceCandidature;
@@ -24,25 +22,10 @@ import java.time.LocalDate;
 public class CandidatController {
 
     @FXML
-    private TableView<OffreEmploi> tableOffres;
+    private VBox tableOffres;
 
     @FXML
-    private TableColumn<OffreEmploi, String> colTitre;
-
-    @FXML
-    private TableColumn<OffreEmploi, String> colDept;
-
-    @FXML
-    private TableView<Candidature> tableCandidatures;
-
-    @FXML
-    private TableColumn<Candidature, String> colOffreCandidature;
-
-    @FXML
-    private TableColumn<Candidature, LocalDate> colDateCandidature;
-
-    @FXML
-    private TableColumn<Candidature, String> colStatutCandidature;
+    private VBox tableCandidatures;
 
     @FXML
     private Label lblCvPath;
@@ -52,23 +35,19 @@ public class CandidatController {
     private final ServiceCandidature serviceCandidature = new ServiceCandidature();
     private final ServiceOffre serviceOffre = new ServiceOffre();
     private String selectedCvPath;
+    private OffreEmploi selectedOffre;
+    private VBox selectedOffreCard;
 
     @FXML
     public void initialize() {
-        colTitre.setCellValueFactory(new PropertyValueFactory<>("titre"));
-        colDept.setCellValueFactory(new PropertyValueFactory<>("departement"));
-        colOffreCandidature.setCellValueFactory(new PropertyValueFactory<>("offreTitre"));
-        colDateCandidature.setCellValueFactory(new PropertyValueFactory<>("dateCandidature"));
-        colStatutCandidature.setCellValueFactory(new PropertyValueFactory<>("statut"));
-
-        tableOffres.getItems().setAll(serviceOffre.getAll());
+        renderOffresCards();
         setPageMessage("", false);
         refreshSuiviCandidatures();
     }
 
     @FXML
     public void postuler() {
-        OffreEmploi offre = tableOffres.getSelectionModel().getSelectedItem();
+        OffreEmploi offre = selectedOffre;
         if (offre == null) {
             showError("Selectionnez une offre avant de postuler.");
             return;
@@ -127,10 +106,17 @@ public class CandidatController {
     @FXML
     public void refreshSuiviCandidatures() {
         if (Session.getUser() == null) {
-            tableCandidatures.getItems().clear();
+            tableCandidatures.getChildren().clear();
             return;
         }
-        tableCandidatures.getItems().setAll(serviceCandidature.getByCandidatId(Session.getUser().getId()));
+        tableCandidatures.getChildren().clear();
+        for (Candidature candidature : serviceCandidature.getByCandidatId(Session.getUser().getId())) {
+            VBox card = buildCard(
+                    candidature.getOffreTitre() == null ? "Offre #" + candidature.getOffreId() : candidature.getOffreTitre(),
+                    "Date: " + candidature.getDateCandidature() + " | Statut: " + candidature.getStatut()
+            );
+            tableCandidatures.getChildren().add(card);
+        }
     }
 
     @FXML
@@ -163,5 +149,38 @@ public class CandidatController {
         } else {
             lblPageMessage.setStyle("-fx-text-fill: #2f855a; -fx-font-weight: 700;");
         }
+    }
+
+    private void renderOffresCards() {
+        tableOffres.getChildren().clear();
+        selectedOffre = null;
+        selectedOffreCard = null;
+
+        for (OffreEmploi offre : serviceOffre.getAll()) {
+            VBox card = buildCard(
+                    offre.getTitre(),
+                    "Departement: " + offre.getDepartement()
+            );
+            card.setOnMouseClicked(event -> {
+                if (selectedOffreCard != null) {
+                    selectedOffreCard.getStyleClass().remove("entity-card-selected");
+                }
+                card.getStyleClass().add("entity-card-selected");
+                selectedOffreCard = card;
+                selectedOffre = offre;
+                setPageMessage("Offre selectionnee: " + offre.getTitre(), false);
+            });
+            tableOffres.getChildren().add(card);
+        }
+    }
+
+    private VBox buildCard(String title, String subtitle) {
+        Label titleLabel = new Label(title);
+        titleLabel.getStyleClass().add("entity-card-title");
+        Label subtitleLabel = new Label(subtitle);
+        subtitleLabel.getStyleClass().add("entity-card-meta");
+        VBox card = new VBox(4, titleLabel, subtitleLabel);
+        card.getStyleClass().add("entity-card");
+        return card;
     }
 }

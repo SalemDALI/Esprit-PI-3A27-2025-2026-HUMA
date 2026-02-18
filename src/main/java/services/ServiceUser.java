@@ -51,13 +51,18 @@ public class ServiceUser {
     }
 
     public boolean ajouter(User user) {
-        String sql = "INSERT INTO users(nom, prenom, email, mdp, role) VALUES(?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users(nom, prenom, email, mdp, role, manager_id) VALUES(?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setString(1, user.getNom());
             ps.setString(2, user.getPrenom());
             ps.setString(3, user.getEmail());
             ps.setString(4, user.getMdp());
             ps.setString(5, user.getRole());
+            if (user.getManagerId() == null) {
+                ps.setNull(6, java.sql.Types.INTEGER);
+            } else {
+                ps.setInt(6, user.getManagerId());
+            }
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -66,14 +71,19 @@ public class ServiceUser {
     }
 
     public boolean update(User user) {
-        String sql = "UPDATE users SET nom=?, prenom=?, email=?, mdp=?, role=? WHERE id=?";
+        String sql = "UPDATE users SET nom=?, prenom=?, email=?, mdp=?, role=?, manager_id=? WHERE id=?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setString(1, user.getNom());
             ps.setString(2, user.getPrenom());
             ps.setString(3, user.getEmail());
             ps.setString(4, user.getMdp());
             ps.setString(5, user.getRole());
-            ps.setInt(6, user.getId());
+            if (user.getManagerId() == null) {
+                ps.setNull(6, java.sql.Types.INTEGER);
+            } else {
+                ps.setInt(6, user.getManagerId());
+            }
+            ps.setInt(7, user.getId());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -115,6 +125,12 @@ public class ServiceUser {
         u.setEmail(rs.getString("email"));
         u.setMdp(rs.getString("mdp"));
         u.setRole(rs.getString("role"));
+        int managerId = rs.getInt("manager_id");
+        if (rs.wasNull()) {
+            u.setManagerId(null);
+        } else {
+            u.setManagerId(managerId);
+        }
         return u;
     }
 }

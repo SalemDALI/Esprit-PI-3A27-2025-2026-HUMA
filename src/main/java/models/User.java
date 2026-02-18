@@ -8,6 +8,7 @@ public class User {
     private String email;
     private String mdp;
     private String role;
+    private Integer managerId;
 
     public User() {}
 
@@ -18,6 +19,16 @@ public class User {
         this.email = email;
         this.mdp = mdp;
         this.role = role;
+    }
+
+    public User(int id, String nom, String prenom, String email, String mdp, String role, Integer managerId) {
+        this.id = id;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+        this.mdp = mdp;
+        this.role = role;
+        this.managerId = managerId;
     }
 
     public int getId() { return id; }
@@ -37,4 +48,7 @@ public class User {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public Integer getManagerId() { return managerId; }
+    public void setManagerId(Integer managerId) { this.managerId = managerId; }
 }

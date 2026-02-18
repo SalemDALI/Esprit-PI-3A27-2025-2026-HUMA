@@ -46,6 +46,8 @@ public class DashboardController {
     @FXML
     private PasswordField txtMdp;
     @FXML
+    private TextField txtManagerId;
+    @FXML
     private ComboBox<String> cbRole;
 
     @FXML
@@ -217,6 +219,7 @@ public class DashboardController {
             user.setEmail(txtEmail.getText().trim());
             user.setMdp(txtMdp.getText().trim());
             user.setRole(cbRole.getValue());
+            user.setManagerId(parseManagerId());
             if (serviceUser.ajouter(user)) {
                 refreshData();
                 clearUserForm();
@@ -240,6 +243,7 @@ public class DashboardController {
             user.setEmail(txtEmail.getText().trim());
             user.setMdp(txtMdp.getText().trim());
             user.setRole(cbRole.getValue());
+            user.setManagerId(parseManagerId());
             if (serviceUser.update(user)) {
                 refreshData();
             }
@@ -267,6 +271,7 @@ public class DashboardController {
         txtPrenom.clear();
         txtEmail.clear();
         txtMdp.clear();
+        txtManagerId.clear();
         cbRole.setValue(null);
         clearSelection(tableUsers, selectedUserCard);
         selectedUser = null;
@@ -517,6 +522,7 @@ public class DashboardController {
             VBox card = buildCard(
                     user.getNom() + " " + user.getPrenom(),
                     user.getEmail() + " | role: " + user.getRole()
+                            + " | manager: " + (user.getManagerId() == null ? "-" : user.getManagerId())
             );
             card.setOnMouseClicked(event -> {
                 selectCard(tableUsers, selectedUserCard, card);
@@ -527,10 +533,18 @@ public class DashboardController {
                 txtPrenom.setText(user.getPrenom());
                 txtEmail.setText(user.getEmail());
                 txtMdp.setText(user.getMdp());
+                txtManagerId.setText(user.getManagerId() == null ? "" : String.valueOf(user.getManagerId()));
                 cbRole.setValue(user.getRole());
             });
             tableUsers.getChildren().add(card);
         }
+    }
+
+    private Integer parseManagerId() {
+        if (txtManagerId == null || txtManagerId.getText() == null || txtManagerId.getText().isBlank()) {
+            return null;
+        }
+        return Integer.parseInt(txtManagerId.getText().trim());
     }
 
     private void renderCandidatCards() {
