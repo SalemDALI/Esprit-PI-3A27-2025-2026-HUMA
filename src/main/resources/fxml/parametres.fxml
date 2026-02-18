@@ -10,97 +10,92 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controller.DashboardController"
-            stylesheets="@style.css"
-            styleClass="app-root">
+<BorderPane styleClass="app-root" stylesheets="@style.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25" fx:controller="controller.DashboardController">
 
     <left>
-        <VBox spacing="10" styleClass="sidebar dashboard-sidebar" prefWidth="220">
+        <VBox prefWidth="220" spacing="10" styleClass="sidebar dashboard-sidebar">
             <HBox spacing="8" styleClass="brand-row">
-                <ImageView fitHeight="56.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="78.0" fitWidth="240.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../images/huma.png"/>
+                        <Image url="@../images/huma.png" />
                     </image>
                 </ImageView>
             </HBox>
 
-            <Button text="Tableau de bord" styleClass="nav-button" onAction="#openDashboard">
+            <Button onAction="#openDashboard" styleClass="nav-button" text="Tableau de bord">
                 <graphic>
                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../images/dashboard.png"/>
+                            <Image url="@../images/dashboard.png" />
                         </image>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button text="Recrutement" styleClass="nav-button" onAction="#openRecrutement">
+            <Button onAction="#openRecrutement" styleClass="nav-button" text="Recrutement">
                 <graphic>
                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../images/recrutement.png"/>
+                            <Image url="@../images/recrutement.png" />
                         </image>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button text="Congés" styleClass="nav-button" onAction="#openConges">
+            <Button onAction="#openConges" styleClass="nav-button" text="Congés">
                 <graphic>
                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../images/conge.png"/>
+                            <Image url="@../images/conge.png" />
                         </image>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button text="Absences" styleClass="nav-button" onAction="#openAbsences">
+            <Button onAction="#openAbsences" styleClass="nav-button" text="Absences">
                 <graphic>
                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../images/absences.png"/>
+                            <Image url="@../images/absences.png" />
                         </image>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button text="Communication" styleClass="nav-button" onAction="#openCommunication">
+            <Button onAction="#openCommunication" styleClass="nav-button" text="Communication">
                 <graphic>
                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../images/communication.png"/>
+                            <Image url="@../images/communication.png" />
                         </image>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button text="FeedBack" styleClass="nav-button" onAction="#openFeedback">
+            <Button onAction="#openFeedback" styleClass="nav-button" text="FeedBack">
                 <graphic>
                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../images/feedback.png"/>
+                            <Image url="@../images/feedback.png" />
                         </image>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button text="Paramètres" styleClass="nav-button nav-active" onAction="#openParametres">
+            <Button onAction="#openParametres" styleClass="nav-button nav-active" text="Paramètres">
                 <graphic>
                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../images/parametre.png"/>
+                            <Image url="@../images/parametre.png" />
                         </image>
                     </ImageView>
                 </graphic>
             </Button>
-            <Region VBox.vgrow="ALWAYS"/>
-            <Button text="Logout" styleClass="nav-button" onAction="#logout"/>
+            <Region VBox.vgrow="ALWAYS" />
+            <Button onAction="#logout" styleClass="nav-button" text="Logout" />
         </VBox>
     </left>
 
     <center>
         <VBox spacing="16" styleClass="main-content">
-            <HBox styleClass="top-toolbar">
-                <Label text="Paramètres" styleClass="dashboard-title"/>
-            </HBox>
+            <HBox styleClass="top-toolbar" />
 
             <StackPane styleClass="workspace-panel" VBox.vgrow="ALWAYS">
-                <Label text="Page paramètres (vide)." styleClass="page-message"/>
+                <Label styleClass="page-message" text="Page paramètres (vide)." />
             </StackPane>
         </VBox>
     </center>

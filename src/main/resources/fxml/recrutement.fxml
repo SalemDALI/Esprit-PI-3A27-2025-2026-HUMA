@@ -2,230 +2,221 @@
 
 <?import java.lang.String?>
 <?import javafx.collections.FXCollections?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controller.DashboardController"
-            stylesheets="@style.css"
-            styleClass="app-root">
+<BorderPane styleClass="app-root" stylesheets="@style.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25" fx:controller="controller.DashboardController">
 
     <left>
-        <VBox spacing="10" styleClass="sidebar dashboard-sidebar" prefWidth="220">
+        <VBox prefWidth="220" spacing="10" styleClass="sidebar dashboard-sidebar">
             <HBox spacing="8" styleClass="brand-row">
-                <ImageView fitHeight="56.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="121.0" fitWidth="442.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../images/huma.png"/>
+                        <Image url="@../images/huma.png" />
                     </image>
                 </ImageView>
             </HBox>
 
-            <Button text="Tableau de bord" styleClass="nav-button" onAction="#openDashboard">
+            <Button onAction="#openDashboard" styleClass="nav-button" text="Tableau de bord" textFill="WHITESMOKE">
                 <graphic>
                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../images/dashboard.png"/>
+                            <Image url="@../images/dashboard.png" />
                         </image>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button text="Recrutement" styleClass="nav-button nav-active" onAction="#openRecrutement">
+            <Button onAction="#openRecrutement" styleClass="nav-button nav-active" text="Recrutement">
                 <graphic>
                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../images/recrutement.png"/>
+                            <Image url="@../images/recrutement.png" />
                         </image>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button text="Congés" styleClass="nav-button" onAction="#openConges">
+            <Button onAction="#openConges" styleClass="nav-button" text="Congés">
                 <graphic>
                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../images/conge.png"/>
+                            <Image url="@../images/conge.png" />
                         </image>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button text="Absences" styleClass="nav-button" onAction="#openAbsences">
+            <Button onAction="#openAbsences" styleClass="nav-button" text="Absences">
                 <graphic>
                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../images/absences.png"/>
+                            <Image url="@../images/absences.png" />
                         </image>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button text="Communication" styleClass="nav-button" onAction="#openCommunication">
+            <Button onAction="#openCommunication" styleClass="nav-button" text="Communication">
                 <graphic>
                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../images/communication.png"/>
+                            <Image url="@../images/communication.png" />
                         </image>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button text="FeedBack" styleClass="nav-button" onAction="#openFeedback">
+            <Button onAction="#openFeedback" styleClass="nav-button" text="FeedBack">
                 <graphic>
                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../images/feedback.png"/>
+                            <Image url="@../images/feedback.png" />
                         </image>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button text="Paramètres" styleClass="nav-button" onAction="#openParametres">
+            <Button onAction="#openParametres" styleClass="nav-button" text="Paramètres" textFill="WHITESMOKE">
                 <graphic>
                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../images/parametre.png"/>
+                            <Image url="@../images/parametre.png" />
                         </image>
                     </ImageView>
                 </graphic>
             </Button>
-            <Region VBox.vgrow="ALWAYS"/>
-            <Button text="Logout" styleClass="nav-button" onAction="#logout"/>
+            <Region VBox.vgrow="ALWAYS" />
+            <Button onAction="#logout" styleClass="nav-button" text="Logout" />
         </VBox>
     </left>
 
     <center>
         <VBox spacing="16" styleClass="main-content">
             <HBox styleClass="top-toolbar">
-                <Label text="Recrutement" styleClass="dashboard-title"/>
+                <Label styleClass="dashboard-title" text="Recrutement" />
             </HBox>
 
-            <Label fx:id="lblPageMessage" text="" styleClass="page-message"/>
+            <Label fx:id="lblPageMessage" styleClass="page-message" text="" />
 
             <StackPane styleClass="workspace-panel" VBox.vgrow="ALWAYS">
-                <TabPane tabClosingPolicy="UNAVAILABLE" styleClass="dashboard-tabs">
+                <TabPane styleClass="dashboard-tabs" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
                         <Tab text="Users">
                             <VBox spacing="12" styleClass="content">
                                 <HBox spacing="10">
-                                    <TextField fx:id="txtUserId" promptText="ID" prefWidth="70" disable="true"/>
-                                    <TextField fx:id="txtNom" promptText="Nom"/>
-                                    <TextField fx:id="txtPrenom" promptText="Prenom"/>
-                                    <TextField fx:id="txtEmail" promptText="Email"/>
-                                    <PasswordField fx:id="txtMdp" promptText="Mot de passe"/>
+                                    <TextField fx:id="txtUserId" disable="true" prefWidth="70" promptText="ID" />
+                                    <TextField fx:id="txtNom" promptText="Nom" />
+                                    <TextField fx:id="txtPrenom" promptText="Prenom" />
+                                    <TextField fx:id="txtEmail" promptText="Email" />
+                                    <PasswordField fx:id="txtMdp" promptText="Mot de passe" />
                                     <ComboBox fx:id="cbRole" promptText="Role">
                                         <items>
                                             <FXCollections fx:factory="observableArrayList">
-                                                <String fx:value="ADMIN_RH"/>
-                                                <String fx:value="MANAGER"/>
-                                                <String fx:value="EMPLOYE"/>
-                                                <String fx:value="CANDIDAT"/>
+                                                <String fx:value="ADMIN_RH" />
+                                                <String fx:value="MANAGER" />
+                                                <String fx:value="EMPLOYE" />
+                                                <String fx:value="CANDIDAT" />
                                             </FXCollections>
                                         </items>
                                     </ComboBox>
                                 </HBox>
                                 <HBox spacing="10" styleClass="action-row">
-                                    <Button text="Ajouter" styleClass="btn btn-primary" onAction="#addUser"/>
-                                    <Button text="Modifier" styleClass="btn btn-warning" onAction="#updateUser"/>
-                                    <Button text="Supprimer" styleClass="btn btn-danger" onAction="#deleteUser"/>
-                                    <Button text="Clear" styleClass="btn" onAction="#clearUserForm"/>
+                                    <Button onAction="#addUser" styleClass="btn btn-primary" text="Ajouter" />
+                                    <Button onAction="#updateUser" styleClass="btn btn-warning" text="Modifier" />
+                                    <Button onAction="#deleteUser" styleClass="btn btn-danger" text="Supprimer" />
+                                    <Button onAction="#clearUserForm" styleClass="btn" text="Clear" />
                                 </HBox>
-                                <TableView fx:id="tableUsers" prefHeight="420" styleClass="modern-table">
-                                    <columns>
-                                        <TableColumn fx:id="colUserId" text="ID" prefWidth="70"/>
-                                        <TableColumn fx:id="colUserNom" text="Nom" prefWidth="120"/>
-                                        <TableColumn fx:id="colUserPrenom" text="Prenom" prefWidth="120"/>
-                                        <TableColumn fx:id="colUserEmail" text="Email" prefWidth="220"/>
-                                        <TableColumn fx:id="colUserRole" text="Role" prefWidth="120"/>
-                                    </columns>
-                                </TableView>
+                                <ScrollPane fitToWidth="true" prefHeight="420" styleClass="cards-scroll">
+                                    <content>
+                                        <VBox fx:id="tableUsers" spacing="10" />
+                                    </content>
+                                </ScrollPane>
                             </VBox>
                         </Tab>
 
                         <Tab text="Candidats">
                             <VBox spacing="12" styleClass="content">
                                 <HBox spacing="10">
-                                    <TextField fx:id="txtCandidatId" promptText="ID User (role CANDIDAT)"/>
+                                    <TextField fx:id="txtCandidatId" promptText="ID User (role CANDIDAT)" />
                                 </HBox>
                                 <HBox spacing="10" styleClass="action-row">
-                                    <Button text="Ajouter" styleClass="btn btn-primary" onAction="#addCandidat"/>
-                                    <Button text="Modifier" styleClass="btn btn-warning" onAction="#updateCandidat"/>
-                                    <Button text="Supprimer" styleClass="btn btn-danger" onAction="#deleteCandidat"/>
-                                    <Button text="Clear" styleClass="btn" onAction="#clearCandidatForm"/>
+                                    <Button onAction="#addCandidat" styleClass="btn btn-primary" text="Ajouter" />
+                                    <Button onAction="#updateCandidat" styleClass="btn btn-warning" text="Modifier" />
+                                    <Button onAction="#deleteCandidat" styleClass="btn btn-danger" text="Supprimer" />
+                                    <Button onAction="#clearCandidatForm" styleClass="btn" text="Clear" />
                                 </HBox>
-                                <TableView fx:id="tableCandidats" prefHeight="420" styleClass="modern-table">
-                                    <columns>
-                                        <TableColumn fx:id="colCandId" text="ID" prefWidth="70"/>
-                                        <TableColumn fx:id="colCandNom" text="Nom" prefWidth="120"/>
-                                        <TableColumn fx:id="colCandPrenom" text="Prenom" prefWidth="120"/>
-                                        <TableColumn fx:id="colCandEmail" text="Email" prefWidth="210"/>
-                                        <TableColumn fx:id="colCandRole" text="Role" prefWidth="110"/>
-                                    </columns>
-                                </TableView>
+                                <ScrollPane fitToWidth="true" prefHeight="420" styleClass="cards-scroll">
+                                    <content>
+                                        <VBox fx:id="tableCandidats" spacing="10" />
+                                    </content>
+                                </ScrollPane>
                             </VBox>
                         </Tab>
 
                         <Tab text="Offres">
                             <VBox spacing="12" styleClass="content">
                                 <HBox spacing="10">
-                                    <TextField fx:id="txtOffreId" promptText="ID" disable="true" prefWidth="70"/>
-                                    <TextField fx:id="txtTitre" promptText="Titre"/>
-                                    <TextField fx:id="txtDepartement" promptText="Departement"/>
-                                    <TextField fx:id="txtTypeContrat" promptText="Type contrat"/>
-                                    <TextField fx:id="txtNombrePostes" promptText="Nb postes" prefWidth="100"/>
-                                    <DatePicker fx:id="dpDatePublication" promptText="Date publication"/>
-                                    <TextField fx:id="txtAdminId" promptText="Admin ID" prefWidth="100"/>
+                                    <TextField fx:id="txtOffreId" disable="true" prefWidth="70" promptText="ID" />
+                                    <TextField fx:id="txtTitre" promptText="Titre" />
+                                    <TextField fx:id="txtDepartement" promptText="Departement" />
+                                    <TextField fx:id="txtTypeContrat" promptText="Type contrat" />
+                                    <TextField fx:id="txtNombrePostes" prefWidth="100" promptText="Nb postes" />
+                                    <DatePicker fx:id="dpDatePublication" promptText="Date publication" />
+                                    <TextField fx:id="txtAdminId" prefWidth="100" promptText="Admin ID" />
                                 </HBox>
                                 <HBox spacing="10" styleClass="action-row">
-                                    <Button text="Ajouter" styleClass="btn btn-primary" onAction="#addOffre"/>
-                                    <Button text="Modifier" styleClass="btn btn-warning" onAction="#updateOffre"/>
-                                    <Button text="Supprimer" styleClass="btn btn-danger" onAction="#deleteOffre"/>
-                                    <Button text="Clear" styleClass="btn" onAction="#clearOffreForm"/>
+                                    <Button onAction="#addOffre" styleClass="btn btn-primary" text="Ajouter" />
+                                    <Button onAction="#updateOffre" styleClass="btn btn-warning" text="Modifier" />
+                                    <Button onAction="#deleteOffre" styleClass="btn btn-danger" text="Supprimer" />
+                                    <Button onAction="#clearOffreForm" styleClass="btn" text="Clear" />
                                 </HBox>
-                                <TableView fx:id="tableOffres" prefHeight="390" styleClass="modern-table">
-                                    <columns>
-                                        <TableColumn fx:id="colOffreId" text="ID" prefWidth="60"/>
-                                        <TableColumn fx:id="colOffreTitre" text="Titre" prefWidth="140"/>
-                                        <TableColumn fx:id="colOffreDept" text="Departement" prefWidth="120"/>
-                                        <TableColumn fx:id="colOffreType" text="Type" prefWidth="100"/>
-                                        <TableColumn fx:id="colOffrePostes" text="Postes" prefWidth="80"/>
-                                        <TableColumn fx:id="colOffreDate" text="Date" prefWidth="120"/>
-                                        <TableColumn fx:id="colOffreAdmin" text="Admin" prefWidth="80"/>
-                                    </columns>
-                                </TableView>
+                                <ScrollPane fitToWidth="true" prefHeight="390" styleClass="cards-scroll">
+                                    <content>
+                                        <VBox fx:id="tableOffres" spacing="10" />
+                                    </content>
+                                </ScrollPane>
                             </VBox>
                         </Tab>
 
                         <Tab text="Candidatures">
                             <VBox spacing="12" styleClass="content">
                                 <HBox spacing="10">
-                                    <TextField fx:id="txtCandidatureId" promptText="ID" disable="true" prefWidth="70"/>
-                                    <TextField fx:id="txtCandUserId" promptText="Candidat ID"/>
-                                    <TextField fx:id="txtCandOffreId" promptText="Offre ID"/>
-                                    <DatePicker fx:id="dpDateCandidature" promptText="Date"/>
+                                    <TextField fx:id="txtCandidatureId" disable="true" prefWidth="70" promptText="ID" />
+                                    <TextField fx:id="txtCandUserId" promptText="Candidat ID" />
+                                    <TextField fx:id="txtCandOffreId" promptText="Offre ID" />
+                                    <DatePicker fx:id="dpDateCandidature" promptText="Date" />
                                     <ComboBox fx:id="cbStatut" promptText="Statut">
                                         <items>
                                             <FXCollections fx:factory="observableArrayList">
-                                                <String fx:value="EN_ATTENTE"/>
-                                                <String fx:value="ACCEPTEE"/>
-                                                <String fx:value="REFUSEE"/>
+                                                <String fx:value="EN_ATTENTE" />
+                                                <String fx:value="ACCEPTEE" />
+                                                <String fx:value="REFUSEE" />
                                             </FXCollections>
                                         </items>
                                     </ComboBox>
                                 </HBox>
                                 <HBox spacing="10" styleClass="action-row">
-                                    <Button text="Ajouter" styleClass="btn btn-primary" onAction="#addCandidature"/>
-                                    <Button text="Modifier" styleClass="btn btn-warning" onAction="#updateCandidature"/>
-                                    <Button text="Supprimer" styleClass="btn btn-danger" onAction="#deleteCandidature"/>
-                                    <Button text="Accepter" styleClass="btn btn-primary" onAction="#accepter"/>
-                                    <Button text="Refuser" styleClass="btn btn-danger" onAction="#refuser"/>
-                                    <Button text="Clear" styleClass="btn" onAction="#clearCandidatureForm"/>
+                                    <Button onAction="#addCandidature" styleClass="btn btn-primary" text="Ajouter" />
+                                    <Button onAction="#updateCandidature" styleClass="btn btn-warning" text="Modifier" />
+                                    <Button onAction="#deleteCandidature" styleClass="btn btn-danger" text="Supprimer" />
+                                    <Button onAction="#accepter" styleClass="btn btn-primary" text="Accepter" />
+                                    <Button onAction="#refuser" styleClass="btn btn-danger" text="Refuser" />
+                                    <Button onAction="#clearCandidatureForm" styleClass="btn" text="Clear" />
                                 </HBox>
-                                <TableView fx:id="tableCandidatures" prefHeight="420" styleClass="modern-table">
-                                    <columns>
-                                        <TableColumn fx:id="colCadId" text="ID" prefWidth="60"/>
-                                        <TableColumn fx:id="colCadCandidat" text="Candidat" prefWidth="100"/>
-                                        <TableColumn fx:id="colCadOffre" text="Offre" prefWidth="100"/>
-                                        <TableColumn fx:id="colCadDate" text="Date" prefWidth="120"/>
-                                        <TableColumn fx:id="colCadStatut" text="Statut" prefWidth="120"/>
-                                    </columns>
-                                </TableView>
+                                <ScrollPane fitToWidth="true" prefHeight="420" styleClass="cards-scroll">
+                                    <content>
+                                        <VBox fx:id="tableCandidatures" spacing="10" />
+                                    </content>
+                                </ScrollPane>
                             </VBox>
                         </Tab>
                     </tabs>

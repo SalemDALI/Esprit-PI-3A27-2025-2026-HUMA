@@ -10,7 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import services.ServiceCandidat;
 import services.ServiceCandidature;
@@ -34,17 +34,7 @@ public class DashboardController {
     private Tab tabCandidatures;
 
     @FXML
-    private TableView<User> tableUsers;
-    @FXML
-    private TableColumn<User, Integer> colUserId;
-    @FXML
-    private TableColumn<User, String> colUserNom;
-    @FXML
-    private TableColumn<User, String> colUserPrenom;
-    @FXML
-    private TableColumn<User, String> colUserEmail;
-    @FXML
-    private TableColumn<User, String> colUserRole;
+    private VBox tableUsers;
     @FXML
     private TextField txtUserId;
     @FXML
@@ -59,36 +49,12 @@ public class DashboardController {
     private ComboBox<String> cbRole;
 
     @FXML
-    private TableView<Candidat> tableCandidats;
-    @FXML
-    private TableColumn<Candidat, Integer> colCandId;
-    @FXML
-    private TableColumn<Candidat, String> colCandNom;
-    @FXML
-    private TableColumn<Candidat, String> colCandPrenom;
-    @FXML
-    private TableColumn<Candidat, String> colCandEmail;
-    @FXML
-    private TableColumn<Candidat, String> colCandRole;
+    private VBox tableCandidats;
     @FXML
     private TextField txtCandidatId;
 
     @FXML
-    private TableView<OffreEmploi> tableOffres;
-    @FXML
-    private TableColumn<OffreEmploi, Integer> colOffreId;
-    @FXML
-    private TableColumn<OffreEmploi, String> colOffreTitre;
-    @FXML
-    private TableColumn<OffreEmploi, String> colOffreDept;
-    @FXML
-    private TableColumn<OffreEmploi, String> colOffreType;
-    @FXML
-    private TableColumn<OffreEmploi, Integer> colOffrePostes;
-    @FXML
-    private TableColumn<OffreEmploi, LocalDate> colOffreDate;
-    @FXML
-    private TableColumn<OffreEmploi, Integer> colOffreAdmin;
+    private VBox tableOffres;
     @FXML
     private TextField txtOffreId;
     @FXML
@@ -105,17 +71,7 @@ public class DashboardController {
     private TextField txtAdminId;
 
     @FXML
-    private TableView<Candidature> tableCandidatures;
-    @FXML
-    private TableColumn<Candidature, Integer> colCadId;
-    @FXML
-    private TableColumn<Candidature, Integer> colCadCandidat;
-    @FXML
-    private TableColumn<Candidature, Integer> colCadOffre;
-    @FXML
-    private TableColumn<Candidature, LocalDate> colCadDate;
-    @FXML
-    private TableColumn<Candidature, String> colCadStatut;
+    private VBox tableCandidatures;
     @FXML
     private TextField txtCandidatureId;
     @FXML
@@ -139,6 +95,14 @@ public class DashboardController {
     private final ServiceCandidat serviceCandidat = new ServiceCandidat();
     private final ServiceOffre serviceOffre = new ServiceOffre();
     private final ServiceCandidature serviceCandidature = new ServiceCandidature();
+    private User selectedUser;
+    private Candidat selectedCandidat;
+    private OffreEmploi selectedOffre;
+    private Candidature selectedCandidature;
+    private Node selectedUserCard;
+    private Node selectedCandidatCard;
+    private Node selectedOffreCard;
+    private Node selectedCandidatureCard;
 
     @FXML
     public void initialize() {
@@ -164,91 +128,34 @@ public class DashboardController {
     }
 
     private void initUserSection() {
-        colUserId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colUserNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        colUserPrenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
-        colUserEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
-        colUserRole.setCellValueFactory(new PropertyValueFactory<>("role"));
-
-        tableUsers.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, selected) -> {
-            if (selected != null) {
-                txtUserId.setText(String.valueOf(selected.getId()));
-                txtNom.setText(selected.getNom());
-                txtPrenom.setText(selected.getPrenom());
-                txtEmail.setText(selected.getEmail());
-                txtMdp.setText(selected.getMdp());
-                cbRole.setValue(selected.getRole());
-            }
-        });
+        tableUsers.getStyleClass().add("cards-container");
     }
 
     private void initCandidatSection() {
-        colCandId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colCandNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        colCandPrenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
-        colCandEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
-        colCandRole.setCellValueFactory(new PropertyValueFactory<>("role"));
-
-        tableCandidats.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, selected) -> {
-            if (selected != null) {
-                txtCandidatId.setText(String.valueOf(selected.getId()));
-            }
-        });
+        tableCandidats.getStyleClass().add("cards-container");
     }
 
     private void initOffreSection() {
-        colOffreId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colOffreTitre.setCellValueFactory(new PropertyValueFactory<>("titre"));
-        colOffreDept.setCellValueFactory(new PropertyValueFactory<>("departement"));
-        colOffreType.setCellValueFactory(new PropertyValueFactory<>("typeContrat"));
-        colOffrePostes.setCellValueFactory(new PropertyValueFactory<>("nombrePostes"));
-        colOffreDate.setCellValueFactory(new PropertyValueFactory<>("datePublication"));
-        colOffreAdmin.setCellValueFactory(new PropertyValueFactory<>("adminId"));
-
-        tableOffres.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, selected) -> {
-            if (selected != null) {
-                txtOffreId.setText(String.valueOf(selected.getId()));
-                txtTitre.setText(selected.getTitre());
-                txtDepartement.setText(selected.getDepartement());
-                txtTypeContrat.setText(selected.getTypeContrat());
-                txtNombrePostes.setText(String.valueOf(selected.getNombrePostes()));
-                dpDatePublication.setValue(selected.getDatePublication());
-                txtAdminId.setText(String.valueOf(selected.getAdminId()));
-            }
-        });
+        tableOffres.getStyleClass().add("cards-container");
     }
 
     private void initCandidatureSection() {
-        colCadId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colCadCandidat.setCellValueFactory(new PropertyValueFactory<>("candidatId"));
-        colCadOffre.setCellValueFactory(new PropertyValueFactory<>("offreId"));
-        colCadDate.setCellValueFactory(new PropertyValueFactory<>("dateCandidature"));
-        colCadStatut.setCellValueFactory(new PropertyValueFactory<>("statut"));
-
-        tableCandidatures.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, selected) -> {
-            if (selected != null) {
-                txtCandidatureId.setText(String.valueOf(selected.getId()));
-                txtCandUserId.setText(String.valueOf(selected.getCandidatId()));
-                txtCandOffreId.setText(String.valueOf(selected.getOffreId()));
-                dpDateCandidature.setValue(selected.getDateCandidature());
-                cbStatut.setValue(selected.getStatut());
-            }
-        });
+        tableCandidatures.getStyleClass().add("cards-container");
     }
 
     @FXML
     public void refreshData() {
         if (tableUsers != null) {
-            tableUsers.getItems().setAll(serviceUser.getAll());
+            renderUserCards();
         }
         if (tableCandidats != null) {
-            tableCandidats.getItems().setAll(serviceCandidat.getAll());
+            renderCandidatCards();
         }
         if (tableOffres != null) {
-            tableOffres.getItems().setAll(serviceOffre.getAll());
+            renderOffreCards();
         }
         if (tableCandidatures != null) {
-            tableCandidatures.getItems().setAll(serviceCandidature.getAll());
+            renderCandidatureCards();
         }
         refreshDashboardStats();
         setPageMessage("", false);
@@ -361,6 +268,9 @@ public class DashboardController {
         txtEmail.clear();
         txtMdp.clear();
         cbRole.setValue(null);
+        clearSelection(tableUsers, selectedUserCard);
+        selectedUser = null;
+        selectedUserCard = null;
     }
 
     @FXML
@@ -403,6 +313,9 @@ public class DashboardController {
     @FXML
     public void clearCandidatForm() {
         txtCandidatId.clear();
+        clearSelection(tableCandidats, selectedCandidatCard);
+        selectedCandidat = null;
+        selectedCandidatCard = null;
     }
 
     @FXML
@@ -469,6 +382,9 @@ public class DashboardController {
         txtTypeContrat.clear();
         txtNombrePostes.clear();
         dpDatePublication.setValue(null);
+        clearSelection(tableOffres, selectedOffreCard);
+        selectedOffre = null;
+        selectedOffreCard = null;
         if (Session.getUser() != null) {
             txtAdminId.setText(String.valueOf(Session.getUser().getId()));
         } else {
@@ -533,11 +449,14 @@ public class DashboardController {
         txtCandOffreId.clear();
         dpDateCandidature.setValue(null);
         cbStatut.setValue(null);
+        clearSelection(tableCandidatures, selectedCandidatureCard);
+        selectedCandidature = null;
+        selectedCandidatureCard = null;
     }
 
     @FXML
     public void accepter() {
-        Candidature selected = tableCandidatures.getSelectionModel().getSelectedItem();
+        Candidature selected = selectedCandidature;
         if (selected != null && serviceCandidature.updateStatut(selected.getId(), "ACCEPTEE")) {
             refreshData();
         }
@@ -545,7 +464,7 @@ public class DashboardController {
 
     @FXML
     public void refuser() {
-        Candidature selected = tableCandidatures.getSelectionModel().getSelectedItem();
+        Candidature selected = selectedCandidature;
         if (selected != null && serviceCandidature.updateStatut(selected.getId(), "REFUSEE")) {
             refreshData();
         }
@@ -587,5 +506,129 @@ public class DashboardController {
         } catch (IOException e) {
             showError("Navigation impossible: " + e.getMessage());
         }
+    }
+
+    private void renderUserCards() {
+        tableUsers.getChildren().clear();
+        clearSelection(tableUsers, selectedUserCard);
+        selectedUser = null;
+        selectedUserCard = null;
+        for (User user : serviceUser.getAll()) {
+            VBox card = buildCard(
+                    user.getNom() + " " + user.getPrenom(),
+                    user.getEmail() + " | role: " + user.getRole()
+            );
+            card.setOnMouseClicked(event -> {
+                selectCard(tableUsers, selectedUserCard, card);
+                selectedUserCard = card;
+                selectedUser = user;
+                txtUserId.setText(String.valueOf(user.getId()));
+                txtNom.setText(user.getNom());
+                txtPrenom.setText(user.getPrenom());
+                txtEmail.setText(user.getEmail());
+                txtMdp.setText(user.getMdp());
+                cbRole.setValue(user.getRole());
+            });
+            tableUsers.getChildren().add(card);
+        }
+    }
+
+    private void renderCandidatCards() {
+        tableCandidats.getChildren().clear();
+        clearSelection(tableCandidats, selectedCandidatCard);
+        selectedCandidat = null;
+        selectedCandidatCard = null;
+        for (Candidat candidat : serviceCandidat.getAll()) {
+            VBox card = buildCard(
+                    candidat.getNom() + " " + candidat.getPrenom(),
+                    candidat.getEmail() + " | role: " + candidat.getRole()
+            );
+            card.setOnMouseClicked(event -> {
+                selectCard(tableCandidats, selectedCandidatCard, card);
+                selectedCandidatCard = card;
+                selectedCandidat = candidat;
+                txtCandidatId.setText(String.valueOf(candidat.getId()));
+            });
+            tableCandidats.getChildren().add(card);
+        }
+    }
+
+    private void renderOffreCards() {
+        tableOffres.getChildren().clear();
+        clearSelection(tableOffres, selectedOffreCard);
+        selectedOffre = null;
+        selectedOffreCard = null;
+        for (OffreEmploi offre : serviceOffre.getAll()) {
+            VBox card = buildCard(
+                    offre.getTitre(),
+                    offre.getDepartement() + " | " + offre.getTypeContrat()
+                            + " | postes: " + offre.getNombrePostes()
+                            + " | date: " + offre.getDatePublication()
+            );
+            card.setOnMouseClicked(event -> {
+                selectCard(tableOffres, selectedOffreCard, card);
+                selectedOffreCard = card;
+                selectedOffre = offre;
+                txtOffreId.setText(String.valueOf(offre.getId()));
+                txtTitre.setText(offre.getTitre());
+                txtDepartement.setText(offre.getDepartement());
+                txtTypeContrat.setText(offre.getTypeContrat());
+                txtNombrePostes.setText(String.valueOf(offre.getNombrePostes()));
+                dpDatePublication.setValue(offre.getDatePublication());
+                txtAdminId.setText(String.valueOf(offre.getAdminId()));
+            });
+            tableOffres.getChildren().add(card);
+        }
+    }
+
+    private void renderCandidatureCards() {
+        tableCandidatures.getChildren().clear();
+        clearSelection(tableCandidatures, selectedCandidatureCard);
+        selectedCandidature = null;
+        selectedCandidatureCard = null;
+        for (Candidature candidature : serviceCandidature.getAll()) {
+            VBox card = buildCard(
+                    "Candidature",
+                    "candidat: " + candidature.getCandidatId()
+                            + " | offre: " + candidature.getOffreId()
+                            + " | date: " + candidature.getDateCandidature()
+                            + " | statut: " + candidature.getStatut()
+            );
+            card.setOnMouseClicked(event -> {
+                selectCard(tableCandidatures, selectedCandidatureCard, card);
+                selectedCandidatureCard = card;
+                selectedCandidature = candidature;
+                txtCandidatureId.setText(String.valueOf(candidature.getId()));
+                txtCandUserId.setText(String.valueOf(candidature.getCandidatId()));
+                txtCandOffreId.setText(String.valueOf(candidature.getOffreId()));
+                dpDateCandidature.setValue(candidature.getDateCandidature());
+                cbStatut.setValue(candidature.getStatut());
+            });
+            tableCandidatures.getChildren().add(card);
+        }
+    }
+
+    private VBox buildCard(String title, String meta) {
+        Label titleLabel = new Label(title);
+        titleLabel.getStyleClass().add("entity-card-title");
+        Label metaLabel = new Label(meta);
+        metaLabel.getStyleClass().add("entity-card-meta");
+        VBox card = new VBox(4, titleLabel, metaLabel);
+        card.getStyleClass().add("entity-card");
+        return card;
+    }
+
+    private void selectCard(VBox container, Node previousCard, Node newCard) {
+        clearSelection(container, previousCard);
+        if (newCard != null && !newCard.getStyleClass().contains("entity-card-selected")) {
+            newCard.getStyleClass().add("entity-card-selected");
+        }
+    }
+
+    private void clearSelection(VBox container, Node selectedCard) {
+        if (container == null || selectedCard == null) {
+            return;
+        }
+        selectedCard.getStyleClass().remove("entity-card-selected");
     }
 }
