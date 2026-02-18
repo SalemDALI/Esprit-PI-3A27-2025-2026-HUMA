@@ -14,7 +14,9 @@ import model.Formation;
 import services.CrudFormation;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,28 +37,34 @@ public class GestionFormationsController {
 
     @FXML
     public void initialize() {
-        // ✅ CORRECTION : Charger les items du ComboBox ici dans le controller
         typeCombo.setItems(FXCollections.observableArrayList(
                 "Presentiel",
                 "En ligne",
                 "Hybride"
         ));
 
-        actualiserListe();
+        // Autoriser uniquement les chiffres dans le champ durée
+        dureeField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal.matches("\\d*")) {
+                dureeField.setText(newVal.replaceAll("[^\\d]", ""));
+            }
+        });
 
-        // Recherche en temps reel
+        actualiserListe();
         rechercheField.textProperty().addListener((obs, oldVal, newVal) -> actualiserListe());
     }
 
     // ======================== AJOUTER ========================
     @FXML
     public void ajouterFormation() {
-        try {
-            if (!validerChamps()) {
-                afficherAlerte("Erreur", "Veuillez remplir tous les champs obligatoires.", Alert.AlertType.ERROR);
-                return;
-            }
+        // Validation complète
+        String erreur = validerSaisie();
+        if (erreur != null) {
+            afficherAlerte("Erreur de saisie", erreur, Alert.AlertType.ERROR);
+            return;
+        }
 
+        try {
             Formation formation = new Formation(
                     sujetField.getText().trim(),
                     formateurField.getText().trim(),
@@ -67,12 +75,10 @@ public class GestionFormationsController {
             );
 
             serviceFormation.ajouter(formation);
-            afficherAlerte("Succes", "Formation ajoutee avec succes !", Alert.AlertType.INFORMATION);
+            afficherAlerte("Succès", "Formation ajoutée avec succès !", Alert.AlertType.INFORMATION);
             reinitialiserFormulaire();
             actualiserListe();
 
-        } catch (NumberFormatException e) {
-            afficherAlerte("Erreur", "La duree doit etre un nombre entier.", Alert.AlertType.ERROR);
         } catch (Exception e) {
             afficherAlerte("Erreur", "Erreur lors de l'ajout : " + e.getMessage(), Alert.AlertType.ERROR);
             e.printStackTrace();
@@ -82,16 +88,21 @@ public class GestionFormationsController {
     // ======================== MODIFIER ========================
     @FXML
     public void modifierFormation() {
-        try {
-            if (idFormationField.getText().isEmpty()) {
-                afficherAlerte("Attention", "Cliquez sur 'Modifier' dans une carte pour selectionner une formation.", Alert.AlertType.WARNING);
-                return;
-            }
-            if (!validerChamps()) {
-                afficherAlerte("Erreur", "Veuillez remplir tous les champs obligatoires.", Alert.AlertType.ERROR);
-                return;
-            }
+        if (idFormationField.getText().isEmpty()) {
+            afficherAlerte("Attention",
+                    "Veuillez cliquer sur 'Modifier' dans une carte pour sélectionner une formation.",
+                    Alert.AlertType.WARNING);
+            return;
+        }
 
+        // Validation complète
+        String erreur = validerSaisie();
+        if (erreur != null) {
+            afficherAlerte("Erreur de saisie", erreur, Alert.AlertType.ERROR);
+            return;
+        }
+
+        try {
             Formation formation = new Formation(
                     Integer.parseInt(idFormationField.getText()),
                     sujetField.getText().trim(),
@@ -103,16 +114,84 @@ public class GestionFormationsController {
             );
 
             serviceFormation.modifier(formation);
-            afficherAlerte("Succes", "Formation modifiee avec succes !", Alert.AlertType.INFORMATION);
+            afficherAlerte("Succès", "Formation modifiée avec succès !", Alert.AlertType.INFORMATION);
             reinitialiserFormulaire();
             actualiserListe();
 
-        } catch (NumberFormatException e) {
-            afficherAlerte("Erreur", "La duree doit etre un nombre entier.", Alert.AlertType.ERROR);
         } catch (Exception e) {
             afficherAlerte("Erreur", "Erreur lors de la modification : " + e.getMessage(), Alert.AlertType.ERROR);
             e.printStackTrace();
         }
+    }
+
+    // ======================== VALIDATION SAISIE ========================
+    private String validerSaisie() {
+
+        // 1. Sujet
+        String sujet = sujetField.getText().trim();
+        if (sujet.isEmpty()) {
+            return "Le sujet est obligatoire.";
+        }
+        if (sujet.length() < 3) {
+            return "Le sujet doit contenir au moins 3 caractères.";
+        }
+        if (sujet.length() > 100) {
+            return "Le sujet ne doit pas dépasser 100 caractères.";
+        }
+
+        // 2. Formateur
+        String formateur = formateurField.getText().trim();
+        if (formateur.isEmpty()) {
+            return "Le nom du formateur est obligatoire.";
+        }
+        if (formateur.length() < 3) {
+            return "Le nom du formateur doit contenir au moins 3 caractères.";
+        }
+        if (!formateur.matches("[a-zA-ZÀ-ÿ\\s\\-']+")) {
+            return "Le nom du formateur ne doit contenir que des lettres.";
+        }
+
+        // 3. Type
+        if (typeCombo.getValue() == null) {
+            return "Veuillez sélectionner le type de formation.";
+        }
+
+        // 4. Date de début
+        if (dateDebutPicker.getValue() == null) {
+            return "La date de début est obligatoire.";
+        }
+        if (dateDebutPicker.getValue().isBefore(LocalDate.now())) {
+            return "La date de début ne peut pas être dans le passé.";
+        }
+
+        // 5. Durée
+        String dureeStr = dureeField.getText().trim();
+        if (dureeStr.isEmpty()) {
+            return "La durée est obligatoire.";
+        }
+        try {
+            int duree = Integer.parseInt(dureeStr);
+            if (duree <= 0) {
+                return "La durée doit être un nombre positif (minimum 1 jour).";
+            }
+            if (duree > 365) {
+                return "La durée ne peut pas dépasser 365 jours.";
+            }
+        } catch (NumberFormatException e) {
+            return "La durée doit être un nombre entier valide.";
+        }
+
+        // 6. Localisation
+        String localisation = localisationField.getText().trim();
+        if (localisation.isEmpty()) {
+            return "La localisation est obligatoire.";
+        }
+        if (localisation.length() < 2) {
+            return "La localisation doit contenir au moins 2 caractères.";
+        }
+
+        // Tout est valide
+        return null;
     }
 
     // ======================== ACTUALISER LISTE ========================
@@ -134,7 +213,7 @@ public class GestionFormationsController {
             totalFormationsLabel.setText(String.valueOf(formations.size()));
 
             if (formations.isEmpty()) {
-                Label empty = new Label("Aucune formation trouvee.");
+                Label empty = new Label("Aucune formation trouvée.");
                 empty.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 14px; -fx-padding: 20px;");
                 formationsContainer.getChildren().add(empty);
             } else {
@@ -155,22 +234,19 @@ public class GestionFormationsController {
         card.getStyleClass().add("request-item");
         card.setPadding(new Insets(15));
 
-        // Titre
         Label titre = new Label(f.getSujet());
         titre.setFont(Font.font("System", FontWeight.BOLD, 16));
         titre.setStyle("-fx-text-fill: #2c3e50;");
 
-        // Details
         VBox details = new VBox(4);
         details.getChildren().addAll(
                 creerDetailLabel("Formateur : " + f.getFormateur()),
                 creerDetailLabel("Type      : " + f.getType()),
                 creerDetailLabel("Date      : " + f.getDateDebut()),
-                creerDetailLabel("Duree     : " + f.getDuree() + " jours"),
+                creerDetailLabel("Durée     : " + f.getDuree() + " jours"),
                 creerDetailLabel("Lieu      : " + f.getLocalisation())
         );
 
-        // Boutons
         HBox boutons = new HBox(10);
         boutons.setAlignment(Pos.CENTER_LEFT);
         boutons.setPadding(new Insets(10, 0, 0, 0));
@@ -212,13 +288,13 @@ public class GestionFormationsController {
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
         confirmation.setTitle("Confirmation");
         confirmation.setHeaderText("Supprimer la formation ?");
-        confirmation.setContentText("Cette action est irreversible !");
+        confirmation.setContentText("Cette action est irréversible !");
 
         Optional<ButtonType> resultat = confirmation.showAndWait();
         if (resultat.isPresent() && resultat.get() == ButtonType.OK) {
             try {
                 serviceFormation.supprimer(id);
-                afficherAlerte("Succes", "Formation supprimee !", Alert.AlertType.INFORMATION);
+                afficherAlerte("Succès", "Formation supprimée !", Alert.AlertType.INFORMATION);
                 actualiserListe();
             } catch (Exception e) {
                 afficherAlerte("Erreur", "Erreur suppression : " + e.getMessage(), Alert.AlertType.ERROR);
@@ -239,16 +315,6 @@ public class GestionFormationsController {
         localisationField.clear();
     }
 
-    // ======================== VALIDATION ========================
-    private boolean validerChamps() {
-        return !sujetField.getText().trim().isEmpty()
-                && !formateurField.getText().trim().isEmpty()
-                && typeCombo.getValue() != null
-                && dateDebutPicker.getValue() != null
-                && !dureeField.getText().trim().isEmpty()
-                && !localisationField.getText().trim().isEmpty();
-    }
-
     // ======================== ALERTE ========================
     private void afficherAlerte(String titre, String message, Alert.AlertType type) {
         Alert alert = new Alert(type);
@@ -259,13 +325,12 @@ public class GestionFormationsController {
     }
 
     // ======================== RETOUR ========================
-    // ======================== RETOUR ========================
     @FXML
     public void retourAccueil() {
         try {
             Stage stage = (Stage) sujetField.getScene().getWindow();
-            javafx.scene.Scene scene = new javafx.scene.Scene(
-                    javafx.fxml.FXMLLoader.load(getClass().getResource("/Home.fxml"))
+            Scene scene = new Scene(
+                    FXMLLoader.load(getClass().getResource("/Home.fxml"))
             );
             stage.setScene(scene);
             stage.show();
