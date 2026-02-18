@@ -5,6 +5,7 @@ import models.Candidature;
 import models.OffreEmploi;
 import models.User;
 import models.Absence;
+import models.Publication;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,10 +19,12 @@ import services.ServiceCandidature;
 import services.ServiceOffre;
 import services.ServiceUser;
 import services.ServiceAbsence;
+import services.PublicationService;
 import utils.Session;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -125,6 +128,12 @@ public class DashboardController {
     private ComboBox<String> cbAbsenceType;
     @FXML
     private ComboBox<String> cbAbsenceStatut;
+    @FXML
+    private TextField txtPublicationTitre;
+    @FXML
+    private TextArea txtPublicationContenu;
+    @FXML
+    private VBox publicationList;
 
     private final ServiceUser serviceUser = new ServiceUser();
     private final ServiceCandidat serviceCandidat = new ServiceCandidat();
@@ -143,6 +152,9 @@ public class DashboardController {
     private Node selectedCongeCard;
     private Absence selectedAbsenceAdmin;
     private Node selectedAbsenceAdminCard;
+    private Publication selectedPublication;
+    private Node selectedPublicationCard;
+    private final PublicationService publicationService = new PublicationService();
 
     @FXML
     public void initialize() {
@@ -163,6 +175,9 @@ public class DashboardController {
         }
         if (tableAbsencesAdmin != null) {
             initAbsenceSection();
+        }
+        if (publicationList != null) {
+            initCommunicationSection();
         }
         setPageMessage("", false);
 
@@ -197,6 +212,10 @@ public class DashboardController {
         tableAbsencesAdmin.getStyleClass().add("cards-container");
     }
 
+    private void initCommunicationSection() {
+        publicationList.getStyleClass().add("cards-container");
+    }
+
     @FXML
     public void refreshData() {
         if (tableUsers != null) {
@@ -216,6 +235,9 @@ public class DashboardController {
         }
         if (tableAbsencesAdmin != null) {
             renderAbsenceAdminCards();
+        }
+        if (publicationList != null) {
+            renderCommunicationCards();
         }
         refreshDashboardStats();
         setPageMessage("", false);
@@ -663,6 +685,66 @@ public class DashboardController {
     }
 
     @FXML
+    public void publishCommunication() {
+        if (txtPublicationTitre == null || txtPublicationContenu == null) {
+            return;
+        }
+        User current = Session.getUser();
+        if (current == null) {
+            showError("Session invalide.");
+            return;
+        }
+        String role = current.getRole() == null ? "" : current.getRole().trim().toUpperCase();
+        if (!role.contains("ADMIN")) {
+            showError("Seul ADMIN RH peut publier une publication.");
+            return;
+        }
+        String titre = txtPublicationTitre.getText() == null ? "" : txtPublicationTitre.getText().trim();
+        String contenu = txtPublicationContenu.getText() == null ? "" : txtPublicationContenu.getText().trim();
+        if (titre.isBlank() || contenu.isBlank()) {
+            showError("Titre et contenu sont obligatoires.");
+            return;
+        }
+
+        String auteur = current.getNom() + " " + current.getPrenom();
+        publicationService.publish(titre, contenu, auteur);
+
+        txtPublicationTitre.clear();
+        txtPublicationContenu.clear();
+        renderCommunicationCards();
+        setPageMessage("Publication publiee avec succes.", false);
+    }
+
+    @FXML
+    public void deleteCommunicationPublication() {
+        User current = Session.getUser();
+        if (current == null) {
+            showError("Session invalide.");
+            return;
+        }
+        String role = current.getRole() == null ? "" : current.getRole().trim().toUpperCase();
+        if (!role.contains("ADMIN")) {
+            showError("Seul ADMIN RH peut supprimer une publication.");
+            return;
+        }
+        if (selectedPublication == null) {
+            showError("Selectionnez une publication a supprimer.");
+            return;
+        }
+        if (publicationService.deleteById(selectedPublication.getId())) {
+            selectedPublication = null;
+            if (selectedPublicationCard != null) {
+                selectedPublicationCard.getStyleClass().remove("entity-card-selected");
+                selectedPublicationCard = null;
+            }
+            renderCommunicationCards();
+            setPageMessage("Publication supprimee.", false);
+        } else {
+            showError("Suppression impossible.");
+        }
+    }
+
+    @FXML
     public void logout(ActionEvent event) {
         Session.clear();
         try {
@@ -882,6 +964,42 @@ public class DashboardController {
         }
     }
 
+    private void renderCommunicationCards() {
+        publicationList.getChildren().clear();
+        selectedPublication = null;
+        if (selectedPublicationCard != null) {
+            selectedPublicationCard.getStyleClass().remove("entity-card-selected");
+            selectedPublicationCard = null;
+        }
+        List<Publication> publications = publicationService.getAll();
+        if (publications.isEmpty()) {
+            publicationList.getChildren().add(buildCard("Aucune publication", "Publiez votre premiere communication."));
+            return;
+        }
+        for (Publication publication : publications) {
+            Label titleLabel = new Label(publication.getTitre());
+            titleLabel.getStyleClass().add("entity-card-title");
+            String date = publication.getDatePublication() == null ? "" :
+                    publication.getDatePublication().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+            Label metaLabel = new Label("Par " + publication.getAuteur() + " | " + date);
+            metaLabel.getStyleClass().add("entity-card-meta");
+            Label contentLabel = new Label(publication.getContenu());
+            contentLabel.getStyleClass().add("entity-card-meta");
+            contentLabel.setWrapText(true);
+            VBox card = new VBox(6, titleLabel, metaLabel, contentLabel);
+            card.getStyleClass().add("entity-card");
+            card.setOnMouseClicked(event -> {
+                if (selectedPublicationCard != null) {
+                    selectedPublicationCard.getStyleClass().remove("entity-card-selected");
+                }
+                selectedPublicationCard = card;
+                selectedPublicationCard.getStyleClass().add("entity-card-selected");
+                selectedPublication = publication;
+            });
+            publicationList.getChildren().add(card);
+        }
+    }
+
     private VBox buildCard(String title, String meta) {
         Label titleLabel = new Label(title);
         titleLabel.getStyleClass().add("entity-card-title");
@@ -905,4 +1023,5 @@ public class DashboardController {
         }
         selectedCard.getStyleClass().remove("entity-card-selected");
     }
+
 }

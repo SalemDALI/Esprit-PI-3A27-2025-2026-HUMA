@@ -96,6 +96,17 @@ public class ManagerAbsenceController {
     }
 
     @FXML
+    void openPublications(ActionEvent event) {
+        try {
+            Stage stage = (Stage) tableAbsences.getScene().getWindow();
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/publications.fxml"))));
+            stage.show();
+        } catch (IOException e) {
+            setMessage("Erreur ouverture publications: " + e.getMessage(), true);
+        }
+    }
+
+    @FXML
     void logout(ActionEvent event) {
         Session.clear();
         try {

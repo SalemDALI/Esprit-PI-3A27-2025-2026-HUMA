@@ -73,6 +73,17 @@ public class DemandeCongeController {
     }
 
     @FXML
+    public void openPublications(ActionEvent event) {
+        try {
+            Stage stage = (Stage) dateDebut.getScene().getWindow();
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/publications.fxml"))));
+            stage.show();
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.ERROR, "Erreur ouverture publications: " + e.getMessage()).show();
+        }
+    }
+
+    @FXML
     public void logout(ActionEvent event) {
         Session.clear();
         try {

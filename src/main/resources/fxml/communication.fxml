@@ -2,15 +2,17 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controller.DashboardController"
             stylesheets="@style.css"
             styleClass="app-root">
@@ -26,67 +28,25 @@
             </HBox>
 
             <Button text="Tableau de bord" styleClass="nav-button" onAction="#openDashboard">
-                <graphic>
-                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../images/dashboard.png"/>
-                        </image>
-                    </ImageView>
-                </graphic>
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/dashboard.png"/></image></ImageView></graphic>
             </Button>
             <Button text="Recrutement" styleClass="nav-button" onAction="#openRecrutement">
-                <graphic>
-                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../images/recrutement.png"/>
-                        </image>
-                    </ImageView>
-                </graphic>
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/recrutement.png"/></image></ImageView></graphic>
             </Button>
             <Button text="Congés" styleClass="nav-button" onAction="#openConges">
-                <graphic>
-                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../images/conge.png"/>
-                        </image>
-                    </ImageView>
-                </graphic>
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/conge.png"/></image></ImageView></graphic>
             </Button>
             <Button text="Absences" styleClass="nav-button" onAction="#openAbsences">
-                <graphic>
-                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../images/absences.png"/>
-                        </image>
-                    </ImageView>
-                </graphic>
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/absences.png"/></image></ImageView></graphic>
             </Button>
             <Button text="Communication" styleClass="nav-button nav-active" onAction="#openCommunication">
-                <graphic>
-                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../images/communication.png"/>
-                        </image>
-                    </ImageView>
-                </graphic>
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/communication.png"/></image></ImageView></graphic>
             </Button>
             <Button text="FeedBack" styleClass="nav-button" onAction="#openFeedback">
-                <graphic>
-                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../images/feedback.png"/>
-                        </image>
-                    </ImageView>
-                </graphic>
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/feedback.png"/></image></ImageView></graphic>
             </Button>
             <Button text="Paramètres" styleClass="nav-button" onAction="#openParametres">
-                <graphic>
-                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../images/parametre.png"/>
-                        </image>
-                    </ImageView>
-                </graphic>
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/parametre.png"/></image></ImageView></graphic>
             </Button>
             <Region VBox.vgrow="ALWAYS"/>
             <Button text="Logout" styleClass="nav-button" onAction="#logout"/>
@@ -94,14 +54,28 @@
     </left>
 
     <center>
-        <VBox spacing="16" styleClass="main-content">
+        <VBox spacing="12" styleClass="main-content">
             <HBox styleClass="top-toolbar">
                 <Label text="Communication" styleClass="dashboard-title"/>
             </HBox>
 
-            <StackPane styleClass="workspace-panel" VBox.vgrow="ALWAYS">
-                <Label text="Page communication (vide)." styleClass="page-message"/>
-            </StackPane>
+            <Label fx:id="lblPageMessage" text="" styleClass="page-message"/>
+
+            <VBox spacing="10" styleClass="content">
+                <Label text="Publication Admin RH" styleClass="title"/>
+                <TextField fx:id="txtPublicationTitre" promptText="Titre de publication"/>
+                <TextArea fx:id="txtPublicationContenu" promptText="Contenu de publication" prefRowCount="4" wrapText="true"/>
+                <HBox spacing="10" styleClass="action-row">
+                    <Button text="Publier" styleClass="btn btn-primary" onAction="#publishCommunication"/>
+                    <Button text="Supprimer publication" styleClass="btn btn-danger" onAction="#deleteCommunicationPublication"/>
+                </HBox>
+
+                <ScrollPane fitToWidth="true" prefHeight="420" styleClass="cards-scroll">
+                    <content>
+                        <VBox fx:id="publicationList" spacing="10" styleClass="cards-container"/>
+                    </content>
+                </ScrollPane>
+            </VBox>
         </VBox>
     </center>
 

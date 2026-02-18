@@ -17,6 +17,7 @@
         <HBox styleClass="sidebar topbar" spacing="10">
             <Label text="Espace Manager - Absences" styleClass="logo"/>
             <Pane HBox.hgrow="ALWAYS"/>
+            <Button text="Publications" styleClass="nav-button" onAction="#openPublications"/>
             <Button text="Logout" styleClass="nav-button" onAction="#logout"/>
         </HBox>
     </top>
