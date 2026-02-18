@@ -33,22 +33,22 @@
                         </image>
                     </ImageView>
                 </graphic>
-            <textFill>
-               <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
-                  <stops>
-                     <Stop>
-                        <color>
-                           <Color />
-                        </color>
-                     </Stop>
-                     <Stop offset="1.0">
-                        <color>
-                           <Color red="1.0" green="1.0" blue="1.0" />
-                        </color>
-                     </Stop>
-                  </stops>
-               </RadialGradient>
-            </textFill>
+                <textFill>
+                    <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                        <stops>
+                            <Stop>
+                                <color>
+                                    <Color />
+                                </color>
+                            </Stop>
+                            <Stop offset="1.0">
+                                <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                </color>
+                            </Stop>
+                        </stops>
+                    </RadialGradient>
+                </textFill>
             </Button>
             <Button onAction="#openRecrutement" styleClass="nav-button" text="Recrutement" textFill="WHITESMOKE">
                 <graphic>
@@ -67,22 +67,22 @@
                         </image>
                     </ImageView>
                 </graphic>
-            <textFill>
-               <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
-                  <stops>
-                     <Stop>
-                        <color>
-                           <Color />
-                        </color>
-                     </Stop>
-                     <Stop offset="1.0">
-                        <color>
-                           <Color red="1.0" green="1.0" blue="1.0" />
-                        </color>
-                     </Stop>
-                  </stops>
-               </RadialGradient>
-            </textFill>
+                <textFill>
+                    <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                        <stops>
+                            <Stop>
+                                <color>
+                                    <Color />
+                                </color>
+                            </Stop>
+                            <Stop offset="1.0">
+                                <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                </color>
+                            </Stop>
+                        </stops>
+                    </RadialGradient>
+                </textFill>
             </Button>
             <Button onAction="#openAbsences" styleClass="nav-button" text="Absences">
                 <graphic>
@@ -92,22 +92,22 @@
                         </image>
                     </ImageView>
                 </graphic>
-            <textFill>
-               <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
-                  <stops>
-                     <Stop>
-                        <color>
-                           <Color />
-                        </color>
-                     </Stop>
-                     <Stop offset="1.0">
-                        <color>
-                           <Color red="1.0" green="1.0" blue="1.0" />
-                        </color>
-                     </Stop>
-                  </stops>
-               </RadialGradient>
-            </textFill>
+                <textFill>
+                    <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                        <stops>
+                            <Stop>
+                                <color>
+                                    <Color />
+                                </color>
+                            </Stop>
+                            <Stop offset="1.0">
+                                <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                </color>
+                            </Stop>
+                        </stops>
+                    </RadialGradient>
+                </textFill>
             </Button>
             <Button onAction="#openCommunication" styleClass="nav-button" text="Communication">
                 <graphic>
@@ -117,22 +117,22 @@
                         </image>
                     </ImageView>
                 </graphic>
-            <textFill>
-               <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
-                  <stops>
-                     <Stop>
-                        <color>
-                           <Color />
-                        </color>
-                     </Stop>
-                     <Stop offset="1.0">
-                        <color>
-                           <Color red="1.0" green="1.0" blue="1.0" />
-                        </color>
-                     </Stop>
-                  </stops>
-               </RadialGradient>
-            </textFill>
+                <textFill>
+                    <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                        <stops>
+                            <Stop>
+                                <color>
+                                    <Color />
+                                </color>
+                            </Stop>
+                            <Stop offset="1.0">
+                                <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                </color>
+                            </Stop>
+                        </stops>
+                    </RadialGradient>
+                </textFill>
             </Button>
             <Button onAction="#openFeedback" styleClass="nav-button" text="FeedBack">
                 <graphic>
@@ -142,22 +142,22 @@
                         </image>
                     </ImageView>
                 </graphic>
-            <textFill>
-               <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
-                  <stops>
-                     <Stop>
-                        <color>
-                           <Color />
-                        </color>
-                     </Stop>
-                     <Stop offset="1.0">
-                        <color>
-                           <Color red="1.0" green="1.0" blue="1.0" />
-                        </color>
-                     </Stop>
-                  </stops>
-               </RadialGradient>
-            </textFill>
+                <textFill>
+                    <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                        <stops>
+                            <Stop>
+                                <color>
+                                    <Color />
+                                </color>
+                            </Stop>
+                            <Stop offset="1.0">
+                                <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                </color>
+                            </Stop>
+                        </stops>
+                    </RadialGradient>
+                </textFill>
             </Button>
             <Button onAction="#openParametres" styleClass="nav-button" text="Paramètres">
                 <graphic>
@@ -167,41 +167,41 @@
                         </image>
                     </ImageView>
                 </graphic>
-            <textFill>
-               <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
-                  <stops>
-                     <Stop>
-                        <color>
-                           <Color />
-                        </color>
-                     </Stop>
-                     <Stop offset="1.0">
-                        <color>
-                           <Color red="1.0" green="1.0" blue="1.0" />
-                        </color>
-                     </Stop>
-                  </stops>
-               </RadialGradient>
-            </textFill>
+                <textFill>
+                    <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                        <stops>
+                            <Stop>
+                                <color>
+                                    <Color />
+                                </color>
+                            </Stop>
+                            <Stop offset="1.0">
+                                <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                </color>
+                            </Stop>
+                        </stops>
+                    </RadialGradient>
+                </textFill>
             </Button>
             <Region VBox.vgrow="ALWAYS" />
             <Button onAction="#logout" styleClass="nav-button" text="Logout">
-            <textFill>
-               <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
-                  <stops>
-                     <Stop>
-                        <color>
-                           <Color />
-                        </color>
-                     </Stop>
-                     <Stop offset="1.0">
-                        <color>
-                           <Color red="1.0" green="1.0" blue="1.0" />
-                        </color>
-                     </Stop>
-                  </stops>
-               </RadialGradient>
-            </textFill></Button>
+                <textFill>
+                    <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                        <stops>
+                            <Stop>
+                                <color>
+                                    <Color />
+                                </color>
+                            </Stop>
+                            <Stop offset="1.0">
+                                <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                </color>
+                            </Stop>
+                        </stops>
+                    </RadialGradient>
+                </textFill></Button>
         </VBox>
     </left>
 

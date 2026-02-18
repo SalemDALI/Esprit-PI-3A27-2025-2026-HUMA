@@ -1,6 +1,6 @@
 package utils;
 
-import entities.User;
+import models.User;
 
 public class Session {
 

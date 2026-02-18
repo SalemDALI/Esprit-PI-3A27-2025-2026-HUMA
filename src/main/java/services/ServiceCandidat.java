@@ -1,6 +1,6 @@
 package services;
 
-import entities.Candidat;
+import models.Candidat;
 import utils.MyDatabase;
 
 import java.sql.Connection;

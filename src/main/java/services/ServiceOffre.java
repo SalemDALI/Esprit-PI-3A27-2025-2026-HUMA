@@ -1,6 +1,6 @@
 package services;
 
-import entities.OffreEmploi;
+import models.OffreEmploi;
 import utils.MyDatabase;
 
 import java.sql.Connection;

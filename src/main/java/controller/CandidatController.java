@@ -1,7 +1,7 @@
 package controller;
 
-import entities.Candidature;
-import entities.OffreEmploi;
+import models.Candidature;
+import models.OffreEmploi;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

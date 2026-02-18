@@ -1,6 +1,6 @@
 package services;
 
-import entities.User;
+import models.User;
 import utils.MyDatabase;
 
 import java.sql.Connection;
