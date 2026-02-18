@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.paint.RadialGradient?>
+<?import javafx.scene.paint.Stop?>
+
+<BorderPane styleClass="app-root" stylesheets="@style.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25" fx:controller="controller.DashboardController">
+
+    <left>
+        <VBox prefWidth="220" spacing="10" styleClass="sidebar dashboard-sidebar">
+            <HBox spacing="8" styleClass="brand-row">
+                <ImageView fitHeight="103.0" fitWidth="311.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../images/huma.png" />
+                    </image>
+                </ImageView>
+            </HBox>
+
+            <Button onAction="#openDashboard" styleClass="nav-button" text="Tableau de bord">
+                <graphic>
+                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/dashboard.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <textFill>
+                    <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                        <stops>
+                            <Stop>
+                                <color>
+                                    <Color />
+                                </color>
+                            </Stop>
+                            <Stop offset="1.0">
+                                <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                </color>
+                            </Stop>
+                        </stops>
+                    </RadialGradient>
+                </textFill>
+            </Button>
+            <Button onAction="#openRecrutement" styleClass="nav-button" text="Recrutement" textFill="WHITESMOKE">
+                <graphic>
+                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/recrutement.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button onAction="#openConges" styleClass="nav-button" text="Congés">
+                <graphic>
+                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/conge.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <textFill>
+                    <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                        <stops>
+                            <Stop>
+                                <color>
+                                    <Color />
+                                </color>
+                            </Stop>
+                            <Stop offset="1.0">
+                                <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                </color>
+                            </Stop>
+                        </stops>
+                    </RadialGradient>
+                </textFill>
+            </Button>
+            <Button onAction="#openAbsences" styleClass="nav-button" text="Absences">
+                <graphic>
+                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/absences.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <textFill>
+                    <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                        <stops>
+                            <Stop>
+                                <color>
+                                    <Color />
+                                </color>
+                            </Stop>
+                            <Stop offset="1.0">
+                                <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                </color>
+                            </Stop>
+                        </stops>
+                    </RadialGradient>
+                </textFill>
+            </Button>
+            <Button onAction="#openCommunication" styleClass="nav-button" text="Communication">
+                <graphic>
+                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/communication.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <textFill>
+                    <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                        <stops>
+                            <Stop>
+                                <color>
+                                    <Color />
+                                </color>
+                            </Stop>
+                            <Stop offset="1.0">
+                                <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                </color>
+                            </Stop>
+                        </stops>
+                    </RadialGradient>
+                </textFill>
+            </Button>
+            <Button onAction="#openFeedback" styleClass="nav-button" text="FeedBack">
+                <graphic>
+                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/feedback.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <textFill>
+                    <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                        <stops>
+                            <Stop>
+                                <color>
+                                    <Color />
+                                </color>
+                            </Stop>
+                            <Stop offset="1.0">
+                                <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                </color>
+                            </Stop>
+                        </stops>
+                    </RadialGradient>
+                </textFill>
+            </Button>
+            <Button onAction="#openParametres" styleClass="nav-button" text="Paramètres">
+                <graphic>
+                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/parametre.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <textFill>
+                    <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                        <stops>
+                            <Stop>
+                                <color>
+                                    <Color />
+                                </color>
+                            </Stop>
+                            <Stop offset="1.0">
+                                <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                </color>
+                            </Stop>
+                        </stops>
+                    </RadialGradient>
+                </textFill>
+            </Button>
+            <Region VBox.vgrow="ALWAYS" />
+            <Button onAction="#logout" styleClass="nav-button" text="Logout">
+                <textFill>
+                    <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                        <stops>
+                            <Stop>
+                                <color>
+                                    <Color />
+                                </color>
+                            </Stop>
+                            <Stop offset="1.0">
+                                <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                </color>
+                            </Stop>
+                        </stops>
+                    </RadialGradient>
+                </textFill></Button>
+        </VBox>
+    </left>
+
+
+    <center>
+        <VBox spacing="16" styleClass="main-content">
+            <HBox styleClass="top-toolbar">
+                <Label styleClass="dashboard-title" text="Tableau de bord" />
+                <Region HBox.hgrow="ALWAYS" />
+                <HBox spacing="8" styleClass="tool-group">
+                    <TextField promptText="Search..." styleClass="search-input" />
+                    <Button styleClass="tool-btn" text="⌂" />
+                    <Button styleClass="tool-btn tool-btn-accent" text="＋" />
+                    <Button styleClass="tool-btn" text="👤" />
+                </HBox>
+            </HBox>
+
+            <HBox spacing="12" styleClass="cards-row">
+                <VBox styleClass="metric-card metric-green">
+                    <Label fx:id="lblCardPostes" styleClass="card-number" text="0" />
+                    <Label styleClass="card-subtitle" text="Postes ouverts" />
+                </VBox>
+                <VBox styleClass="metric-card metric-red">
+                    <Label fx:id="lblCardDemandes" styleClass="card-number" text="0" />
+                    <Label styleClass="card-subtitle" text="Demandes en attente" />
+                </VBox>
+                <VBox styleClass="metric-card metric-orange">
+                    <Label fx:id="lblCardEmployes" styleClass="card-number" text="0" />
+                    <Label styleClass="card-subtitle" text="Employés" />
+                </VBox>
+            </HBox>
+
+            <Label fx:id="lblPageMessage" styleClass="page-message" text="" />
+        </VBox>
+    </center>
+
+</BorderPane>

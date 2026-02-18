@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.PublicationsController"
+            stylesheets="@style.css"
+            styleClass="app-root">
+
+    <top>
+        <HBox styleClass="sidebar topbar" spacing="10">
+            <Label fx:id="welcomeLabel" styleClass="logo" text="Publications"/>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Button text="Retour" styleClass="nav-button" onAction="#back"/>
+            <Button text="Logout" styleClass="nav-button" onAction="#logout"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="10" styleClass="main-content">
+            <Label fx:id="lblInfo" text="" styleClass="page-message"/>
+
+            <ScrollPane fitToWidth="true" prefHeight="450" styleClass="cards-scroll">
+                <content>
+                    <VBox fx:id="publicationList" spacing="10" styleClass="cards-container"/>
+                </content>
+            </ScrollPane>
+
+            <TextArea fx:id="txtComment" promptText="Ecrire un commentaire sur la publication selectionnee" prefRowCount="3" wrapText="true"/>
+            <HBox spacing="10" styleClass="action-row">
+                <Button text="Commenter" styleClass="btn btn-primary" onAction="#addComment"/>
+                <Button text="Actualiser" styleClass="btn" onAction="#refreshPublications"/>
+            </HBox>
+        </VBox>
+    </center>
+
+</BorderPane>

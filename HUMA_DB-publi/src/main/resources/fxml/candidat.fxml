@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.CandidatController"
+            stylesheets="@style.css"
+            styleClass="app-root">
+
+    <top>
+        <HBox styleClass="sidebar topbar" spacing="10">
+            <Label fx:id="welcomeLabel" styleClass="logo"/>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Button text="Logout" styleClass="nav-button" onAction="#logout"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="20" styleClass="content">
+
+            <Label text="Offres disponibles" styleClass="title"/>
+            <Label fx:id="lblPageMessage" text="" styleClass="page-message"/>
+
+            <ScrollPane fitToWidth="true" prefHeight="220" styleClass="cards-scroll">
+                <content>
+                    <VBox fx:id="tableOffres" spacing="10" styleClass="cards-container"/>
+                </content>
+            </ScrollPane>
+
+            <HBox spacing="10" styleClass="action-row">
+                <Button text="Uploader CV (PDF)" styleClass="btn btn-warning" onAction="#uploadCv"/>
+                <Label fx:id="lblCvPath" text="Aucun CV selectionne" styleClass="muted-text"/>
+            </HBox>
+
+            <Button text="Postuler" styleClass="btn btn-primary" onAction="#postuler"/>
+
+            <Label text="Suivi de mes candidatures" styleClass="title"/>
+
+            <ScrollPane fitToWidth="true" prefHeight="220" styleClass="cards-scroll">
+                <content>
+                    <VBox fx:id="tableCandidatures" spacing="10" styleClass="cards-container"/>
+                </content>
+            </ScrollPane>
+
+            <Button text="Actualiser suivi" styleClass="btn" onAction="#refreshSuiviCandidatures"/>
+
+        </VBox>
+    </center>
+
+</BorderPane>
