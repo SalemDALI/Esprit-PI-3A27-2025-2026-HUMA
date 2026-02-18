@@ -113,7 +113,7 @@
                         <Tab text="Users">
                             <VBox spacing="12" styleClass="content">
                                 <HBox spacing="10">
-                                    <TextField fx:id="txtUserId" disable="true" prefWidth="70" promptText="ID" />
+                                    <TextField fx:id="txtUserId" disable="true" prefWidth="70" promptText="Utilisateur" />
                                     <TextField fx:id="txtNom" promptText="Nom" />
                                     <TextField fx:id="txtPrenom" promptText="Prenom" />
                                     <TextField fx:id="txtEmail" promptText="Email" />
@@ -128,7 +128,7 @@
                                             </FXCollections>
                                         </items>
                                     </ComboBox>
-                                    <TextField fx:id="txtManagerId" promptText="Manager ID (optionnel)" prefWidth="180" />
+                                    <TextField fx:id="txtManagerId" promptText="Manager (optionnel)" prefWidth="180" />
                                 </HBox>
                                 <HBox spacing="10" styleClass="action-row">
                                     <Button onAction="#addUser" styleClass="btn btn-primary" text="Ajouter" />
@@ -147,7 +147,7 @@
                         <Tab text="Candidats">
                             <VBox spacing="12" styleClass="content">
                                 <HBox spacing="10">
-                                    <TextField fx:id="txtCandidatId" promptText="ID User (role CANDIDAT)" />
+                                    <TextField fx:id="txtCandidatId" promptText="Utilisateur candidat" />
                                 </HBox>
                                 <HBox spacing="10" styleClass="action-row">
                                     <Button onAction="#addCandidat" styleClass="btn btn-primary" text="Ajouter" />
@@ -166,13 +166,13 @@
                         <Tab text="Offres">
                             <VBox spacing="12" styleClass="content">
                                 <HBox spacing="10">
-                                    <TextField fx:id="txtOffreId" disable="true" prefWidth="70" promptText="ID" />
+                                    <TextField fx:id="txtOffreId" disable="true" prefWidth="70" promptText="Offre" />
                                     <TextField fx:id="txtTitre" promptText="Titre" />
                                     <TextField fx:id="txtDepartement" promptText="Departement" />
                                     <TextField fx:id="txtTypeContrat" promptText="Type contrat" />
                                     <TextField fx:id="txtNombrePostes" prefWidth="100" promptText="Nb postes" />
                                     <DatePicker fx:id="dpDatePublication" promptText="Date publication" />
-                                    <TextField fx:id="txtAdminId" prefWidth="100" promptText="Admin ID" />
+                                    <TextField fx:id="txtAdminId" prefWidth="100" promptText="Responsable RH" />
                                 </HBox>
                                 <HBox spacing="10" styleClass="action-row">
                                     <Button onAction="#addOffre" styleClass="btn btn-primary" text="Ajouter" />
@@ -191,9 +191,9 @@
                         <Tab text="Candidatures">
                             <VBox spacing="12" styleClass="content">
                                 <HBox spacing="10">
-                                    <TextField fx:id="txtCandidatureId" disable="true" prefWidth="70" promptText="ID" />
-                                    <TextField fx:id="txtCandUserId" promptText="Candidat ID" />
-                                    <TextField fx:id="txtCandOffreId" promptText="Offre ID" />
+                                    <TextField fx:id="txtCandidatureId" disable="true" prefWidth="70" promptText="Candidature" />
+                                    <TextField fx:id="txtCandUserId" promptText="Candidat" />
+                                    <TextField fx:id="txtCandOffreId" promptText="Offre" />
                                     <DatePicker fx:id="dpDateCandidature" promptText="Date" />
                                     <ComboBox fx:id="cbStatut" promptText="Statut">
                                         <items>

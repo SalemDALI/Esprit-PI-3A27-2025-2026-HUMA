@@ -2,14 +2,13 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controller.ManagerAbsenceController"
             stylesheets="@style.css"
             styleClass="app-root">
@@ -27,15 +26,11 @@
             <Label text="Demandes de l'equipe" styleClass="title"/>
             <Label fx:id="lblActionMessage" styleClass="page-message" text=""/>
 
-            <TableView fx:id="tableAbsences" prefHeight="360" styleClass="modern-table">
-                <columns>
-                    <TableColumn fx:id="colEmploye" text="Employe" prefWidth="110"/>
-                    <TableColumn fx:id="colType" text="Type" prefWidth="150"/>
-                    <TableColumn fx:id="colDebut" text="Debut" prefWidth="140"/>
-                    <TableColumn fx:id="colFin" text="Fin" prefWidth="140"/>
-                    <TableColumn fx:id="colStatut" text="Statut" prefWidth="140"/>
-                </columns>
-            </TableView>
+            <ScrollPane fitToWidth="true" prefHeight="420" styleClass="cards-scroll">
+                <content>
+                    <VBox fx:id="tableAbsences" spacing="10" styleClass="cards-container"/>
+                </content>
+            </ScrollPane>
 
             <HBox spacing="10" styleClass="action-row">
                 <Button text="Accepter" styleClass="btn btn-primary" onAction="#accepter"/>

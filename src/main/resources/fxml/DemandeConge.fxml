@@ -1,25 +1,46 @@
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.collections.FXCollections?>
+<?xml version="1.0" encoding="UTF-8"?>
+
 <?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.Button?>
-<VBox spacing="10" alignment="CENTER" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controller.DemandeCongeController">
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 
-    <DatePicker fx:id="dateDebut"/>
-    <DatePicker fx:id="dateFin"/>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.DemandeCongeController"
+            stylesheets="@style.css"
+            styleClass="app-root">
 
-    <ComboBox fx:id="typeAbsence">
-        <items>
-            <FXCollections fx:factory="observableArrayList">
-                <String fx:value="CONGE"/>
-                <String fx:value="MALADIE"/>
-            </FXCollections>
-        </items>
-    </ComboBox>
+    <top>
+        <HBox styleClass="sidebar topbar" spacing="10">
+            <Label fx:id="welcomeLabel" styleClass="logo"/>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Button text="Logout" styleClass="nav-button" onAction="#logout"/>
+        </HBox>
+    </top>
 
-    <Button text="Demander">
-        <onAction>#handleDemande</onAction>
-    </Button>
-</VBox>
+    <center>
+        <VBox spacing="12" alignment="CENTER" styleClass="content">
+            <Label text="Demande de conge" styleClass="title"/>
+
+            <DatePicker fx:id="dateDebut" promptText="Date debut"/>
+            <DatePicker fx:id="dateFin" promptText="Date fin"/>
+
+            <ComboBox fx:id="typeAbsence" promptText="Type absence">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="CONGE"/>
+                        <String fx:value="MALADIE"/>
+                    </FXCollections>
+                </items>
+            </ComboBox>
+
+            <Button text="Demander" styleClass="btn btn-primary" onAction="#handleDemande"/>
+        </VBox>
+    </center>
+</BorderPane>

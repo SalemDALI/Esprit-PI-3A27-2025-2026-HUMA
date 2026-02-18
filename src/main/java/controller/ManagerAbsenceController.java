@@ -3,47 +3,28 @@ package controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.Label;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.Absence;
 import services.ServiceAbsence;
 import utils.Session;
 
 import java.io.IOException;
-import java.time.LocalDate;
 
 public class ManagerAbsenceController {
 
     @FXML
-    private TableView<Absence> tableAbsences;
-    @FXML
-    private TableColumn<Absence, Integer> colEmploye;
-    @FXML
-    private TableColumn<Absence, String> colType;
-    @FXML
-    private TableColumn<Absence, LocalDate> colDebut;
-    @FXML
-    private TableColumn<Absence, LocalDate> colFin;
-    @FXML
-    private TableColumn<Absence, String> colStatut;
+    private VBox tableAbsences;
     @FXML
     private Label lblActionMessage;
 
     private final ServiceAbsence service = new ServiceAbsence();
     private int managerId;
-
-    @FXML
-    public void initialize() {
-        colEmploye.setCellValueFactory(new PropertyValueFactory<>("employeId"));
-        colType.setCellValueFactory(new PropertyValueFactory<>("typeAbsence"));
-        colDebut.setCellValueFactory(new PropertyValueFactory<>("dateDebut"));
-        colFin.setCellValueFactory(new PropertyValueFactory<>("dateFin"));
-        colStatut.setCellValueFactory(new PropertyValueFactory<>("statut"));
-    }
+    private Absence selectedAbsence;
+    private Node selectedCard;
 
     public void setManagerId(int id) {
         this.managerId = id;
@@ -52,12 +33,11 @@ public class ManagerAbsenceController {
 
     @FXML
     void accepter() {
-        Absence a = tableAbsences.getSelectionModel().getSelectedItem();
-        if (a == null) {
+        if (selectedAbsence == null) {
             setMessage("Selectionnez un conge.", true);
             return;
         }
-        if (service.changerStatut(a.getId(), "ACCEPTE")) {
+        if (service.changerStatut(selectedAbsence.getId(), "ACCEPTE")) {
             setMessage("Conge accepte.", false);
             refresh();
         } else {
@@ -67,12 +47,11 @@ public class ManagerAbsenceController {
 
     @FXML
     void refuser() {
-        Absence a = tableAbsences.getSelectionModel().getSelectedItem();
-        if (a == null) {
+        if (selectedAbsence == null) {
             setMessage("Selectionnez un conge.", true);
             return;
         }
-        if (service.changerStatut(a.getId(), "REFUSE")) {
+        if (service.changerStatut(selectedAbsence.getId(), "REFUSE")) {
             setMessage("Conge refuse.", false);
             refresh();
         } else {
@@ -82,13 +61,38 @@ public class ManagerAbsenceController {
 
     @FXML
     void refresh() {
-        if (managerId > 0) {
-            tableAbsences.getItems().setAll(service.getCongesEquipe(managerId));
-            setMessage("", false);
-        } else {
-            tableAbsences.getItems().clear();
-            setMessage("Manager non initialise.", true);
+        tableAbsences.getChildren().clear();
+        selectedAbsence = null;
+        if (selectedCard != null) {
+            selectedCard.getStyleClass().remove("entity-card-selected");
+            selectedCard = null;
         }
+
+        if (managerId <= 0) {
+            setMessage("Manager non initialise.", true);
+            return;
+        }
+
+        for (Absence absence : service.getCongesEquipe(managerId)) {
+            String employe = absence.getEmployeNom() == null ? "Employe" : absence.getEmployeNom();
+            VBox card = buildCard(
+                    employe,
+                    absence.getTypeAbsence() + " | du " + absence.getDateDebut() + " au " + absence.getDateFin()
+                            + " | statut: " + absence.getStatut()
+            );
+            card.setOnMouseClicked(event -> {
+                if (selectedCard != null) {
+                    selectedCard.getStyleClass().remove("entity-card-selected");
+                }
+                selectedCard = card;
+                selectedCard.getStyleClass().add("entity-card-selected");
+                selectedAbsence = absence;
+                setMessage("Selection: " + employe, false);
+            });
+            tableAbsences.getChildren().add(card);
+        }
+
+        setMessage("", false);
     }
 
     @FXML
@@ -101,6 +105,16 @@ public class ManagerAbsenceController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private VBox buildCard(String title, String meta) {
+        Label titleLabel = new Label(title);
+        titleLabel.getStyleClass().add("entity-card-title");
+        Label metaLabel = new Label(meta);
+        metaLabel.getStyleClass().add("entity-card-meta");
+        VBox card = new VBox(4, titleLabel, metaLabel);
+        card.getStyleClass().add("entity-card");
+        return card;
     }
 
     private void setMessage(String message, boolean isError) {

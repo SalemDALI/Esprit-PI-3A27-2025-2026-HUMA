@@ -11,7 +11,6 @@ import javafx.stage.Stage;
 import services.ServiceUser;
 import utils.Session;
 
-import java.io.IOException;
 import java.text.Normalizer;
 
 public class LoginController {
@@ -45,10 +44,10 @@ public class LoginController {
             String role = normalizeRole(user.getRole());
             FXMLLoader loader;
 
-            if ("ADMIN_RH".equals(role) || "ADMIN".equals(role)) {
+            if (isAdminRole(role)) {
                 loader = new FXMLLoader(getClass().getResource("/fxml/dashboard.fxml"));
                 stage.setScene(new Scene(loader.load()));
-            } else if ("CANDIDAT".equals(role)) {
+            } else if (isCandidatRole(role)) {
                 loader = new FXMLLoader(getClass().getResource("/fxml/candidat.fxml"));
                 stage.setScene(new Scene(loader.load()));
             } else if (isEmployeeRole(role)) {
@@ -64,13 +63,18 @@ public class LoginController {
                 managerController.setManagerId(user.getId());
                 stage.setScene(managerScene);
             } else {
-                messageLabel.setText("Role non pris en charge: " + user.getRole() + " (" + role + ")");
-                return;
+                // Fallback: tout role non reconnu ouvre l'espace employe
+                loader = new FXMLLoader(getClass().getResource("/fxml/DemandeConge.fxml"));
+                Scene employeScene = new Scene(loader.load());
+                DemandeCongeController employeController = loader.getController();
+                employeController.setEmployeId(user.getId());
+                stage.setScene(employeScene);
             }
 
             stage.show();
-        } catch (IOException e) {
-            messageLabel.setText("Erreur d'ouverture de page: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            messageLabel.setText("Erreur d'ouverture de page: " + e.getClass().getSimpleName() + " - " + e.getMessage());
         }
     }
 
@@ -78,31 +82,33 @@ public class LoginController {
         if (role == null) {
             return "";
         }
-        String normalized = Normalizer.normalize(role, Normalizer.Form.NFD)
+        return Normalizer.normalize(role, Normalizer.Form.NFD)
                 .replaceAll("\\p{M}+", "")
                 .trim()
                 .toUpperCase()
                 .replace('-', '_')
                 .replace(' ', '_');
+    }
 
-        if ("EMPLOYEE".equals(normalized)
-                || "EMPLOYER".equals(normalized)
-                || "EMPLOIYER".equals(normalized)
-                || "EMPLOIYEE".equals(normalized)
-                || "EMPLOYEER".equals(normalized)
-                || "EMPLOYE".equals(normalized)) {
-            return "EMPLOYE";
-        }
-        return normalized;
+    private boolean isAdminRole(String role) {
+        String compact = role.replace("_", "");
+        return compact.startsWith("ADMIN");
+    }
+
+    private boolean isCandidatRole(String role) {
+        String compact = role.replace("_", "");
+        return compact.contains("CANDID");
     }
 
     private boolean isEmployeeRole(String role) {
-        return "EMPLOYE".equals(role)
-                || role.startsWith("EMPLOYE")
-                || role.contains("EMPLOY");
+        String compact = role.replace("_", "");
+        return compact.contains("EMPLOY")
+                || compact.contains("EMPLO")
+                || compact.contains("EPLO");
     }
 
     private boolean isManagerRole(String role) {
-        return "MANAGER".equals(role) || role.startsWith("MANAG");
+        String compact = role.replace("_", "");
+        return compact.contains("MANAG");
     }
 }

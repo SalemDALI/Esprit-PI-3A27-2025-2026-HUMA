@@ -4,6 +4,7 @@ import models.Candidat;
 import models.Candidature;
 import models.OffreEmploi;
 import models.User;
+import models.Absence;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,10 +17,14 @@ import services.ServiceCandidat;
 import services.ServiceCandidature;
 import services.ServiceOffre;
 import services.ServiceUser;
+import services.ServiceAbsence;
 import utils.Session;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class DashboardController {
     @FXML
@@ -93,10 +98,39 @@ public class DashboardController {
     @FXML
     private Label lblCardEmployes;
 
+    @FXML
+    private VBox tableConges;
+    @FXML
+    private TextField txtCongeId;
+    @FXML
+    private TextField txtCongeEmployeId;
+    @FXML
+    private DatePicker dpCongeDebut;
+    @FXML
+    private DatePicker dpCongeFin;
+    @FXML
+    private ComboBox<String> cbCongeStatut;
+
+    @FXML
+    private VBox tableAbsencesAdmin;
+    @FXML
+    private TextField txtAbsenceId;
+    @FXML
+    private TextField txtAbsenceEmployeId;
+    @FXML
+    private DatePicker dpAbsenceDebut;
+    @FXML
+    private DatePicker dpAbsenceFin;
+    @FXML
+    private ComboBox<String> cbAbsenceType;
+    @FXML
+    private ComboBox<String> cbAbsenceStatut;
+
     private final ServiceUser serviceUser = new ServiceUser();
     private final ServiceCandidat serviceCandidat = new ServiceCandidat();
     private final ServiceOffre serviceOffre = new ServiceOffre();
     private final ServiceCandidature serviceCandidature = new ServiceCandidature();
+    private final ServiceAbsence serviceAbsence = new ServiceAbsence();
     private User selectedUser;
     private Candidat selectedCandidat;
     private OffreEmploi selectedOffre;
@@ -105,6 +139,10 @@ public class DashboardController {
     private Node selectedCandidatCard;
     private Node selectedOffreCard;
     private Node selectedCandidatureCard;
+    private Absence selectedConge;
+    private Node selectedCongeCard;
+    private Absence selectedAbsenceAdmin;
+    private Node selectedAbsenceAdminCard;
 
     @FXML
     public void initialize() {
@@ -119,6 +157,12 @@ public class DashboardController {
         }
         if (tableCandidatures != null) {
             initCandidatureSection();
+        }
+        if (tableConges != null) {
+            initCongeSection();
+        }
+        if (tableAbsencesAdmin != null) {
+            initAbsenceSection();
         }
         setPageMessage("", false);
 
@@ -145,6 +189,14 @@ public class DashboardController {
         tableCandidatures.getStyleClass().add("cards-container");
     }
 
+    private void initCongeSection() {
+        tableConges.getStyleClass().add("cards-container");
+    }
+
+    private void initAbsenceSection() {
+        tableAbsencesAdmin.getStyleClass().add("cards-container");
+    }
+
     @FXML
     public void refreshData() {
         if (tableUsers != null) {
@@ -158,6 +210,12 @@ public class DashboardController {
         }
         if (tableCandidatures != null) {
             renderCandidatureCards();
+        }
+        if (tableConges != null) {
+            renderCongeCards();
+        }
+        if (tableAbsencesAdmin != null) {
+            renderAbsenceAdminCards();
         }
         refreshDashboardStats();
         setPageMessage("", false);
@@ -476,6 +534,135 @@ public class DashboardController {
     }
 
     @FXML
+    public void addConge() {
+        try {
+            Absence a = new Absence();
+            a.setEmployeId(Integer.parseInt(txtCongeEmployeId.getText().trim()));
+            a.setDateDebut(dpCongeDebut.getValue());
+            a.setDateFin(dpCongeFin.getValue());
+            a.setTypeAbsence("CONGE");
+            a.setStatut(cbCongeStatut.getValue() == null ? "EN_ATTENTE" : cbCongeStatut.getValue());
+            if (serviceAbsence.addAdmin(a)) {
+                refreshData();
+                clearCongeForm();
+            }
+        } catch (Exception e) {
+            showError(e.getMessage());
+        }
+    }
+
+    @FXML
+    public void updateConge() {
+        if (txtCongeId.getText().isBlank()) {
+            showError("Selectionnez un conge");
+            return;
+        }
+        try {
+            Absence a = new Absence();
+            a.setId(Integer.parseInt(txtCongeId.getText().trim()));
+            a.setEmployeId(Integer.parseInt(txtCongeEmployeId.getText().trim()));
+            a.setDateDebut(dpCongeDebut.getValue());
+            a.setDateFin(dpCongeFin.getValue());
+            a.setTypeAbsence("CONGE");
+            a.setStatut(cbCongeStatut.getValue() == null ? "EN_ATTENTE" : cbCongeStatut.getValue());
+            if (serviceAbsence.updateAdmin(a)) {
+                refreshData();
+            }
+        } catch (Exception e) {
+            showError(e.getMessage());
+        }
+    }
+
+    @FXML
+    public void deleteConge() {
+        if (txtCongeId.getText().isBlank()) {
+            showError("Selectionnez un conge");
+            return;
+        }
+        if (serviceAbsence.deleteAdmin(Integer.parseInt(txtCongeId.getText().trim()))) {
+            refreshData();
+            clearCongeForm();
+        }
+    }
+
+    @FXML
+    public void clearCongeForm() {
+        txtCongeId.clear();
+        txtCongeEmployeId.clear();
+        dpCongeDebut.setValue(null);
+        dpCongeFin.setValue(null);
+        cbCongeStatut.setValue(null);
+        clearSelection(tableConges, selectedCongeCard);
+        selectedConge = null;
+        selectedCongeCard = null;
+    }
+
+    @FXML
+    public void addAbsenceAdmin() {
+        try {
+            Absence a = new Absence();
+            a.setEmployeId(Integer.parseInt(txtAbsenceEmployeId.getText().trim()));
+            a.setDateDebut(dpAbsenceDebut.getValue());
+            a.setDateFin(dpAbsenceFin.getValue());
+            a.setTypeAbsence(cbAbsenceType.getValue());
+            a.setStatut(cbAbsenceStatut.getValue() == null ? "EN_ATTENTE" : cbAbsenceStatut.getValue());
+            if (serviceAbsence.addAdmin(a)) {
+                refreshData();
+                clearAbsenceAdminForm();
+            }
+        } catch (Exception e) {
+            showError(e.getMessage());
+        }
+    }
+
+    @FXML
+    public void updateAbsenceAdmin() {
+        if (txtAbsenceId.getText().isBlank()) {
+            showError("Selectionnez une absence");
+            return;
+        }
+        try {
+            Absence a = new Absence();
+            a.setId(Integer.parseInt(txtAbsenceId.getText().trim()));
+            a.setEmployeId(Integer.parseInt(txtAbsenceEmployeId.getText().trim()));
+            a.setDateDebut(dpAbsenceDebut.getValue());
+            a.setDateFin(dpAbsenceFin.getValue());
+            a.setTypeAbsence(cbAbsenceType.getValue());
+            a.setStatut(cbAbsenceStatut.getValue() == null ? "EN_ATTENTE" : cbAbsenceStatut.getValue());
+            if (serviceAbsence.updateAdmin(a)) {
+                refreshData();
+            }
+        } catch (Exception e) {
+            showError(e.getMessage());
+        }
+    }
+
+    @FXML
+    public void deleteAbsenceAdmin() {
+        if (txtAbsenceId.getText().isBlank()) {
+            showError("Selectionnez une absence");
+            return;
+        }
+        if (serviceAbsence.deleteAdmin(Integer.parseInt(txtAbsenceId.getText().trim()))) {
+            refreshData();
+            clearAbsenceAdminForm();
+        }
+    }
+
+    @FXML
+    public void clearAbsenceAdminForm() {
+        txtAbsenceId.clear();
+        txtAbsenceEmployeId.clear();
+        dpAbsenceDebut.setValue(null);
+        dpAbsenceFin.setValue(null);
+        cbAbsenceType.setValue(null);
+        cbAbsenceStatut.setValue(null);
+        clearSelection(tableAbsencesAdmin, selectedAbsenceAdminCard);
+        selectedAbsenceAdmin = null;
+        selectedAbsenceAdminCard = null;
+    }
+
+    @FXML
     public void logout(ActionEvent event) {
         Session.clear();
         try {
@@ -518,11 +705,23 @@ public class DashboardController {
         clearSelection(tableUsers, selectedUserCard);
         selectedUser = null;
         selectedUserCard = null;
-        for (User user : serviceUser.getAll()) {
+        List<User> allUsers = serviceUser.getAll();
+        Map<Integer, User> usersById = allUsers.stream()
+                .collect(Collectors.toMap(User::getId, u -> u));
+        for (User user : allUsers) {
+            String managerDisplay = "-";
+            if (user.getManagerId() != null) {
+                User manager = usersById.get(user.getManagerId());
+                if (manager != null) {
+                    managerDisplay = manager.getNom() + " " + manager.getPrenom();
+                } else {
+                    managerDisplay = "Manager inconnu";
+                }
+            }
             VBox card = buildCard(
                     user.getNom() + " " + user.getPrenom(),
                     user.getEmail() + " | role: " + user.getRole()
-                            + " | manager: " + (user.getManagerId() == null ? "-" : user.getManagerId())
+                            + " | manager: " + managerDisplay
             );
             card.setOnMouseClicked(event -> {
                 selectCard(tableUsers, selectedUserCard, card);
@@ -600,11 +799,21 @@ public class DashboardController {
         clearSelection(tableCandidatures, selectedCandidatureCard);
         selectedCandidature = null;
         selectedCandidatureCard = null;
+        Map<Integer, User> usersById = serviceUser.getAll().stream()
+                .collect(Collectors.toMap(User::getId, u -> u));
+        Map<Integer, OffreEmploi> offresById = serviceOffre.getAll().stream()
+                .collect(Collectors.toMap(OffreEmploi::getId, o -> o));
         for (Candidature candidature : serviceCandidature.getAll()) {
+            User candidat = usersById.get(candidature.getCandidatId());
+            String candidatLabel = candidat == null
+                    ? "Candidat inconnu"
+                    : candidat.getNom() + " " + candidat.getPrenom();
+            OffreEmploi offre = offresById.get(candidature.getOffreId());
+            String offreLabel = offre == null ? "Offre inconnue" : offre.getTitre();
             VBox card = buildCard(
                     "Candidature",
-                    "candidat: " + candidature.getCandidatId()
-                            + " | offre: " + candidature.getOffreId()
+                    "candidat: " + candidatLabel
+                            + " | offre: " + offreLabel
                             + " | date: " + candidature.getDateCandidature()
                             + " | statut: " + candidature.getStatut()
             );
@@ -619,6 +828,57 @@ public class DashboardController {
                 cbStatut.setValue(candidature.getStatut());
             });
             tableCandidatures.getChildren().add(card);
+        }
+    }
+
+    private void renderCongeCards() {
+        tableConges.getChildren().clear();
+        clearSelection(tableConges, selectedCongeCard);
+        selectedConge = null;
+        selectedCongeCard = null;
+        for (Absence conge : serviceAbsence.getCongesAdmin()) {
+            String employe = conge.getEmployeNom() == null ? "Employe #" + conge.getEmployeId() : conge.getEmployeNom();
+            VBox card = buildCard(
+                    employe,
+                    "du " + conge.getDateDebut() + " au " + conge.getDateFin() + " | statut: " + conge.getStatut()
+            );
+            card.setOnMouseClicked(event -> {
+                selectCard(tableConges, selectedCongeCard, card);
+                selectedCongeCard = card;
+                selectedConge = conge;
+                txtCongeId.setText(String.valueOf(conge.getId()));
+                txtCongeEmployeId.setText(String.valueOf(conge.getEmployeId()));
+                dpCongeDebut.setValue(conge.getDateDebut());
+                dpCongeFin.setValue(conge.getDateFin());
+                cbCongeStatut.setValue(conge.getStatut());
+            });
+            tableConges.getChildren().add(card);
+        }
+    }
+
+    private void renderAbsenceAdminCards() {
+        tableAbsencesAdmin.getChildren().clear();
+        clearSelection(tableAbsencesAdmin, selectedAbsenceAdminCard);
+        selectedAbsenceAdmin = null;
+        selectedAbsenceAdminCard = null;
+        for (Absence absence : serviceAbsence.getAbsencesAdmin()) {
+            String employe = absence.getEmployeNom() == null ? "Employe #" + absence.getEmployeId() : absence.getEmployeNom();
+            VBox card = buildCard(
+                    employe + " | " + absence.getTypeAbsence(),
+                    "du " + absence.getDateDebut() + " au " + absence.getDateFin() + " | statut: " + absence.getStatut()
+            );
+            card.setOnMouseClicked(event -> {
+                selectCard(tableAbsencesAdmin, selectedAbsenceAdminCard, card);
+                selectedAbsenceAdminCard = card;
+                selectedAbsenceAdmin = absence;
+                txtAbsenceId.setText(String.valueOf(absence.getId()));
+                txtAbsenceEmployeId.setText(String.valueOf(absence.getEmployeId()));
+                dpAbsenceDebut.setValue(absence.getDateDebut());
+                dpAbsenceFin.setValue(absence.getDateFin());
+                cbAbsenceType.setValue(absence.getTypeAbsence());
+                cbAbsenceStatut.setValue(absence.getStatut());
+            });
+            tableAbsencesAdmin.getChildren().add(card);
         }
     }
 

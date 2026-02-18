@@ -112,7 +112,7 @@ public class CandidatController {
         tableCandidatures.getChildren().clear();
         for (Candidature candidature : serviceCandidature.getByCandidatId(Session.getUser().getId())) {
             VBox card = buildCard(
-                    candidature.getOffreTitre() == null ? "Offre #" + candidature.getOffreId() : candidature.getOffreTitre(),
+                    candidature.getOffreTitre() == null ? "Offre" : candidature.getOffreTitre(),
                     "Date: " + candidature.getDateCandidature() + " | Statut: " + candidature.getStatut()
             );
             tableCandidatures.getChildren().add(card);

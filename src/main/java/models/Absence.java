@@ -6,6 +6,7 @@ public class Absence {
 
     private int id;
     private int employeId;
+    private String employeNom;
     private LocalDate dateDebut;
     private LocalDate dateFin;
     private String typeAbsence; // CONGE, MALADIE, RETARD
@@ -27,6 +28,9 @@ public class Absence {
 
     public int getEmployeId() { return employeId; }
     public void setEmployeId(int employeId) { this.employeId = employeId; }
+
+    public String getEmployeNom() { return employeNom; }
+    public void setEmployeNom(String employeNom) { this.employeNom = employeNom; }
 
     public LocalDate getDateDebut() { return dateDebut; }
     public void setDateDebut(LocalDate dateDebut) { this.dateDebut = dateDebut; }
