@@ -15,7 +15,7 @@ public class Main extends Application {
         ));
 
         stage.setTitle("Gestion RH");
-        stage.show()
+        stage.show();
     }
 
     public static void main(String[] args) {
