@@ -17,7 +17,7 @@
             styleClass="app-root">
 
     <top>
-        <HBox styleClass="sidebar topbar" spacing="10">
+        <HBox styleClass="sidebar topbar left-panel" spacing="10">
             <Label fx:id="welcomeLabel" styleClass="logo"/>
             <Pane HBox.hgrow="ALWAYS"/>
             <Button text="Publications" styleClass="nav-button" onAction="#openPublications"/>

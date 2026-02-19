@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import services.ServiceUser;
 import utils.Session;
 
+import java.io.IOException;
 import java.text.Normalizer;
 
 public class LoginController {
@@ -110,5 +111,15 @@ public class LoginController {
     private boolean isManagerRole(String role) {
         String compact = role.replace("_", "");
         return compact.contains("MANAG");
+    }
+
+    public void openSignup(ActionEvent event) {
+        try {
+            Stage stage = (Stage) emailField.getScene().getWindow();
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/signup.fxml"))));
+            stage.show();
+        } catch (IOException e) {
+            messageLabel.setText("Erreur ouverture signup: " + e.getMessage());
+        }
     }
 }

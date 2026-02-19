@@ -16,7 +16,7 @@
 <BorderPane styleClass="app-root" stylesheets="@style.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25" fx:controller="controller.DashboardController">
 
     <left>
-        <VBox prefWidth="220" spacing="10" styleClass="sidebar dashboard-sidebar">
+        <VBox prefWidth="220" spacing="10" styleClass="sidebar dashboard-sidebar left-panel">
             <HBox spacing="8" styleClass="brand-row">
                 <ImageView fitHeight="103.0" fitWidth="311.0" pickOnBounds="true" preserveRatio="true">
                     <image>
@@ -133,6 +133,9 @@
                         </stops>
                     </RadialGradient>
                 </textFill>
+            </Button>
+            <Button onAction="#openFormations" styleClass="nav-button" text="Formations">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/recrutement.png" /></image></ImageView></graphic>
             </Button>
             <Button onAction="#openFeedback" styleClass="nav-button" text="FeedBack">
                 <graphic>

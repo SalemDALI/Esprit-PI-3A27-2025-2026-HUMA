@@ -19,10 +19,10 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane styleClass="app-root" stylesheets="@style.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25" fx:controller="controller.DashboardController">
+<BorderPane styleClass="app-root" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DashboardController">
 
     <left>
-        <VBox prefWidth="220" spacing="10" styleClass="sidebar dashboard-sidebar">
+        <VBox prefWidth="220" spacing="10" styleClass="sidebar dashboard-sidebar left-panel">
             <HBox spacing="8" styleClass="brand-row">
                 <ImageView fitHeight="121.0" fitWidth="442.0" pickOnBounds="true" preserveRatio="true">
                     <image>
@@ -76,6 +76,9 @@
                     </ImageView>
                 </graphic>
             </Button>
+            <Button onAction="#openFormations" styleClass="nav-button" text="Formations">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/recrutement.png" /></image></ImageView></graphic>
+            </Button>
             <Button onAction="#openFeedback" styleClass="nav-button" text="FeedBack">
                 <graphic>
                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
@@ -101,16 +104,13 @@
 
     <center>
         <VBox spacing="16" styleClass="main-content">
-            <HBox styleClass="top-toolbar">
-                <Label styleClass="dashboard-title" text="Recrutement" />
-            </HBox>
 
             <Label fx:id="lblPageMessage" styleClass="page-message" text="" />
 
             <StackPane styleClass="workspace-panel" VBox.vgrow="ALWAYS">
                 <TabPane styleClass="dashboard-tabs" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
-                        <Tab text="Users">
+                        <Tab text="Utilisateur">
                             <VBox spacing="12" styleClass="content">
                                 <HBox spacing="10">
                                     <TextField fx:id="txtUserId" disable="true" prefWidth="70" promptText="Utilisateur" />
@@ -128,13 +128,13 @@
                                             </FXCollections>
                                         </items>
                                     </ComboBox>
-                                    <TextField fx:id="txtManagerId" promptText="Manager (optionnel)" prefWidth="180" />
+                                    <TextField fx:id="txtManagerId" prefWidth="180" promptText="Manager (optionnel)" />
                                 </HBox>
                                 <HBox spacing="10" styleClass="action-row">
                                     <Button onAction="#addUser" styleClass="btn btn-primary" text="Ajouter" />
                                     <Button onAction="#updateUser" styleClass="btn btn-warning" text="Modifier" />
                                     <Button onAction="#deleteUser" styleClass="btn btn-danger" text="Supprimer" />
-                                    <Button onAction="#clearUserForm" styleClass="btn" text="Clear" />
+                                    <Button onAction="#clearUserForm" styleClass="btn" text="Annuler" />
                                 </HBox>
                                 <ScrollPane fitToWidth="true" prefHeight="420" styleClass="cards-scroll">
                                     <content>
@@ -147,7 +147,7 @@
                         <Tab text="Candidats">
                             <VBox spacing="12" styleClass="content">
                                 <HBox spacing="10">
-                                    <TextField fx:id="txtCandidatId" promptText="Utilisateur candidat" />
+                                    <TextField fx:id="txtCandidatId" promptText="Nom Prenom ou email candidat" />
                                 </HBox>
                                 <HBox spacing="10" styleClass="action-row">
                                     <Button onAction="#addCandidat" styleClass="btn btn-primary" text="Ajouter" />

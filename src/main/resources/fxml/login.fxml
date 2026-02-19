@@ -15,6 +15,7 @@
     <PasswordField fx:id="passwordField" promptText="Mot de passe" maxWidth="320"/>
 
     <Button text="Se connecter" styleClass="btn btn-primary" onAction="#login"/>
+    <Button text="Sign up" styleClass="btn" onAction="#openSignup"/>
 
     <Label fx:id="messageLabel" textFill="#ff6b6b"/>
 

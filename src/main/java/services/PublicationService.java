@@ -2,62 +2,151 @@ package services;
 
 import models.Publication;
 import models.PublicationComment;
+import models.User;
+import utils.MyDatabase;
+import utils.Session;
 
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Map;
 
 public class PublicationService {
-    private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
-    private static final List<Publication> STORE = new ArrayList<>();
 
-    public List<Publication> getAll() {
-        List<Publication> copy = new ArrayList<>(STORE);
-        copy.sort(Comparator.comparing(Publication::getDatePublication).reversed());
-        return copy;
+    private final Connection cnx;
+
+    public PublicationService() {
+        this.cnx = MyDatabase.getInstance().getCnx();
     }
 
-    public void publish(String titre, String contenu, String auteur) {
-        Publication p = new Publication();
-        p.setId(NEXT_ID.getAndIncrement());
-        p.setTitre(titre);
-        p.setContenu(contenu);
-        p.setAuteur(auteur);
-        p.setDatePublication(LocalDateTime.now());
-        STORE.add(p);
+    public List<Publication> getAll() {
+        Map<Integer, Publication> map = new LinkedHashMap<>();
+        String sql = "SELECT p.id AS publication_id, p.contenu AS publication_contenu, p.date_publication, p.type, p.user_id, "
+                + "u.nom AS auteur_nom, u.prenom AS auteur_prenom, "
+                + "c.id AS commentaire_id, c.contenu AS commentaire_contenu, c.date_commentaire, c.user_id AS commentaire_user_id, "
+                + "cu.nom AS commentaire_nom, cu.prenom AS commentaire_prenom "
+                + "FROM publication p "
+                + "LEFT JOIN users u ON u.id = p.user_id "
+                + "LEFT JOIN commentaire c ON c.publication_id = p.id "
+                + "LEFT JOIN users cu ON cu.id = c.user_id "
+                + "ORDER BY p.date_publication DESC, p.id DESC, c.date_commentaire ASC, c.id ASC";
+
+        try (Statement st = cnx.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+            while (rs.next()) {
+                int publicationId = rs.getInt("publication_id");
+                Publication publication = map.get(publicationId);
+                if (publication == null) {
+                    publication = new Publication();
+                    publication.setId(publicationId);
+                    publication.setTitre(rs.getString("type"));
+                    publication.setContenu(rs.getString("publication_contenu"));
+
+                    String auteurNom = rs.getString("auteur_nom");
+                    String auteurPrenom = rs.getString("auteur_prenom");
+                    String auteur = ((auteurNom == null ? "" : auteurNom) + " " + (auteurPrenom == null ? "" : auteurPrenom)).trim();
+                    publication.setAuteur(auteur.isBlank() ? "Utilisateur" : auteur);
+
+                    Date datePublication = rs.getDate("date_publication");
+                    publication.setDatePublication(datePublication == null ? null : datePublication.toLocalDate().atStartOfDay());
+                    map.put(publicationId, publication);
+                }
+
+                Object commentaireIdObj = rs.getObject("commentaire_id");
+                if (commentaireIdObj != null) {
+                    PublicationComment comment = new PublicationComment();
+                    comment.setContenu(rs.getString("commentaire_contenu"));
+
+                    String nom = rs.getString("commentaire_nom");
+                    String prenom = rs.getString("commentaire_prenom");
+                    String auteurComment = ((nom == null ? "" : nom) + " " + (prenom == null ? "" : prenom)).trim();
+                    comment.setAuteur(auteurComment.isBlank() ? "Utilisateur" : auteurComment);
+
+                    Date dateCommentaire = rs.getDate("date_commentaire");
+                    comment.setDateCommentaire(dateCommentaire == null ? null : dateCommentaire.toLocalDate().atStartOfDay());
+                    publication.getCommentaires().add(comment);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return new ArrayList<>(map.values());
+    }
+
+    public boolean publish(String titre, String contenu, String auteur) {
+        User currentUser = Session.getUser();
+        if (currentUser == null) {
+            return false;
+        }
+
+        String sql = "INSERT INTO publication (contenu, date_publication, type, user_id) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, contenu);
+            ps.setDate(2, Date.valueOf(LocalDate.now()));
+            ps.setString(3, titre);
+            ps.setInt(4, currentUser.getId());
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public boolean addComment(int publicationId, String auteur, String contenu) {
-        Publication p = findById(publicationId);
-        if (p == null) {
+        User currentUser = Session.getUser();
+        if (currentUser == null) {
             return false;
         }
-        PublicationComment c = new PublicationComment();
-        c.setAuteur(auteur);
-        c.setContenu(contenu);
-        c.setDateCommentaire(LocalDateTime.now());
-        p.getCommentaires().add(c);
-        return true;
+
+        String sql = "INSERT INTO commentaire (contenu, date_commentaire, publication_id, user_id) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, contenu);
+            ps.setDate(2, Date.valueOf(LocalDate.now()));
+            ps.setInt(3, publicationId);
+            ps.setInt(4, currentUser.getId());
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public boolean deleteById(int publicationId) {
-        for (int i = 0; i < STORE.size(); i++) {
-            if (STORE.get(i).getId() == publicationId) {
-                STORE.remove(i);
-                return true;
-            }
-        }
-        return false;
-    }
+        String deleteCommentsSql = "DELETE FROM commentaire WHERE publication_id = ?";
+        String deletePublicationSql = "DELETE FROM publication WHERE id = ?";
 
-    private Publication findById(int id) {
-        for (Publication p : STORE) {
-            if (p.getId() == id) {
-                return p;
+        try {
+            boolean autoCommit = cnx.getAutoCommit();
+            cnx.setAutoCommit(false);
+            try (PreparedStatement deleteComments = cnx.prepareStatement(deleteCommentsSql);
+                 PreparedStatement deletePublication = cnx.prepareStatement(deletePublicationSql)) {
+
+                deleteComments.setInt(1, publicationId);
+                deleteComments.executeUpdate();
+
+                deletePublication.setInt(1, publicationId);
+                int deleted = deletePublication.executeUpdate();
+
+                cnx.commit();
+                cnx.setAutoCommit(autoCommit);
+                return deleted > 0;
+            } catch (SQLException e) {
+                cnx.rollback();
+                cnx.setAutoCommit(autoCommit);
+                e.printStackTrace();
+                return false;
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
-        return null;
     }
 }

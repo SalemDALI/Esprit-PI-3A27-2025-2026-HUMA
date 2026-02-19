@@ -15,81 +15,79 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controller.DashboardController"
-            stylesheets="@style.css"
-            styleClass="app-root">
+<BorderPane styleClass="app-root" stylesheets="@style.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25" fx:controller="controller.DashboardController">
 
     <left>
-        <VBox spacing="10" styleClass="sidebar dashboard-sidebar" prefWidth="220">
+        <VBox prefWidth="220" spacing="10" styleClass="sidebar dashboard-sidebar left-panel">
             <HBox spacing="8" styleClass="brand-row">
                 <ImageView fitHeight="78.0" fitWidth="240.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../images/huma.png"/>
+                        <Image url="@../images/huma.png" />
                     </image>
                 </ImageView>
             </HBox>
 
-            <Button text="Tableau de bord" styleClass="nav-button" onAction="#openDashboard">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/dashboard.png"/></image></ImageView></graphic>
+            <Button onAction="#openDashboard" styleClass="nav-button" text="Tableau de bord">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/dashboard.png" /></image></ImageView></graphic>
             </Button>
-            <Button text="Recrutement" styleClass="nav-button" onAction="#openRecrutement">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/recrutement.png"/></image></ImageView></graphic>
+            <Button onAction="#openRecrutement" styleClass="nav-button" text="Recrutement">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/recrutement.png" /></image></ImageView></graphic>
             </Button>
-            <Button text="Congés" styleClass="nav-button nav-active" onAction="#openConges">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/conge.png"/></image></ImageView></graphic>
+            <Button onAction="#openConges" styleClass="nav-button nav-active" text="Congés">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/conge.png" /></image></ImageView></graphic>
             </Button>
-            <Button text="Absences" styleClass="nav-button" onAction="#openAbsences">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/absences.png"/></image></ImageView></graphic>
+            <Button onAction="#openAbsences" styleClass="nav-button" text="Absences">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/absences.png" /></image></ImageView></graphic>
             </Button>
-            <Button text="Communication" styleClass="nav-button" onAction="#openCommunication">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/communication.png"/></image></ImageView></graphic>
+            <Button onAction="#openCommunication" styleClass="nav-button" text="Communication">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/communication.png" /></image></ImageView></graphic>
             </Button>
-            <Button text="FeedBack" styleClass="nav-button" onAction="#openFeedback">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/feedback.png"/></image></ImageView></graphic>
+            <Button onAction="#openFormations" styleClass="nav-button" text="Formations">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/recrutement.png" /></image></ImageView></graphic>
             </Button>
-            <Button text="Paramètres" styleClass="nav-button" onAction="#openParametres">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/parametre.png"/></image></ImageView></graphic>
+            <Button onAction="#openFeedback" styleClass="nav-button" text="FeedBack">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/feedback.png" /></image></ImageView></graphic>
             </Button>
-            <Region VBox.vgrow="ALWAYS"/>
-            <Button text="Logout" styleClass="nav-button" onAction="#logout"/>
+            <Button onAction="#openParametres" styleClass="nav-button" text="Paramètres">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/parametre.png" /></image></ImageView></graphic>
+            </Button>
+            <Region VBox.vgrow="ALWAYS" />
+            <Button onAction="#logout" styleClass="nav-button" text="Logout" />
         </VBox>
     </left>
 
     <center>
         <VBox spacing="12" styleClass="main-content">
-            <HBox styleClass="top-toolbar">
-                <Label text="CRUD Congés (Admin RH)" styleClass="dashboard-title"/>
-            </HBox>
-            <Label fx:id="lblPageMessage" text="" styleClass="page-message"/>
+            <HBox styleClass="top-toolbar" />
+            <Label fx:id="lblPageMessage" styleClass="page-message" text="" />
 
             <VBox spacing="10" styleClass="content">
                 <HBox spacing="10">
-                    <TextField fx:id="txtCongeId" promptText="Conge" disable="true" prefWidth="90"/>
-                    <TextField fx:id="txtCongeEmployeId" promptText="Employe" prefWidth="130"/>
-                    <DatePicker fx:id="dpCongeDebut" promptText="Date debut"/>
-                    <DatePicker fx:id="dpCongeFin" promptText="Date fin"/>
-                    <ComboBox fx:id="cbCongeStatut" promptText="Statut" prefWidth="150">
+                    <TextField fx:id="txtCongeId" disable="true" prefWidth="90" promptText="Conge" />
+                    <TextField fx:id="txtCongeEmployeId" prefWidth="130" promptText="Employe" />
+                    <DatePicker fx:id="dpCongeDebut" promptText="Date debut" />
+                    <DatePicker fx:id="dpCongeFin" promptText="Date fin" />
+                    <ComboBox fx:id="cbCongeStatut" prefWidth="150" promptText="Statut">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="EN_ATTENTE"/>
-                                <String fx:value="ACCEPTE"/>
-                                <String fx:value="REFUSE"/>
+                                <String fx:value="EN_ATTENTE" />
+                                <String fx:value="ACCEPTE" />
+                                <String fx:value="REFUSE" />
                             </FXCollections>
                         </items>
                     </ComboBox>
                 </HBox>
 
                 <HBox spacing="10" styleClass="action-row">
-                    <Button text="Ajouter" styleClass="btn btn-primary" onAction="#addConge"/>
-                    <Button text="Modifier" styleClass="btn btn-warning" onAction="#updateConge"/>
-                    <Button text="Supprimer" styleClass="btn btn-danger" onAction="#deleteConge"/>
-                    <Button text="Clear" styleClass="btn" onAction="#clearCongeForm"/>
+                    <Button onAction="#addConge" styleClass="btn btn-primary" text="Ajouter" />
+                    <Button onAction="#updateConge" styleClass="btn btn-warning" text="Modifier" />
+                    <Button onAction="#deleteConge" styleClass="btn btn-danger" text="Supprimer" />
+                    <Button onAction="#clearCongeForm" styleClass="btn" text="Clear" />
                 </HBox>
 
                 <ScrollPane fitToWidth="true" prefHeight="520" styleClass="cards-scroll">
                     <content>
-                        <VBox fx:id="tableConges" spacing="10" styleClass="cards-container"/>
+                        <VBox fx:id="tableConges" spacing="10" styleClass="cards-container" />
                     </content>
                 </ScrollPane>
             </VBox>

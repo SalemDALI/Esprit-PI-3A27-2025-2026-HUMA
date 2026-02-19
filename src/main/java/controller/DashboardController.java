@@ -6,6 +6,8 @@ import models.OffreEmploi;
 import models.User;
 import models.Absence;
 import models.Publication;
+import models.Formation;
+import models.Participant;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,11 +22,14 @@ import services.ServiceOffre;
 import services.ServiceUser;
 import services.ServiceAbsence;
 import services.PublicationService;
+import services.CrudFormation;
+import services.CrudParticipant;
 import utils.Session;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -129,6 +134,37 @@ public class DashboardController {
     @FXML
     private ComboBox<String> cbAbsenceStatut;
     @FXML
+    private VBox tableFormations;
+    @FXML
+    private TextField txtFormationId;
+    @FXML
+    private TextField txtFormationSujet;
+    @FXML
+    private TextField txtFormationFormateur;
+    @FXML
+    private TextField txtFormationType;
+    @FXML
+    private DatePicker dpFormationDateDebut;
+    @FXML
+    private TextField txtFormationDuree;
+    @FXML
+    private TextField txtFormationLocalisation;
+    @FXML
+    private TextField txtFormationAdminId;
+
+    @FXML
+    private VBox tableParticipations;
+    @FXML
+    private TextField txtParticipationId;
+    @FXML
+    private DatePicker dpParticipationDate;
+    @FXML
+    private TextField txtParticipationResultat;
+    @FXML
+    private TextField txtParticipationEmployeId;
+    @FXML
+    private TextField txtParticipationFormationId;
+    @FXML
     private TextField txtPublicationTitre;
     @FXML
     private TextArea txtPublicationContenu;
@@ -140,6 +176,8 @@ public class DashboardController {
     private final ServiceOffre serviceOffre = new ServiceOffre();
     private final ServiceCandidature serviceCandidature = new ServiceCandidature();
     private final ServiceAbsence serviceAbsence = new ServiceAbsence();
+    private final CrudFormation crudFormation = new CrudFormation();
+    private final CrudParticipant crudParticipant = new CrudParticipant();
     private User selectedUser;
     private Candidat selectedCandidat;
     private OffreEmploi selectedOffre;
@@ -155,6 +193,10 @@ public class DashboardController {
     private Publication selectedPublication;
     private Node selectedPublicationCard;
     private final PublicationService publicationService = new PublicationService();
+    private Formation selectedFormation;
+    private Node selectedFormationCard;
+    private Participant selectedParticipant;
+    private Node selectedParticipantCard;
 
     @FXML
     public void initialize() {
@@ -179,10 +221,19 @@ public class DashboardController {
         if (publicationList != null) {
             initCommunicationSection();
         }
+        if (tableFormations != null) {
+            initFormationSection();
+        }
+        if (tableParticipations != null) {
+            initParticipationSection();
+        }
         setPageMessage("", false);
 
         if (Session.getUser() != null && txtAdminId != null) {
             txtAdminId.setText(String.valueOf(Session.getUser().getId()));
+        }
+        if (Session.getUser() != null && txtFormationAdminId != null) {
+            txtFormationAdminId.setText(String.valueOf(Session.getUser().getId()));
         }
 
         refreshData();
@@ -216,6 +267,14 @@ public class DashboardController {
         publicationList.getStyleClass().add("cards-container");
     }
 
+    private void initFormationSection() {
+        tableFormations.getStyleClass().add("cards-container");
+    }
+
+    private void initParticipationSection() {
+        tableParticipations.getStyleClass().add("cards-container");
+    }
+
     @FXML
     public void refreshData() {
         if (tableUsers != null) {
@@ -238,6 +297,12 @@ public class DashboardController {
         }
         if (publicationList != null) {
             renderCommunicationCards();
+        }
+        if (tableFormations != null) {
+            renderFormationCards();
+        }
+        if (tableParticipations != null) {
+            renderParticipationCards();
         }
         refreshDashboardStats();
         setPageMessage("", false);
@@ -266,6 +331,11 @@ public class DashboardController {
     @FXML
     public void openCommunication(ActionEvent event) {
         navigateTo(event, "/fxml/communication.fxml");
+    }
+
+    @FXML
+    public void openFormations(ActionEvent event) {
+        navigateTo(event, "/fxml/formation.fxml");
     }
 
     @FXML
@@ -361,7 +431,12 @@ public class DashboardController {
     @FXML
     public void addCandidat() {
         try {
-            Candidat c = new Candidat(Integer.parseInt(txtCandidatId.getText().trim()), "");
+            Integer userId = resolveUserId(txtCandidatId.getText(), null);
+            if (userId == null) {
+                showError("Candidat introuvable. Saisissez nom/prenom ou email.");
+                return;
+            }
+            Candidat c = new Candidat(userId, "");
             if (serviceCandidat.ajouter(c)) {
                 refreshData();
                 clearCandidatForm();
@@ -374,9 +449,18 @@ public class DashboardController {
     @FXML
     public void updateCandidat() {
         try {
-            Candidat c = new Candidat(Integer.parseInt(txtCandidatId.getText().trim()), "");
+            Integer userId = selectedCandidat != null
+                    ? selectedCandidat.getId()
+                    : resolveUserId(txtCandidatId.getText(), "CANDIDAT");
+            if (userId == null) {
+                showError("Selectionnez un candidat ou saisissez un candidat existant.");
+                return;
+            }
+            Candidat c = new Candidat(userId, "");
             if (serviceCandidat.update(c)) {
                 refreshData();
+            } else {
+                showError("Mise a jour impossible pour ce candidat.");
             }
         } catch (Exception e) {
             showError(e.getMessage());
@@ -386,7 +470,15 @@ public class DashboardController {
     @FXML
     public void deleteCandidat() {
         try {
-            if (serviceCandidat.delete(Integer.parseInt(txtCandidatId.getText().trim()))) {
+            Integer userId = resolveUserId(txtCandidatId.getText(), null);
+            if (userId == null && selectedCandidat != null) {
+                userId = selectedCandidat.getId();
+            }
+            if (userId == null) {
+                showError("Selectionnez un candidat ou saisissez son nom/prenom.");
+                return;
+            }
+            if (serviceCandidat.delete(userId)) {
                 refreshData();
                 clearCandidatForm();
             }
@@ -413,7 +505,12 @@ public class DashboardController {
             o.setTypeContrat(txtTypeContrat.getText().trim());
             o.setNombrePostes(Integer.parseInt(txtNombrePostes.getText().trim()));
             o.setDatePublication(dpDatePublication.getValue() == null ? LocalDate.now() : dpDatePublication.getValue());
-            o.setAdminId(Integer.parseInt(txtAdminId.getText().trim()));
+            Integer adminId = resolveUserId(txtAdminId.getText(), "ADMIN");
+            if (adminId == null) {
+                showError("Responsable RH introuvable.");
+                return;
+            }
+            o.setAdminId(adminId);
             if (serviceOffre.ajouter(o)) {
                 refreshData();
                 clearOffreForm();
@@ -438,7 +535,12 @@ public class DashboardController {
             o.setTypeContrat(txtTypeContrat.getText().trim());
             o.setNombrePostes(Integer.parseInt(txtNombrePostes.getText().trim()));
             o.setDatePublication(dpDatePublication.getValue() == null ? LocalDate.now() : dpDatePublication.getValue());
-            o.setAdminId(Integer.parseInt(txtAdminId.getText().trim()));
+            Integer adminId = resolveUserId(txtAdminId.getText(), "ADMIN");
+            if (adminId == null) {
+                showError("Responsable RH introuvable.");
+                return;
+            }
+            o.setAdminId(adminId);
             if (serviceOffre.update(o)) {
                 refreshData();
             }
@@ -481,8 +583,18 @@ public class DashboardController {
     public void addCandidature() {
         try {
             Candidature c = new Candidature();
-            c.setCandidatId(Integer.parseInt(txtCandUserId.getText().trim()));
-            c.setOffreId(Integer.parseInt(txtCandOffreId.getText().trim()));
+            Integer candidatId = resolveUserId(txtCandUserId.getText(), null);
+            Integer offreId = resolveOffreId(txtCandOffreId.getText());
+            if (candidatId == null) {
+                showError("Candidat introuvable.");
+                return;
+            }
+            if (offreId == null) {
+                showError("Offre introuvable.");
+                return;
+            }
+            c.setCandidatId(candidatId);
+            c.setOffreId(offreId);
             c.setDateCandidature(dpDateCandidature.getValue() == null ? LocalDate.now() : dpDateCandidature.getValue());
             c.setStatut(cbStatut.getValue() == null ? "EN_ATTENTE" : cbStatut.getValue());
             if (serviceCandidature.ajouter(c)) {
@@ -503,8 +615,18 @@ public class DashboardController {
         try {
             Candidature c = new Candidature();
             c.setId(Integer.parseInt(txtCandidatureId.getText()));
-            c.setCandidatId(Integer.parseInt(txtCandUserId.getText().trim()));
-            c.setOffreId(Integer.parseInt(txtCandOffreId.getText().trim()));
+            Integer candidatId = resolveUserId(txtCandUserId.getText(), null);
+            Integer offreId = resolveOffreId(txtCandOffreId.getText());
+            if (candidatId == null) {
+                showError("Candidat introuvable.");
+                return;
+            }
+            if (offreId == null) {
+                showError("Offre introuvable.");
+                return;
+            }
+            c.setCandidatId(candidatId);
+            c.setOffreId(offreId);
             c.setDateCandidature(dpDateCandidature.getValue() == null ? LocalDate.now() : dpDateCandidature.getValue());
             c.setStatut(cbStatut.getValue() == null ? "EN_ATTENTE" : cbStatut.getValue());
             if (serviceCandidature.update(c)) {
@@ -685,6 +807,185 @@ public class DashboardController {
     }
 
     @FXML
+    public void addFormation() {
+        try {
+            Formation f = new Formation();
+            f.setSujet(txtFormationSujet.getText().trim());
+            f.setFormateur(txtFormationFormateur.getText().trim());
+            f.setType(txtFormationType.getText().trim());
+            LocalDate dateDebut = dpFormationDateDebut.getValue() == null ? LocalDate.now() : dpFormationDateDebut.getValue();
+            f.setDateDebut(Date.valueOf(dateDebut));
+            f.setDuree(Integer.parseInt(txtFormationDuree.getText().trim()));
+            f.setLocalisation(txtFormationLocalisation.getText().trim());
+            Integer adminId = resolveUserId(txtFormationAdminId.getText(), "ADMIN");
+            if (adminId == null) {
+                showError("Responsable RH introuvable.");
+                return;
+            }
+            f.setAdminId(adminId);
+            if (crudFormation.ajouter(f)) {
+                refreshData();
+                clearFormationForm();
+            }
+        } catch (Exception e) {
+            showError(e.getMessage());
+        }
+    }
+
+    @FXML
+    public void updateFormation() {
+        if (txtFormationId.getText().isBlank()) {
+            showError("Selectionnez une formation");
+            return;
+        }
+        try {
+            Formation f = new Formation();
+            f.setId(Integer.parseInt(txtFormationId.getText().trim()));
+            f.setSujet(txtFormationSujet.getText().trim());
+            f.setFormateur(txtFormationFormateur.getText().trim());
+            f.setType(txtFormationType.getText().trim());
+            LocalDate dateDebut = dpFormationDateDebut.getValue() == null ? LocalDate.now() : dpFormationDateDebut.getValue();
+            f.setDateDebut(Date.valueOf(dateDebut));
+            f.setDuree(Integer.parseInt(txtFormationDuree.getText().trim()));
+            f.setLocalisation(txtFormationLocalisation.getText().trim());
+            Integer adminId = resolveUserId(txtFormationAdminId.getText(), "ADMIN");
+            if (adminId == null) {
+                showError("Responsable RH introuvable.");
+                return;
+            }
+            f.setAdminId(adminId);
+            if (crudFormation.modifier(f)) {
+                refreshData();
+            }
+        } catch (Exception e) {
+            showError(e.getMessage());
+        }
+    }
+
+    @FXML
+    public void deleteFormation() {
+        if (txtFormationId.getText().isBlank()) {
+            showError("Selectionnez une formation");
+            return;
+        }
+        if (crudFormation.supprimer(Integer.parseInt(txtFormationId.getText().trim()))) {
+            refreshData();
+            clearFormationForm();
+        }
+    }
+
+    @FXML
+    public void clearFormationForm() {
+        txtFormationId.clear();
+        txtFormationSujet.clear();
+        txtFormationFormateur.clear();
+        txtFormationType.clear();
+        dpFormationDateDebut.setValue(null);
+        txtFormationDuree.clear();
+        txtFormationLocalisation.clear();
+        clearSelection(tableFormations, selectedFormationCard);
+        selectedFormation = null;
+        selectedFormationCard = null;
+        if (Session.getUser() != null && txtFormationAdminId != null) {
+            txtFormationAdminId.setText(String.valueOf(Session.getUser().getId()));
+        } else if (txtFormationAdminId != null) {
+            txtFormationAdminId.clear();
+        }
+    }
+
+    @FXML
+    public void addParticipation() {
+        try {
+            Participant p = new Participant();
+            LocalDate date = dpParticipationDate.getValue() == null ? LocalDate.now() : dpParticipationDate.getValue();
+            p.setDateInscription(Date.valueOf(date));
+            p.setResultat(txtParticipationResultat.getText().trim());
+            Integer employeId = resolveUserId(txtParticipationEmployeId.getText(), "EMPLOYE");
+            if (employeId == null) {
+                showError("Employe introuvable.");
+                return;
+            }
+            Integer formationId = resolveFormationId(txtParticipationFormationId.getText());
+            if (formationId == null) {
+                showError("Formation introuvable.");
+                return;
+            }
+            if (crudParticipant.existsByEmployeAndFormation(employeId, formationId, null)) {
+                showError("Cet employe est deja inscrit a cette formation.");
+                return;
+            }
+            p.setEmployeId(employeId);
+            p.setFormationId(formationId);
+            if (crudParticipant.ajouter(p)) {
+                refreshData();
+                clearParticipationForm();
+            }
+        } catch (Exception e) {
+            showError(e.getMessage());
+        }
+    }
+
+    @FXML
+    public void updateParticipation() {
+        if (txtParticipationId.getText().isBlank()) {
+            showError("Selectionnez une participation");
+            return;
+        }
+        try {
+            Participant p = new Participant();
+            p.setId(Integer.parseInt(txtParticipationId.getText().trim()));
+            LocalDate date = dpParticipationDate.getValue() == null ? LocalDate.now() : dpParticipationDate.getValue();
+            p.setDateInscription(Date.valueOf(date));
+            p.setResultat(txtParticipationResultat.getText().trim());
+            Integer employeId = resolveUserId(txtParticipationEmployeId.getText(), "EMPLOYE");
+            if (employeId == null) {
+                showError("Employe introuvable.");
+                return;
+            }
+            Integer formationId = resolveFormationId(txtParticipationFormationId.getText());
+            if (formationId == null) {
+                showError("Formation introuvable.");
+                return;
+            }
+            if (crudParticipant.existsByEmployeAndFormation(employeId, formationId, p.getId())) {
+                showError("Cet employe est deja inscrit a cette formation.");
+                return;
+            }
+            p.setEmployeId(employeId);
+            p.setFormationId(formationId);
+            if (crudParticipant.modifier(p)) {
+                refreshData();
+            }
+        } catch (Exception e) {
+            showError(e.getMessage());
+        }
+    }
+
+    @FXML
+    public void deleteParticipation() {
+        if (txtParticipationId.getText().isBlank()) {
+            showError("Selectionnez une participation");
+            return;
+        }
+        if (crudParticipant.supprimer(Integer.parseInt(txtParticipationId.getText().trim()))) {
+            refreshData();
+            clearParticipationForm();
+        }
+    }
+
+    @FXML
+    public void clearParticipationForm() {
+        txtParticipationId.clear();
+        dpParticipationDate.setValue(null);
+        txtParticipationResultat.clear();
+        txtParticipationEmployeId.clear();
+        txtParticipationFormationId.clear();
+        clearSelection(tableParticipations, selectedParticipantCard);
+        selectedParticipant = null;
+        selectedParticipantCard = null;
+    }
+
+    @FXML
     public void publishCommunication() {
         if (txtPublicationTitre == null || txtPublicationContenu == null) {
             return;
@@ -707,12 +1008,14 @@ public class DashboardController {
         }
 
         String auteur = current.getNom() + " " + current.getPrenom();
-        publicationService.publish(titre, contenu, auteur);
-
-        txtPublicationTitre.clear();
-        txtPublicationContenu.clear();
-        renderCommunicationCards();
-        setPageMessage("Publication publiee avec succes.", false);
+        if (publicationService.publish(titre, contenu, auteur)) {
+            txtPublicationTitre.clear();
+            txtPublicationContenu.clear();
+            renderCommunicationCards();
+            setPageMessage("Publication publiee avec succes.", false);
+        } else {
+            showError("Echec insertion publication en base.");
+        }
     }
 
     @FXML
@@ -825,7 +1128,81 @@ public class DashboardController {
         if (txtManagerId == null || txtManagerId.getText() == null || txtManagerId.getText().isBlank()) {
             return null;
         }
-        return Integer.parseInt(txtManagerId.getText().trim());
+        return resolveUserId(txtManagerId.getText(), "MANAGER");
+    }
+
+    private Integer resolveUserId(String rawInput, String requiredRoleContains) {
+        if (rawInput == null) {
+            return null;
+        }
+        String input = rawInput.trim();
+        if (input.isBlank()) {
+            return null;
+        }
+        if (input.matches("\\d+")) {
+            return Integer.parseInt(input);
+        }
+        String normalized = input.toLowerCase();
+        for (User u : serviceUser.getAll()) {
+            if (requiredRoleContains != null) {
+                String role = u.getRole() == null ? "" : u.getRole().toUpperCase();
+                if (!role.contains(requiredRoleContains.toUpperCase())) {
+                    continue;
+                }
+            }
+            String fullName = (u.getNom() + " " + u.getPrenom()).trim().toLowerCase();
+            String email = u.getEmail() == null ? "" : u.getEmail().toLowerCase();
+            if (normalized.equals(fullName) || normalized.equals(email)) {
+                return u.getId();
+            }
+        }
+        return null;
+    }
+
+    private Integer resolveOffreId(String rawInput) {
+        if (rawInput == null) {
+            return null;
+        }
+        String input = rawInput.trim();
+        if (input.isBlank()) {
+            return null;
+        }
+        if (input.matches("\\d+")) {
+            return Integer.parseInt(input);
+        }
+        String normalized = input.toLowerCase();
+        for (OffreEmploi offre : serviceOffre.getAll()) {
+            String titre = offre.getTitre() == null ? "" : offre.getTitre().toLowerCase();
+            if (normalized.equals(titre)) {
+                return offre.getId();
+            }
+        }
+        return null;
+    }
+
+    private Integer resolveFormationId(String rawInput) {
+        if (rawInput == null) {
+            return null;
+        }
+        String input = rawInput.trim();
+        if (input.isBlank()) {
+            return null;
+        }
+        if (input.matches("\\d+")) {
+            return Integer.parseInt(input);
+        }
+        Integer id = crudFormation.findIdBySujet(input);
+        if (id != null) {
+            return id;
+        }
+        String normalized = input.toLowerCase();
+        for (Formation formation : crudFormation.afficherAll()) {
+            String sujet = formation.getSujet() == null ? "" : formation.getSujet().toLowerCase();
+            if (normalized.equals(sujet)) {
+                return formation.getId();
+            }
+        }
+        return null;
     }
 
     private void renderCandidatCards() {
@@ -842,7 +1219,7 @@ public class DashboardController {
                 selectCard(tableCandidats, selectedCandidatCard, card);
                 selectedCandidatCard = card;
                 selectedCandidat = candidat;
-                txtCandidatId.setText(String.valueOf(candidat.getId()));
+                txtCandidatId.setText(candidat.getNom() + " " + candidat.getPrenom());
             });
             tableCandidats.getChildren().add(card);
         }
@@ -919,7 +1296,7 @@ public class DashboardController {
         selectedConge = null;
         selectedCongeCard = null;
         for (Absence conge : serviceAbsence.getCongesAdmin()) {
-            String employe = conge.getEmployeNom() == null ? "Employe #" + conge.getEmployeId() : conge.getEmployeNom();
+            String employe = conge.getEmployeNom() == null ? "Employe inconnu" : conge.getEmployeNom();
             VBox card = buildCard(
                     employe,
                     "du " + conge.getDateDebut() + " au " + conge.getDateFin() + " | statut: " + conge.getStatut()
@@ -944,7 +1321,7 @@ public class DashboardController {
         selectedAbsenceAdmin = null;
         selectedAbsenceAdminCard = null;
         for (Absence absence : serviceAbsence.getAbsencesAdmin()) {
-            String employe = absence.getEmployeNom() == null ? "Employe #" + absence.getEmployeId() : absence.getEmployeNom();
+            String employe = absence.getEmployeNom() == null ? "Employe inconnu" : absence.getEmployeNom();
             VBox card = buildCard(
                     employe + " | " + absence.getTypeAbsence(),
                     "du " + absence.getDateDebut() + " au " + absence.getDateFin() + " | statut: " + absence.getStatut()
@@ -961,6 +1338,67 @@ public class DashboardController {
                 cbAbsenceStatut.setValue(absence.getStatut());
             });
             tableAbsencesAdmin.getChildren().add(card);
+        }
+    }
+
+    private void renderFormationCards() {
+        tableFormations.getChildren().clear();
+        clearSelection(tableFormations, selectedFormationCard);
+        selectedFormation = null;
+        selectedFormationCard = null;
+        Map<Integer, User> usersById = serviceUser.getAll().stream()
+                .collect(Collectors.toMap(User::getId, u -> u));
+        for (Formation formation : crudFormation.afficherAll()) {
+            User admin = usersById.get(formation.getAdminId());
+            String adminLabel = admin == null ? "Admin RH inconnu" : (admin.getNom() + " " + admin.getPrenom());
+            VBox card = buildCard(
+                    formation.getSujet() + " | " + formation.getType(),
+                    "formateur: " + formation.getFormateur()
+                            + " | date: " + formation.getDateDebut()
+                            + " | duree: " + formation.getDuree() + "h"
+                            + " | lieu: " + formation.getLocalisation()
+                            + " | RH: " + adminLabel
+            );
+            card.setOnMouseClicked(event -> {
+                selectCard(tableFormations, selectedFormationCard, card);
+                selectedFormationCard = card;
+                selectedFormation = formation;
+                txtFormationId.setText(String.valueOf(formation.getId()));
+                txtFormationSujet.setText(formation.getSujet());
+                txtFormationFormateur.setText(formation.getFormateur());
+                txtFormationType.setText(formation.getType());
+                dpFormationDateDebut.setValue(formation.getDateDebut() == null ? null : formation.getDateDebut().toLocalDate());
+                txtFormationDuree.setText(String.valueOf(formation.getDuree()));
+                txtFormationLocalisation.setText(formation.getLocalisation());
+                txtFormationAdminId.setText(adminLabel);
+            });
+            tableFormations.getChildren().add(card);
+        }
+    }
+
+    private void renderParticipationCards() {
+        tableParticipations.getChildren().clear();
+        clearSelection(tableParticipations, selectedParticipantCard);
+        selectedParticipant = null;
+        selectedParticipantCard = null;
+        for (Participant participant : crudParticipant.afficherAll()) {
+            String employeLabel = participant.getNomEmploye() == null ? "Employe inconnu" : participant.getNomEmploye();
+            String formationLabel = participant.getNomFormation() == null ? "Formation inconnue" : participant.getNomFormation();
+            VBox card = buildCard(
+                    employeLabel + " | " + formationLabel,
+                    "inscription: " + participant.getDateInscription() + " | resultat: " + participant.getResultat()
+            );
+            card.setOnMouseClicked(event -> {
+                selectCard(tableParticipations, selectedParticipantCard, card);
+                selectedParticipantCard = card;
+                selectedParticipant = participant;
+                txtParticipationId.setText(String.valueOf(participant.getId()));
+                dpParticipationDate.setValue(participant.getDateInscription() == null ? null : participant.getDateInscription().toLocalDate());
+                txtParticipationResultat.setText(participant.getResultat());
+                txtParticipationEmployeId.setText(employeLabel);
+                txtParticipationFormationId.setText(formationLabel);
+            });
+            tableParticipations.getChildren().add(card);
         }
     }
 
