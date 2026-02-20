@@ -7,9 +7,11 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
@@ -17,44 +19,58 @@
             stylesheets="@style.css"
             styleClass="app-root">
 
-    <top>
-        <HBox styleClass="sidebar topbar left-panel" spacing="10">
-            <Label fx:id="welcomeLabel" styleClass="logo"/>
-            <Pane HBox.hgrow="ALWAYS"/>
-            <Button text="Publications" styleClass="nav-button" onAction="#openPublications"/>
+    <left>
+        <VBox prefWidth="220" spacing="10" styleClass="sidebar dashboard-sidebar left-panel">
+            <HBox spacing="8" styleClass="brand-row">
+                <ImageView fitHeight="78.0" fitWidth="240.0" preserveRatio="true">
+                    <image><Image url="@../images/huma.png" /></image>
+                </ImageView>
+            </HBox>
+
+            <Button text="Mes Congés" styleClass="nav-button nav-active" />
+            <Button text="Publications" styleClass="nav-button" onAction="#openPublications" />
+            <Region VBox.vgrow="ALWAYS"/>
             <Button text="Logout" styleClass="nav-button" onAction="#logout"/>
-        </HBox>
-    </top>
+        </VBox>
+    </left>
 
     <center>
-        <VBox spacing="12" alignment="CENTER" styleClass="content">
-            <Label text="Demande de conge" styleClass="title"/>
-            <Label fx:id="lblInfo" styleClass="page-message" text=""/>
-
-            <DatePicker fx:id="dateDebut" promptText="Date debut"/>
-            <DatePicker fx:id="dateFin" promptText="Date fin"/>
-
-            <ComboBox fx:id="typeAbsence" promptText="Type absence">
-                <items>
-                    <FXCollections fx:factory="observableArrayList">
-                        <String fx:value="CONGE"/>
-                        <String fx:value="MALADIE"/>
-                    </FXCollections>
-                </items>
-            </ComboBox>
-
-            <HBox spacing="10" styleClass="action-row">
-                <Button text="Demander" styleClass="btn btn-primary" onAction="#handleDemande"/>
-                <Button text="Modifier" styleClass="btn btn-warning" onAction="#updateDemande"/>
-                <Button text="Supprimer" styleClass="btn btn-danger" onAction="#deleteDemande"/>
+        <VBox spacing="12" styleClass="main-content">
+            <HBox styleClass="top-toolbar" spacing="10">
+                <Label fx:id="welcomeLabel" styleClass="dashboard-title" text="Espace Employé"/>
+                <Region HBox.hgrow="ALWAYS"/>
                 <Button text="Actualiser" styleClass="btn" onAction="#refreshMyAbsences"/>
             </HBox>
 
-            <ScrollPane fitToWidth="true" prefHeight="280" styleClass="cards-scroll">
-                <content>
-                    <VBox fx:id="tableMyAbsences" spacing="10" styleClass="cards-container"/>
-                </content>
-            </ScrollPane>
+            <VBox spacing="12" alignment="CENTER_LEFT" styleClass="content">
+                <Label text="Demande de congé" styleClass="title"/>
+                <Label fx:id="lblInfo" styleClass="page-message" text=""/>
+
+                <HBox spacing="10">
+                    <DatePicker fx:id="dateDebut" promptText="Date debut"/>
+                    <DatePicker fx:id="dateFin" promptText="Date fin"/>
+                    <ComboBox fx:id="typeAbsence" promptText="Type absence">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="CONGE"/>
+                                <String fx:value="MALADIE"/>
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+                </HBox>
+
+                <HBox spacing="10" styleClass="action-row">
+                    <Button text="Demander" styleClass="btn btn-primary" onAction="#handleDemande"/>
+                    <Button text="Modifier" styleClass="btn btn-warning" onAction="#updateDemande"/>
+                    <Button text="Supprimer" styleClass="btn btn-danger" onAction="#deleteDemande"/>
+                </HBox>
+
+                <ScrollPane fitToWidth="true" prefHeight="320" styleClass="cards-scroll">
+                    <content>
+                        <VBox fx:id="tableMyAbsences" spacing="10" styleClass="cards-container"/>
+                    </content>
+                </ScrollPane>
+            </VBox>
         </VBox>
     </center>
 </BorderPane>

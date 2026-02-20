@@ -4,9 +4,11 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
@@ -14,32 +16,45 @@
             stylesheets="@style.css"
             styleClass="app-root">
 
-    <top>
-        <HBox styleClass="sidebar topbar left-panel" spacing="10">
-            <Label fx:id="welcomeLabel" styleClass="logo" text="Publications"/>
-            <Pane HBox.hgrow="ALWAYS"/>
+    <left>
+        <VBox prefWidth="220" spacing="10" styleClass="sidebar dashboard-sidebar left-panel">
+            <HBox spacing="8" styleClass="brand-row">
+                <ImageView fitHeight="78.0" fitWidth="240.0" preserveRatio="true">
+                    <image><Image url="@../images/huma.png" /></image>
+                </ImageView>
+            </HBox>
+
+            <Button text="Publications" styleClass="nav-button nav-active"/>
             <Button text="Retour" styleClass="nav-button" onAction="#back"/>
+            <Region VBox.vgrow="ALWAYS"/>
             <Button text="Logout" styleClass="nav-button" onAction="#logout"/>
-        </HBox>
-    </top>
+        </VBox>
+    </left>
 
     <center>
-        <VBox spacing="10" styleClass="main-content">
-            <Label fx:id="lblInfo" text="" styleClass="page-message"/>
-
-            <ScrollPane fitToWidth="true" prefHeight="450" styleClass="cards-scroll">
-                <content>
-                    <VBox fx:id="publicationList" spacing="10" styleClass="cards-container"/>
-                </content>
-            </ScrollPane>
-
-            <TextArea fx:id="txtComment" promptText="Ecrire un commentaire sur la publication selectionnee" prefRowCount="3" wrapText="true"/>
-            <HBox spacing="10" styleClass="action-row">
-                <Button text="Commenter" styleClass="btn btn-primary" onAction="#addComment"/>
-                <Button text="Modifier commentaire" styleClass="btn btn-warning" onAction="#updateComment"/>
-                <Button text="Supprimer commentaire" styleClass="btn btn-danger" onAction="#deleteComment"/>
+        <VBox spacing="12" styleClass="main-content">
+            <HBox styleClass="top-toolbar" spacing="10">
+                <Label fx:id="welcomeLabel" styleClass="dashboard-title" text="Publications"/>
+                <Region HBox.hgrow="ALWAYS"/>
                 <Button text="Actualiser" styleClass="btn" onAction="#refreshPublications"/>
             </HBox>
+
+            <VBox spacing="10" styleClass="content">
+                <Label fx:id="lblInfo" text="" styleClass="page-message"/>
+
+                <ScrollPane fitToWidth="true" prefHeight="380" styleClass="cards-scroll">
+                    <content>
+                        <VBox fx:id="publicationList" spacing="10" styleClass="cards-container"/>
+                    </content>
+                </ScrollPane>
+
+                <TextArea fx:id="txtComment" promptText="Ecrire un commentaire sur la publication selectionnee" prefRowCount="3" wrapText="true"/>
+                <HBox spacing="10" styleClass="action-row">
+                    <Button text="Commenter" styleClass="btn btn-primary" onAction="#addComment"/>
+                    <Button text="Modifier commentaire" styleClass="btn btn-warning" onAction="#updateComment"/>
+                    <Button text="Supprimer commentaire" styleClass="btn btn-danger" onAction="#deleteComment"/>
+                </HBox>
+            </VBox>
         </VBox>
     </center>
 

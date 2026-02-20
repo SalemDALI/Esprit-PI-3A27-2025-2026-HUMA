@@ -1,50 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="controller.CandidatController"
             stylesheets="@style.css"
             styleClass="app-root">
 
-    <top>
-        <HBox styleClass="sidebar topbar left-panel" spacing="10">
-            <Label fx:id="welcomeLabel" styleClass="logo"/>
-            <Pane HBox.hgrow="ALWAYS"/>
-            <Button text="Logout" styleClass="nav-button" onAction="#logout"/>
-        </HBox>
-    </top>
-
-    <center>
-        <VBox spacing="20" styleClass="content">
-
-            <Label text="Offres disponibles" styleClass="title"/>
-            <Label fx:id="lblPageMessage" text="" styleClass="page-message"/>
-
-            <ScrollPane fitToWidth="true" prefHeight="220" styleClass="cards-scroll">
-                <content>
-                    <VBox fx:id="tableOffres" spacing="10" styleClass="cards-container"/>
-                </content>
-            </ScrollPane>
-
-            <HBox spacing="10" styleClass="action-row">
-                <Button text="Uploader CV (PDF)" styleClass="btn btn-warning" onAction="#uploadCv"/>
-                <Label fx:id="lblCvPath" text="Aucun CV selectionne" styleClass="muted-text"/>
+    <left>
+        <VBox prefWidth="220" spacing="10" styleClass="sidebar dashboard-sidebar left-panel">
+            <HBox spacing="8" styleClass="brand-row">
+                <ImageView fitHeight="78.0" fitWidth="240.0" preserveRatio="true">
+                    <image><Image url="@../images/huma.png" /></image>
+                </ImageView>
             </HBox>
 
-            <Button text="Postuler" styleClass="btn btn-primary" onAction="#postuler"/>
+            <Button text="Offres" styleClass="nav-button nav-active"/>
+            <Button text="Suivi candidatures" styleClass="nav-button" onAction="#refreshSuiviCandidatures"/>
+            <Region VBox.vgrow="ALWAYS"/>
+            <Button text="Logout" styleClass="nav-button" onAction="#logout"/>
+        </VBox>
+    </left>
 
-            <Label text="Suivi de mes candidatures" styleClass="title"/>
+    <center>
+        <VBox spacing="12" styleClass="main-content">
+            <HBox styleClass="top-toolbar" spacing="10">
+                <Label styleClass="dashboard-title" text="Espace Candidat"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Uploader CV (PDF)" styleClass="btn btn-warning" onAction="#uploadCv"/>
+                <Button text="Postuler" styleClass="btn btn-primary" onAction="#postuler"/>
+            </HBox>
 
-            <ScrollPane fitToWidth="true" prefHeight="220" styleClass="cards-scroll">
-                <content>
-                    <VBox fx:id="tableCandidatures" spacing="10" styleClass="cards-container"/>
-                </content>
-            </ScrollPane>
+            <VBox spacing="12" styleClass="content">
+                <Label fx:id="lblPageMessage" text="" styleClass="page-message"/>
 
-            <Button text="Actualiser suivi" styleClass="btn" onAction="#refreshSuiviCandidatures"/>
+                <Label text="Offres disponibles" styleClass="title"/>
+                <ScrollPane fitToWidth="true" prefHeight="220" styleClass="cards-scroll">
+                    <content>
+                        <VBox fx:id="tableOffres" spacing="10" styleClass="cards-container"/>
+                    </content>
+                </ScrollPane>
 
+                <HBox spacing="10" styleClass="action-row">
+                    <Label fx:id="lblCvPath" text="Aucun CV selectionne" styleClass="entity-card-meta"/>
+                </HBox>
+
+                <Label text="Suivi de mes candidatures" styleClass="title"/>
+                <ScrollPane fitToWidth="true" prefHeight="220" styleClass="cards-scroll">
+                    <content>
+                        <VBox fx:id="tableCandidatures" spacing="10" styleClass="cards-container"/>
+                    </content>
+                </ScrollPane>
+            </VBox>
         </VBox>
     </center>
 
