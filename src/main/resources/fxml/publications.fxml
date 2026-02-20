@@ -36,6 +36,8 @@
             <TextArea fx:id="txtComment" promptText="Ecrire un commentaire sur la publication selectionnee" prefRowCount="3" wrapText="true"/>
             <HBox spacing="10" styleClass="action-row">
                 <Button text="Commenter" styleClass="btn btn-primary" onAction="#addComment"/>
+                <Button text="Modifier commentaire" styleClass="btn btn-warning" onAction="#updateComment"/>
+                <Button text="Supprimer commentaire" styleClass="btn btn-danger" onAction="#deleteComment"/>
                 <Button text="Actualiser" styleClass="btn" onAction="#refreshPublications"/>
             </HBox>
         </VBox>

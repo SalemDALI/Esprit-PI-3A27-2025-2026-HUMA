@@ -62,6 +62,9 @@ public class PublicationService {
                 Object commentaireIdObj = rs.getObject("commentaire_id");
                 if (commentaireIdObj != null) {
                     PublicationComment comment = new PublicationComment();
+                    comment.setId(((Number) commentaireIdObj).intValue());
+                    comment.setPublicationId(publicationId);
+                    comment.setUserId(rs.getInt("commentaire_user_id"));
                     comment.setContenu(rs.getString("commentaire_contenu"));
 
                     String nom = rs.getString("commentaire_nom");
@@ -144,6 +147,58 @@ public class PublicationService {
                 e.printStackTrace();
                 return false;
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updatePublication(int publicationId, int userId, boolean admin, String titre, String contenu) {
+        String sql = admin
+                ? "UPDATE publication SET type=?, contenu=? WHERE id=?"
+                : "UPDATE publication SET type=?, contenu=? WHERE id=? AND user_id=?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, titre);
+            ps.setString(2, contenu);
+            ps.setInt(3, publicationId);
+            if (!admin) {
+                ps.setInt(4, userId);
+            }
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateComment(int commentId, int userId, boolean admin, String contenu) {
+        String sql = admin
+                ? "UPDATE commentaire SET contenu=?, date_commentaire=? WHERE id=?"
+                : "UPDATE commentaire SET contenu=?, date_commentaire=? WHERE id=? AND user_id=?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, contenu);
+            ps.setDate(2, Date.valueOf(LocalDate.now()));
+            ps.setInt(3, commentId);
+            if (!admin) {
+                ps.setInt(4, userId);
+            }
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean deleteComment(int commentId, int userId, boolean admin) {
+        String sql = admin
+                ? "DELETE FROM commentaire WHERE id=?"
+                : "DELETE FROM commentaire WHERE id=? AND user_id=?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, commentId);
+            if (!admin) {
+                ps.setInt(2, userId);
+            }
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

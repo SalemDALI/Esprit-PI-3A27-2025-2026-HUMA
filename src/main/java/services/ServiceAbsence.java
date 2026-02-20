@@ -168,6 +168,34 @@ public class ServiceAbsence {
         return false;
     }
 
+    public boolean updateByEmploye(Absence a, int employeId) {
+        String sql = "UPDATE absence SET date_debut=?, date_fin=?, type_absence=? " +
+                "WHERE id=? AND employe_id=? AND statut='EN_ATTENTE'";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setDate(1, Date.valueOf(a.getDateDebut()));
+            ps.setDate(2, Date.valueOf(a.getDateFin()));
+            ps.setString(3, a.getTypeAbsence());
+            ps.setInt(4, a.getId());
+            ps.setInt(5, employeId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean deleteByEmploye(int absenceId, int employeId) {
+        String sql = "DELETE FROM absence WHERE id=? AND employe_id=? AND statut='EN_ATTENTE'";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, absenceId);
+            ps.setInt(2, employeId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     private List<Absence> getByTypeForAdmin(String typeAbsence) {
         List<Absence> list = new ArrayList<>();
         String sql = """

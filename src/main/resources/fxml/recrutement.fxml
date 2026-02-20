@@ -168,7 +168,22 @@
                                 <HBox spacing="10">
                                     <TextField fx:id="txtOffreId" disable="true" prefWidth="70" promptText="Offre" />
                                     <TextField fx:id="txtTitre" promptText="Titre" />
-                                    <TextField fx:id="txtDepartement" promptText="Departement" />
+                                    <ComboBox fx:id="txtDepartement" prefWidth="250" promptText="Departement">
+                                        <items>
+                                            <FXCollections fx:factory="observableArrayList">
+                                                <String fx:value="Ressources Humaines (RH)" />
+                                                <String fx:value="Informatique (IT)" />
+                                                <String fx:value="Finance &amp; Comptabilite" />
+                                                <String fx:value="Marketing &amp; Communication" />
+                                                <String fx:value="Commercial &amp; Ventes" />
+                                                <String fx:value="⚙️ Production &amp; Operations" />
+                                                <String fx:value="📦 Logistique &amp; Supply Chain" />
+                                                <String fx:value="📊 Controle de Gestion" />
+                                                <String fx:value="🏢 Administration Generale" />
+                                                <String fx:value="🧪 Recherche &amp; Developpement (R&amp;D)" />
+                                            </FXCollections>
+                                        </items>
+                                    </ComboBox>
                                     <TextField fx:id="txtTypeContrat" promptText="Type contrat" />
                                     <TextField fx:id="txtNombrePostes" prefWidth="100" promptText="Nb postes" />
                                     <DatePicker fx:id="dpDatePublication" promptText="Date publication" />

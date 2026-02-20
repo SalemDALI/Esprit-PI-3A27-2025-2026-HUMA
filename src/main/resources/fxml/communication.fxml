@@ -65,6 +65,7 @@
                 <TextArea fx:id="txtPublicationContenu" prefRowCount="4" promptText="Contenu de publication" wrapText="true" />
                 <HBox spacing="10" styleClass="action-row">
                     <Button onAction="#publishCommunication" styleClass="btn btn-primary" text="Publier" />
+                    <Button onAction="#updateCommunicationPublication" styleClass="btn btn-warning" text="Modifier publication" />
                     <Button onAction="#deleteCommunicationPublication" styleClass="btn btn-danger" text="Supprimer publication" />
                 </HBox>
 

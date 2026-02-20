@@ -75,7 +75,7 @@ public class DashboardController {
     @FXML
     private TextField txtTitre;
     @FXML
-    private TextField txtDepartement;
+    private ComboBox<String> txtDepartement;
     @FXML
     private TextField txtTypeContrat;
     @FXML
@@ -501,7 +501,7 @@ public class DashboardController {
             OffreEmploi o = new OffreEmploi();
             o.setTitre(txtTitre.getText().trim());
             o.setDescription("");
-            o.setDepartement(txtDepartement.getText().trim());
+            o.setDepartement(txtDepartement.getValue() == null ? "" : txtDepartement.getValue().trim());
             o.setTypeContrat(txtTypeContrat.getText().trim());
             o.setNombrePostes(Integer.parseInt(txtNombrePostes.getText().trim()));
             o.setDatePublication(dpDatePublication.getValue() == null ? LocalDate.now() : dpDatePublication.getValue());
@@ -531,7 +531,7 @@ public class DashboardController {
             o.setId(Integer.parseInt(txtOffreId.getText()));
             o.setTitre(txtTitre.getText().trim());
             o.setDescription("");
-            o.setDepartement(txtDepartement.getText().trim());
+            o.setDepartement(txtDepartement.getValue() == null ? "" : txtDepartement.getValue().trim());
             o.setTypeContrat(txtTypeContrat.getText().trim());
             o.setNombrePostes(Integer.parseInt(txtNombrePostes.getText().trim()));
             o.setDatePublication(dpDatePublication.getValue() == null ? LocalDate.now() : dpDatePublication.getValue());
@@ -565,7 +565,7 @@ public class DashboardController {
     public void clearOffreForm() {
         txtOffreId.clear();
         txtTitre.clear();
-        txtDepartement.clear();
+        txtDepartement.setValue(null);
         txtTypeContrat.clear();
         txtNombrePostes.clear();
         dpDatePublication.setValue(null);
@@ -1019,6 +1019,43 @@ public class DashboardController {
     }
 
     @FXML
+    public void updateCommunicationPublication() {
+        User current = Session.getUser();
+        if (current == null) {
+            showError("Session invalide.");
+            return;
+        }
+        String role = current.getRole() == null ? "" : current.getRole().trim().toUpperCase();
+        if (!role.contains("ADMIN")) {
+            showError("Seul ADMIN RH peut modifier une publication.");
+            return;
+        }
+        if (selectedPublication == null) {
+            showError("Selectionnez une publication a modifier.");
+            return;
+        }
+        String titre = txtPublicationTitre.getText() == null ? "" : txtPublicationTitre.getText().trim();
+        String contenu = txtPublicationContenu.getText() == null ? "" : txtPublicationContenu.getText().trim();
+        if (titre.isBlank() || contenu.isBlank()) {
+            showError("Titre et contenu sont obligatoires.");
+            return;
+        }
+        boolean ok = publicationService.updatePublication(
+                selectedPublication.getId(),
+                current.getId(),
+                true,
+                titre,
+                contenu
+        );
+        if (ok) {
+            renderCommunicationCards();
+            setPageMessage("Publication modifiee.", false);
+        } else {
+            showError("Echec modification publication.");
+        }
+    }
+
+    @FXML
     public void deleteCommunicationPublication() {
         User current = Session.getUser();
         if (current == null) {
@@ -1243,7 +1280,7 @@ public class DashboardController {
                 selectedOffre = offre;
                 txtOffreId.setText(String.valueOf(offre.getId()));
                 txtTitre.setText(offre.getTitre());
-                txtDepartement.setText(offre.getDepartement());
+                txtDepartement.setValue(offre.getDepartement());
                 txtTypeContrat.setText(offre.getTypeContrat());
                 txtNombrePostes.setText(String.valueOf(offre.getNombrePostes()));
                 dpDatePublication.setValue(offre.getDatePublication());
@@ -1433,6 +1470,12 @@ public class DashboardController {
                 selectedPublicationCard = card;
                 selectedPublicationCard.getStyleClass().add("entity-card-selected");
                 selectedPublication = publication;
+                if (txtPublicationTitre != null) {
+                    txtPublicationTitre.setText(publication.getTitre());
+                }
+                if (txtPublicationContenu != null) {
+                    txtPublicationContenu.setText(publication.getContenu());
+                }
             });
             publicationList.getChildren().add(card);
         }

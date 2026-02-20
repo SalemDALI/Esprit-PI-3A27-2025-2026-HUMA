@@ -6,6 +6,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -28,6 +29,7 @@
     <center>
         <VBox spacing="12" alignment="CENTER" styleClass="content">
             <Label text="Demande de conge" styleClass="title"/>
+            <Label fx:id="lblInfo" styleClass="page-message" text=""/>
 
             <DatePicker fx:id="dateDebut" promptText="Date debut"/>
             <DatePicker fx:id="dateFin" promptText="Date fin"/>
@@ -41,7 +43,18 @@
                 </items>
             </ComboBox>
 
-            <Button text="Demander" styleClass="btn btn-primary" onAction="#handleDemande"/>
+            <HBox spacing="10" styleClass="action-row">
+                <Button text="Demander" styleClass="btn btn-primary" onAction="#handleDemande"/>
+                <Button text="Modifier" styleClass="btn btn-warning" onAction="#updateDemande"/>
+                <Button text="Supprimer" styleClass="btn btn-danger" onAction="#deleteDemande"/>
+                <Button text="Actualiser" styleClass="btn" onAction="#refreshMyAbsences"/>
+            </HBox>
+
+            <ScrollPane fitToWidth="true" prefHeight="280" styleClass="cards-scroll">
+                <content>
+                    <VBox fx:id="tableMyAbsences" spacing="10" styleClass="cards-container"/>
+                </content>
+            </ScrollPane>
         </VBox>
     </center>
 </BorderPane>
