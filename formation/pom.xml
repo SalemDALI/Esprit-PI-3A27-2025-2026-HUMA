@@ -29,6 +29,13 @@
             <version>21</version>
         </dependency>
 
+        <!-- ✅ JavaFX Web (Google Maps WebView) -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>21</version>
+        </dependency>
+
         <!-- MySQL Connector -->
         <dependency>
             <groupId>com.mysql</groupId>
@@ -36,7 +43,7 @@
             <version>8.0.33</version>
         </dependency>
 
-        <!-- JUnit Jupiter API (écrire les tests) -->
+        <!-- JUnit Jupiter API -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -44,7 +51,7 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- JUnit Jupiter Engine (exécuter les tests) -->
+        <!-- JUnit Jupiter Engine -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
@@ -52,7 +59,7 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- JUnit Jupiter Params (tests paramétrés) -->
+        <!-- JUnit Jupiter Params -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
@@ -60,6 +67,29 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- ✅ QR Code ZXing Core (version stable) -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+
+        <!-- ✅ QR Code ZXing JavaSE (sauvegarde PNG) -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>21</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20231013</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -86,7 +116,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Plugin Surefire pour exécuter JUnit 5 -->
+            <!-- Plugin Surefire pour JUnit 5 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>

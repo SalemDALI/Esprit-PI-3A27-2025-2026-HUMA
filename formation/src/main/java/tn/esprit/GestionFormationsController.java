@@ -12,6 +12,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import model.Formation;
 import services.CrudFormation;
+import services.MapService;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 
@@ -57,7 +58,6 @@ public class GestionFormationsController {
     // ======================== AJOUTER ========================
     @FXML
     public void ajouterFormation() {
-        // Validation complète
         String erreur = validerSaisie();
         if (erreur != null) {
             afficherAlerte("Erreur de saisie", erreur, Alert.AlertType.ERROR);
@@ -95,7 +95,6 @@ public class GestionFormationsController {
             return;
         }
 
-        // Validation complète
         String erreur = validerSaisie();
         if (erreur != null) {
             afficherAlerte("Erreur de saisie", erreur, Alert.AlertType.ERROR);
@@ -129,69 +128,53 @@ public class GestionFormationsController {
 
         // 1. Sujet
         String sujet = sujetField.getText().trim();
-        if (sujet.isEmpty()) {
-            return "Le sujet est obligatoire.";
-        }
-        if (sujet.length() < 3) {
-            return "Le sujet doit contenir au moins 3 caractères.";
-        }
-        if (sujet.length() > 100) {
-            return "Le sujet ne doit pas dépasser 100 caractères.";
-        }
+        if (sujet.isEmpty()) return "Le sujet est obligatoire.";
+        if (sujet.length() < 3) return "Le sujet doit contenir au moins 3 caractères.";
+        if (sujet.length() > 100) return "Le sujet ne doit pas dépasser 100 caractères.";
 
         // 2. Formateur
         String formateur = formateurField.getText().trim();
-        if (formateur.isEmpty()) {
-            return "Le nom du formateur est obligatoire.";
-        }
-        if (formateur.length() < 3) {
-            return "Le nom du formateur doit contenir au moins 3 caractères.";
-        }
-        if (!formateur.matches("[a-zA-ZÀ-ÿ\\s\\-']+")) {
+        if (formateur.isEmpty()) return "Le nom du formateur est obligatoire.";
+        if (formateur.length() < 3) return "Le nom du formateur doit contenir au moins 3 caractères.";
+        if (!formateur.matches("[a-zA-ZÀ-ÿ\\s\\-']+"))
             return "Le nom du formateur ne doit contenir que des lettres.";
-        }
 
         // 3. Type
-        if (typeCombo.getValue() == null) {
-            return "Veuillez sélectionner le type de formation.";
-        }
+        if (typeCombo.getValue() == null) return "Veuillez sélectionner le type de formation.";
 
         // 4. Date de début
-        if (dateDebutPicker.getValue() == null) {
-            return "La date de début est obligatoire.";
-        }
-        if (dateDebutPicker.getValue().isBefore(LocalDate.now())) {
+        if (dateDebutPicker.getValue() == null) return "La date de début est obligatoire.";
+        if (dateDebutPicker.getValue().isBefore(LocalDate.now()))
             return "La date de début ne peut pas être dans le passé.";
-        }
 
         // 5. Durée
         String dureeStr = dureeField.getText().trim();
-        if (dureeStr.isEmpty()) {
-            return "La durée est obligatoire.";
-        }
+        if (dureeStr.isEmpty()) return "La durée est obligatoire.";
         try {
             int duree = Integer.parseInt(dureeStr);
-            if (duree <= 0) {
-                return "La durée doit être un nombre positif (minimum 1 jour).";
-            }
-            if (duree > 365) {
-                return "La durée ne peut pas dépasser 365 jours.";
-            }
+            if (duree <= 0) return "La durée doit être un nombre positif (minimum 1 jour).";
+            if (duree > 365) return "La durée ne peut pas dépasser 365 jours.";
         } catch (NumberFormatException e) {
             return "La durée doit être un nombre entier valide.";
         }
 
         // 6. Localisation
         String localisation = localisationField.getText().trim();
-        if (localisation.isEmpty()) {
-            return "La localisation est obligatoire.";
-        }
-        if (localisation.length() < 2) {
-            return "La localisation doit contenir au moins 2 caractères.";
-        }
+        if (localisation.isEmpty()) return "La localisation est obligatoire.";
+        if (localisation.length() < 2) return "La localisation doit contenir au moins 2 caractères.";
 
-        // Tout est valide
-        return null;
+        return null; // tout est valide
+    }
+
+    // ======================== CHOISIR LOCALISATION SUR CARTE ========================
+    @FXML
+    public void choisirSurLaCarte() {
+        // Ouvre OpenStreetMap → formateur clique sur une ville
+        // → localisationField rempli automatiquement
+        MapService.choisirLocalisation(ville -> {
+            localisationField.setText(ville);
+            System.out.println("✅ Localisation choisie : " + ville);
+        });
     }
 
     // ======================== ACTUALISER LISTE ========================

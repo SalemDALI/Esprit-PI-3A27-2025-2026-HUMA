@@ -81,11 +81,22 @@
                                           -fx-border-color: #ddd; -fx-border-radius: 6px;" />
                     </VBox>
 
+                    <!-- ✅ LOCALISATION + BOUTON CARTE -->
                     <VBox spacing="4.0">
                         <Label text="Localisation *" styleClass="request-name" />
-                        <TextField fx:id="localisationField" promptText="Ex: Tunis"
-                                   style="-fx-padding: 8px; -fx-background-radius: 6px;
-                                          -fx-border-color: #ddd; -fx-border-radius: 6px;" />
+                        <HBox spacing="8.0" alignment="CENTER_LEFT">
+                            <TextField fx:id="localisationField"
+                                       promptText="Ex: Tunis"
+                                       HBox.hgrow="ALWAYS"
+                                       style="-fx-padding: 8px; -fx-background-radius: 6px;
+                                              -fx-border-color: #ddd; -fx-border-radius: 6px;" />
+                            <Button text="📍 Carte"
+                                    onAction="#choisirSurLaCarte"
+                                    style="-fx-background-color: #27ae60; -fx-text-fill: white;
+                                           -fx-padding: 8px 10px; -fx-background-radius: 6px;
+                                           -fx-cursor: hand; -fx-font-weight: bold;
+                                           -fx-font-size: 11px;" />
+                        </HBox>
                     </VBox>
 
                     <TextField fx:id="idFormationField" visible="false" managed="false" />

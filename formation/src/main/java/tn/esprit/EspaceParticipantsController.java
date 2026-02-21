@@ -1,6 +1,5 @@
 package tn.esprit;
 
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,6 +14,9 @@ import model.Formation;
 import model.Participant;
 import services.CrudFormation;
 import services.CrudParticipant;
+import services.QRCodeService;
+import services.MapService;
+import services.WeatherService;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import java.sql.Date;
@@ -23,8 +25,6 @@ import java.util.List;
 
 public class EspaceParticipantsController {
 
-    // ✅ ID employé fixe récupéré depuis la BD (pas de champ dans l'interface)
-    // Changez cette valeur selon l'employé connecté
     private static final int EMPLOYE_ID = 1;
 
     @FXML private TextField formationSelectionneeField;
@@ -41,18 +41,10 @@ public class EspaceParticipantsController {
 
     @FXML
     public void initialize() {
-        // Date du jour automatique
         dateInscriptionField.setText(LocalDate.now().toString());
-
-        // Charger le catalogue
         actualiserCatalogue();
-
-        // Charger les inscriptions de l'employé directement
         chargerMesInscriptions();
-
-        // Recherche en temps réel
         rechercheField.textProperty().addListener((obs, oldVal, newVal) -> actualiserCatalogue());
-
         System.out.println("✅ Espace Participants chargé pour l'employé ID : " + EMPLOYE_ID);
     }
 
@@ -60,7 +52,6 @@ public class EspaceParticipantsController {
     @FXML
     public void inscrireParticipant() {
         try {
-            // Vérifier qu'une formation est sélectionnée
             if (formationIdField.getText().isEmpty()) {
                 afficherAlerte("Attention",
                         "Veuillez choisir une formation dans le catalogue.",
@@ -70,7 +61,6 @@ public class EspaceParticipantsController {
 
             int formationId = Integer.parseInt(formationIdField.getText());
 
-            // Vérifier si déjà inscrit
             List<Participant> tousParticipants = serviceParticipant.afficherAll();
             boolean dejaInscrit = tousParticipants.stream()
                     .anyMatch(p -> p.getEmployeId() == EMPLOYE_ID
@@ -83,7 +73,6 @@ public class EspaceParticipantsController {
                 return;
             }
 
-            // Créer la participation
             Participant participant = new Participant(
                     Date.valueOf(LocalDate.now()),
                     "En attente",
@@ -92,16 +81,12 @@ public class EspaceParticipantsController {
             );
 
             serviceParticipant.ajouter(participant);
-
             afficherAlerte("Succes",
                     "Inscription reussie ! Statut : En attente de validation.",
                     Alert.AlertType.INFORMATION);
 
-            // Réinitialiser la sélection
             formationSelectionneeField.clear();
             formationIdField.clear();
-
-            // Recharger les inscriptions
             chargerMesInscriptions();
 
         } catch (Exception e) {
@@ -183,15 +168,49 @@ public class EspaceParticipantsController {
                 infoLabel("  " + f.getLocalisation())
         );
 
-        // Bouton choisir
-        Button btnChoisir = new Button("Choisir cette formation");
+        // ======================== BOUTONS ========================
+        // Bouton Choisir
+        Button btnChoisir = new Button("✔ Choisir");
         btnChoisir.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;"
-                + " -fx-padding: 8px 15px; -fx-background-radius: 5px;"
+                + " -fx-padding: 6px 12px; -fx-background-radius: 5px;"
                 + " -fx-cursor: hand; -fx-font-size: 12px; -fx-font-weight: bold;");
-        btnChoisir.setMaxWidth(Double.MAX_VALUE);
         btnChoisir.setOnAction(e -> selectionnerFormation(f));
 
-        card.getChildren().addAll(titre, badge, details, btnChoisir);
+        // ✅ Bouton QR Code
+        Button btnQR = new Button("📱 QR Code");
+        btnQR.setStyle("-fx-background-color: #9b59b6; -fx-text-fill: white;"
+                + " -fx-padding: 6px 12px; -fx-background-radius: 5px;"
+                + " -fx-cursor: hand; -fx-font-size: 12px;");
+        btnQR.setOnAction(e -> {
+            // Sélectionne d'abord la formation
+            selectionnerFormation(f);
+            // Génère et affiche le QR Code
+            QRCodeService.genererEtAfficherQRCode(f);
+        });
+
+        // ✅ Bouton Localisation
+        Button btnMap = new Button("🗺️ Localisation");
+        btnMap.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white;"
+                + " -fx-padding: 6px 12px; -fx-background-radius: 5px;"
+                + " -fx-cursor: hand; -fx-font-size: 12px;");
+        btnMap.setOnAction(e -> {
+            // Affiche la carte Google Maps
+            MapService.afficherCarte(f.getLocalisation());
+        });
+
+        // Bouton Meteo
+        Button btnMeteo = new Button("\uD83C\uDF24\uFE0F Météo");
+        btnMeteo.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;"
+                + " -fx-padding: 6px 12px; -fx-background-radius: 5px;"
+                + " -fx-cursor: hand; -fx-font-size: 12px;");
+        btnMeteo.setOnAction(e -> WeatherService.afficherMeteo(f.getLocalisation()));
+
+        // HBox pour aligner les boutons horizontalement
+        HBox boutons = new HBox(6, btnChoisir, btnQR, btnMap, btnMeteo);
+        boutons.setAlignment(Pos.CENTER_LEFT);
+        boutons.setPadding(new Insets(8, 0, 0, 0));
+
+        card.getChildren().addAll(titre, badge, details, boutons);
         return card;
     }
 
@@ -217,7 +236,6 @@ public class EspaceParticipantsController {
             List<Participant> tousParticipants = serviceParticipant.afficherAll();
             List<Formation> toutesFormations = serviceFormation.afficherAll();
 
-            // Filtrer uniquement les inscriptions de cet employé
             List<Participant> mesInscriptions = tousParticipants.stream()
                     .filter(p -> p.getEmployeId() == EMPLOYE_ID)
                     .toList();
@@ -230,7 +248,6 @@ public class EspaceParticipantsController {
             }
 
             for (Participant p : mesInscriptions) {
-                // Trouver la formation correspondante
                 Formation formation = toutesFormations.stream()
                         .filter(f -> f.getId() == p.getFormationId())
                         .findFirst()
@@ -261,7 +278,6 @@ public class EspaceParticipantsController {
         Label date = new Label("Date : " + p.getDateInscription());
         date.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 11px;");
 
-        // Badge statut
         Label statutBadge = new Label(p.getResultat());
         statutBadge.getStyleClass().add("request-badge");
         String statut = p.getResultat().toLowerCase();
