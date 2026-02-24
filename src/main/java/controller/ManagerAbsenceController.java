@@ -99,7 +99,7 @@ public class ManagerAbsenceController {
     void openPublications(ActionEvent event) {
         try {
             Stage stage = (Stage) tableAbsences.getScene().getWindow();
-            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/publications.fxml"))));
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/publication/publications.fxml"))));
             stage.show();
         } catch (IOException e) {
             setMessage("Erreur ouverture publications: " + e.getMessage(), true);

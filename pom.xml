@@ -40,6 +40,20 @@
             <version>8.0.33</version>
         </dependency>
 
+        <!-- PDF text extraction -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.31</version>
+        </dependency>
+
+        <!-- JSON (OpenAI payloads + structured profile) -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.17.2</version>
+        </dependency>
+
         <!-- Unit tests -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

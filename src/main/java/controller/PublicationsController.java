@@ -86,13 +86,13 @@ public class PublicationsController {
             FXMLLoader loader;
 
             if (role.contains("MANAG")) {
-                loader = new FXMLLoader(getClass().getResource("/fxml/ManagerAbsence.fxml"));
+                loader = new FXMLLoader(getClass().getResource("/fxml/congesAbsences/ManagerAbsence.fxml"));
                 Scene scene = new Scene(loader.load());
                 ManagerAbsenceController c = loader.getController();
                 c.setManagerId(user.getId());
                 stage.setScene(scene);
             } else {
-                loader = new FXMLLoader(getClass().getResource("/fxml/DemandeConge.fxml"));
+                loader = new FXMLLoader(getClass().getResource("/fxml/congesAbsences/DemandeConge.fxml"));
                 Scene scene = new Scene(loader.load());
                 DemandeCongeController c = loader.getController();
                 c.setEmployeId(user.getId());

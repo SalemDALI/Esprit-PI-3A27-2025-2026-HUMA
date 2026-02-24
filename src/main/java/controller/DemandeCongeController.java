@@ -195,7 +195,7 @@ public class DemandeCongeController {
     public void openPublications(ActionEvent event) {
         try {
             Stage stage = (Stage) dateDebut.getScene().getWindow();
-            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/publications.fxml"))));
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/publication/publications.fxml"))));
             stage.show();
         } catch (IOException e) {
             new Alert(Alert.AlertType.ERROR, "Erreur ouverture publications: " + e.getMessage()).show();

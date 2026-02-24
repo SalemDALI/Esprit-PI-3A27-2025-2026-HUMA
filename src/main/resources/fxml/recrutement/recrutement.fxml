@@ -18,84 +18,43 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 
-<BorderPane styleClass="app-root" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DashboardController">
+<BorderPane styleClass="app-root" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DashboardController">
 
     <left>
         <VBox prefWidth="220" spacing="10" styleClass="sidebar dashboard-sidebar left-panel">
             <HBox spacing="8" styleClass="brand-row">
-                <ImageView fitHeight="121.0" fitWidth="442.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="90.0" fitWidth="260.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../images/huma.png" />
+                        <Image url="@../../images/huma.png" />
                     </image>
                 </ImageView>
             </HBox>
 
-            <Button onAction="#openDashboard" styleClass="nav-button" text="Tableau de bord" textFill="WHITESMOKE">
-                <graphic>
-                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../images/dashboard.png" />
-                        </image>
-                    </ImageView>
-                </graphic>
+            <Button onAction="#openDashboard" styleClass="nav-button" text="Tableau de bord">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/dashboard.png" /></image></ImageView></graphic>
             </Button>
             <Button onAction="#openRecrutement" styleClass="nav-button nav-active" text="Recrutement">
-                <graphic>
-                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../images/recrutement.png" />
-                        </image>
-                    </ImageView>
-                </graphic>
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/recrutement.png" /></image></ImageView></graphic>
             </Button>
             <Button onAction="#openConges" styleClass="nav-button" text="Congés">
-                <graphic>
-                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../images/conge.png" />
-                        </image>
-                    </ImageView>
-                </graphic>
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/conge.png" /></image></ImageView></graphic>
             </Button>
             <Button onAction="#openAbsences" styleClass="nav-button" text="Absences">
-                <graphic>
-                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../images/absences.png" />
-                        </image>
-                    </ImageView>
-                </graphic>
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/absences.png" /></image></ImageView></graphic>
             </Button>
             <Button onAction="#openCommunication" styleClass="nav-button" text="Communication">
-                <graphic>
-                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../images/communication.png" />
-                        </image>
-                    </ImageView>
-                </graphic>
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/communication.png" /></image></ImageView></graphic>
             </Button>
             <Button onAction="#openFormations" styleClass="nav-button" text="Formations">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/recrutement.png" /></image></ImageView></graphic>
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/recrutement.png" /></image></ImageView></graphic>
             </Button>
             <Button onAction="#openFeedback" styleClass="nav-button" text="FeedBack">
-                <graphic>
-                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../images/feedback.png" />
-                        </image>
-                    </ImageView>
-                </graphic>
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/feedback.png" /></image></ImageView></graphic>
             </Button>
-            <Button onAction="#openParametres" styleClass="nav-button" text="Paramètres" textFill="WHITESMOKE">
-                <graphic>
-                    <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../images/parametre.png" />
-                        </image>
-                    </ImageView>
-                </graphic>
+            <Button onAction="#openParametres" styleClass="nav-button" text="Paramètres">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/parametre.png" /></image></ImageView></graphic>
             </Button>
             <Region VBox.vgrow="ALWAYS" />
             <Button onAction="#logout" styleClass="nav-button" text="Logout" />
@@ -104,13 +63,63 @@
 
     <center>
         <VBox spacing="16" styleClass="main-content">
+            <HBox styleClass="top-toolbar">
+                <Label styleClass="dashboard-title" text="Recrutement" />
+                <Region HBox.hgrow="ALWAYS" />
+                <HBox spacing="8" styleClass="tool-group">
+                    <TextField promptText="Rechercher..." styleClass="search-input" />
+                    <Button styleClass="tool-btn" text="☰" />
+                    <Button styleClass="tool-btn" text="🔔" />
+                    <Button styleClass="tool-btn tool-btn-accent" text="＋" />
+                    <StackPane styleClass="profile-wrap">
+                        <ImageView fitHeight="34.0" fitWidth="34.0" preserveRatio="false" styleClass="profile-avatar">
+                            <clip>
+                                <Circle centerX="17.0" centerY="17.0" radius="17.0" />
+                            </clip>
+                            <image>
+                                <Image url="@../../images/huma.png" />
+                            </image>
+                        </ImageView>
+                    </StackPane>
+                </HBox>
+            </HBox>
+
+            <HBox spacing="12" styleClass="cards-row">
+                <VBox styleClass="metric-card metric-green">
+                    <Label fx:id="lblCardDemandes" styleClass="card-number" text="0" />
+                    <Label styleClass="card-subtitle" text="Demandes en attente" />
+                </VBox>
+                <VBox styleClass="metric-card metric-orange">
+                    <Label fx:id="lblCardPostes" styleClass="card-number" text="0" />
+                    <Label styleClass="card-subtitle" text="Postes ouverts" />
+                </VBox>
+                <VBox styleClass="metric-card metric-blue">
+                    <Label fx:id="lblCardEmployes" styleClass="card-number" text="0" />
+                    <Label styleClass="card-subtitle" text="Employés" />
+                </VBox>
+            </HBox>
+
+            <HBox spacing="12" styleClass="cards-row">
+                <VBox styleClass="metric-card metric-dark">
+                    <Label fx:id="lblCardCandidats" styleClass="card-number" text="0" />
+                    <Label styleClass="card-subtitle" text="Candidats" />
+                </VBox>
+                <VBox styleClass="metric-card metric-green-soft">
+                    <Label fx:id="lblCardAcceptees" styleClass="card-number" text="0" />
+                    <Label styleClass="card-subtitle" text="Candidatures acceptées" />
+                </VBox>
+                <VBox styleClass="metric-card metric-orange">
+                    <Label fx:id="lblCardRefusees" styleClass="card-number" text="0" />
+                    <Label styleClass="card-subtitle" text="Candidatures refusées" />
+                </VBox>
+            </HBox>
 
             <Label fx:id="lblPageMessage" styleClass="page-message" text="" />
 
             <StackPane styleClass="workspace-panel" VBox.vgrow="ALWAYS">
                 <TabPane styleClass="dashboard-tabs" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
-                        <Tab text="Utilisateur">
+                        <Tab text="Users">
                             <VBox spacing="12" styleClass="content">
                                 <HBox spacing="10">
                                     <TextField fx:id="txtUserId" disable="true" prefWidth="70" promptText="Utilisateur" />
@@ -138,7 +147,7 @@
                                 </HBox>
                                 <ScrollPane fitToWidth="true" prefHeight="420" styleClass="cards-scroll">
                                     <content>
-                                        <VBox fx:id="tableUsers" spacing="10" />
+                                        <VBox fx:id="tableUsers" spacing="10" styleClass="cards-container" />
                                     </content>
                                 </ScrollPane>
                             </VBox>
@@ -157,7 +166,7 @@
                                 </HBox>
                                 <ScrollPane fitToWidth="true" prefHeight="420" styleClass="cards-scroll">
                                     <content>
-                                        <VBox fx:id="tableCandidats" spacing="10" />
+                                        <VBox fx:id="tableCandidats" spacing="10" styleClass="cards-container" />
                                     </content>
                                 </ScrollPane>
                             </VBox>
@@ -197,7 +206,7 @@
                                 </HBox>
                                 <ScrollPane fitToWidth="true" prefHeight="390" styleClass="cards-scroll">
                                     <content>
-                                        <VBox fx:id="tableOffres" spacing="10" />
+                                        <VBox fx:id="tableOffres" spacing="10" styleClass="cards-container" />
                                     </content>
                                 </ScrollPane>
                             </VBox>
@@ -230,7 +239,7 @@
                                 </HBox>
                                 <ScrollPane fitToWidth="true" prefHeight="420" styleClass="cards-scroll">
                                     <content>
-                                        <VBox fx:id="tableCandidatures" spacing="10" />
+                                        <VBox fx:id="tableCandidatures" spacing="10" styleClass="cards-container" />
                                     </content>
                                 </ScrollPane>
                             </VBox>

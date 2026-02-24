@@ -10,14 +10,17 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane styleClass="app-root" stylesheets="@style.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25" fx:controller="controller.DashboardController">
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.CategoryAxis?>
+<BorderPane styleClass="app-root" stylesheets="@../style.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="controller.DashboardController">
 
     <left>
         <VBox prefWidth="220" spacing="10" styleClass="sidebar dashboard-sidebar left-panel">
             <HBox spacing="8" styleClass="brand-row">
                 <ImageView fitHeight="78.0" fitWidth="240.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../images/huma.png" />
+                        <Image url="@../../images/huma.png" />
                     </image>
                 </ImageView>
             </HBox>
@@ -26,7 +29,7 @@
                 <graphic>
                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../images/dashboard.png" />
+                            <Image url="@../../images/dashboard.png" />
                         </image>
                     </ImageView>
                 </graphic>
@@ -35,7 +38,7 @@
                 <graphic>
                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../images/recrutement.png" />
+                            <Image url="@../../images/recrutement.png" />
                         </image>
                     </ImageView>
                 </graphic>
@@ -44,7 +47,7 @@
                 <graphic>
                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../images/conge.png" />
+                            <Image url="@../../images/conge.png" />
                         </image>
                     </ImageView>
                 </graphic>
@@ -53,7 +56,7 @@
                 <graphic>
                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../images/absences.png" />
+                            <Image url="@../../images/absences.png" />
                         </image>
                     </ImageView>
                 </graphic>
@@ -62,19 +65,19 @@
                 <graphic>
                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../images/communication.png" />
+                            <Image url="@../../images/communication.png" />
                         </image>
                     </ImageView>
                 </graphic>
             </Button>
             <Button onAction="#openFormations" styleClass="nav-button" text="Formations">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/recrutement.png" /></image></ImageView></graphic>
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/recrutement.png" /></image></ImageView></graphic>
             </Button>
             <Button onAction="#openFeedback" styleClass="nav-button nav-active" text="FeedBack">
                 <graphic>
                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../images/feedback.png" />
+                            <Image url="@../../images/feedback.png" />
                         </image>
                     </ImageView>
                 </graphic>
@@ -83,7 +86,7 @@
                 <graphic>
                     <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../images/parametre.png" />
+                            <Image url="@../../images/parametre.png" />
                         </image>
                     </ImageView>
                 </graphic>
@@ -95,11 +98,42 @@
 
     <center>
         <VBox spacing="16" styleClass="main-content">
-            <HBox styleClass="top-toolbar" />
+            <VBox spacing="20" padding="20">
 
-            <StackPane styleClass="workspace-panel" VBox.vgrow="ALWAYS">
-                <Label styleClass="page-message" text="Page feedback (vide)." />
-            </StackPane>
+                <!-- Stat Cards -->
+                <HBox spacing="20">
+                    <VBox styleClass="card">
+                        <Label text="Candidatures"/>
+                        <Label text="1,257" styleClass="big-number"/>
+                    </VBox>
+
+                    <VBox styleClass="card">
+                        <Label text="Postes"/>
+                        <Label text="8" styleClass="big-number"/>
+                    </VBox>
+
+                    <VBox styleClass="card">
+                        <Label text="Entretiens"/>
+                        <Label text="32" styleClass="big-number"/>
+                    </VBox>
+
+                    <VBox styleClass="card">
+                        <Label text="Nouveaux CV"/>
+                        <Label text="18" styleClass="big-number"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Chart -->
+                <LineChart fx:id="lineChart" prefHeight="300">
+                    <xAxis>
+                        <CategoryAxis label="Mois"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis label="Candidatures"/>
+                    </yAxis>
+                </LineChart>
+
+            </VBox>
         </VBox>
     </center>
 

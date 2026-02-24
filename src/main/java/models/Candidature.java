@@ -11,6 +11,8 @@ public class Candidature {
     private int offreId;
     private String offreTitre;
     private String cheminCv;
+    private String candidatNom;
+    private String candidatEmail;
 
     public Candidature() {}
 
@@ -41,4 +43,10 @@ public class Candidature {
 
     public String getCheminCv() { return cheminCv; }
     public void setCheminCv(String cheminCv) { this.cheminCv = cheminCv; }
+
+    public String getCandidatNom() { return candidatNom; }
+    public void setCandidatNom(String candidatNom) { this.candidatNom = candidatNom; }
+
+    public String getCandidatEmail() { return candidatEmail; }
+    public void setCandidatEmail(String candidatEmail) { this.candidatEmail = candidatEmail; }
 }

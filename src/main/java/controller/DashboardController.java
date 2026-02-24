@@ -105,6 +105,12 @@ public class DashboardController {
     private Label lblCardDemandes;
     @FXML
     private Label lblCardEmployes;
+    @FXML
+    private Label lblCardCandidats;
+    @FXML
+    private Label lblCardAcceptees;
+    @FXML
+    private Label lblCardRefusees;
 
     @FXML
     private VBox tableConges;
@@ -310,37 +316,37 @@ public class DashboardController {
 
     @FXML
     public void openRecrutement(ActionEvent event) {
-        navigateTo(event, "/fxml/recrutement.fxml");
+        navigateTo(event, "/fxml/recrutement/recrutement.fxml");
     }
 
     @FXML
     public void openDashboard(ActionEvent event) {
-        navigateTo(event, "/fxml/dashboard.fxml");
+        navigateTo(event, "/fxml/recrutement/dashboard.fxml");
     }
 
     @FXML
     public void openConges(ActionEvent event) {
-        navigateTo(event, "/fxml/conges.fxml");
+        navigateTo(event, "/fxml/congesAbsences/Conges.fxml");
     }
 
     @FXML
     public void openAbsences(ActionEvent event) {
-        navigateTo(event, "/fxml/absences.fxml");
+        navigateTo(event, "/fxml/congesAbsences/absences.fxml");
     }
 
     @FXML
     public void openCommunication(ActionEvent event) {
-        navigateTo(event, "/fxml/communication.fxml");
+        navigateTo(event, "/fxml/publication/communication.fxml");
     }
 
     @FXML
     public void openFormations(ActionEvent event) {
-        navigateTo(event, "/fxml/formation.fxml");
+        navigateTo(event, "/fxml/formation/formation.fxml");
     }
 
     @FXML
     public void openFeedback(ActionEvent event) {
-        navigateTo(event, "/fxml/feedback.fxml");
+        navigateTo(event, "/fxml/feedback/feedback.fxml");
     }
 
     @FXML
@@ -357,6 +363,15 @@ public class DashboardController {
         }
         if (lblCardEmployes != null) {
             lblCardEmployes.setText(String.valueOf(serviceUser.countByRole("EMPLOYE")));
+        }
+        if (lblCardCandidats != null) {
+            lblCardCandidats.setText(String.valueOf(serviceCandidat.getAll().size()));
+        }
+        if (lblCardAcceptees != null) {
+            lblCardAcceptees.setText(String.valueOf(serviceCandidature.countByStatut("ACCEPTEE")));
+        }
+        if (lblCardRefusees != null) {
+            lblCardRefusees.setText(String.valueOf(serviceCandidature.countByStatut("REFUSEE")));
         }
     }
 

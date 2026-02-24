@@ -12,18 +12,20 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controller.DemandeCongeController"
-            stylesheets="@style.css"
+            stylesheets="@../style.css"
             styleClass="app-root">
 
     <left>
         <VBox prefWidth="220" spacing="10" styleClass="sidebar dashboard-sidebar left-panel">
             <HBox spacing="8" styleClass="brand-row">
                 <ImageView fitHeight="78.0" fitWidth="240.0" preserveRatio="true">
-                    <image><Image url="@../images/huma.png" /></image>
+                    <image><Image url="@../../images/huma.png" /></image>
                 </ImageView>
             </HBox>
 
@@ -40,6 +42,16 @@
                 <Label fx:id="welcomeLabel" styleClass="dashboard-title" text="Espace Employé"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Button text="Actualiser" styleClass="btn" onAction="#refreshMyAbsences"/>
+                <StackPane styleClass="profile-wrap">
+                    <ImageView fitHeight="34.0" fitWidth="34.0" preserveRatio="false" styleClass="profile-avatar">
+                        <clip>
+                            <Circle centerX="17.0" centerY="17.0" radius="17.0" />
+                        </clip>
+                        <image>
+                            <Image url="@../../images/huma.png" />
+                        </image>
+                    </ImageView>
+                </StackPane>
             </HBox>
 
             <VBox spacing="12" alignment="CENTER_LEFT" styleClass="content">

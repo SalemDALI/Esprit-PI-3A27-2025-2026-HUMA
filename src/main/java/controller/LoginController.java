@@ -46,26 +46,26 @@ public class LoginController {
             FXMLLoader loader;
 
             if (isAdminRole(role)) {
-                loader = new FXMLLoader(getClass().getResource("/fxml/dashboard.fxml"));
+                loader = new FXMLLoader(getClass().getResource("/fxml/recrutement/dashboard.fxml"));
                 stage.setScene(new Scene(loader.load()));
             } else if (isCandidatRole(role)) {
-                loader = new FXMLLoader(getClass().getResource("/fxml/candidat.fxml"));
+                loader = new FXMLLoader(getClass().getResource("/fxml/recrutement/candidat.fxml"));
                 stage.setScene(new Scene(loader.load()));
             } else if (isEmployeeRole(role)) {
-                loader = new FXMLLoader(getClass().getResource("/fxml/DemandeConge.fxml"));
+                loader = new FXMLLoader(getClass().getResource("/fxml/congesAbsences/DemandeConge.fxml"));
                 Scene employeScene = new Scene(loader.load());
                 DemandeCongeController employeController = loader.getController();
                 employeController.setEmployeId(user.getId());
                 stage.setScene(employeScene);
             } else if (isManagerRole(role)) {
-                loader = new FXMLLoader(getClass().getResource("/fxml/ManagerAbsence.fxml"));
+                loader = new FXMLLoader(getClass().getResource("/fxml/congesAbsences/ManagerAbsence.fxml"));
                 Scene managerScene = new Scene(loader.load());
                 ManagerAbsenceController managerController = loader.getController();
                 managerController.setManagerId(user.getId());
                 stage.setScene(managerScene);
             } else {
                 // Fallback: tout role non reconnu ouvre l'espace employe
-                loader = new FXMLLoader(getClass().getResource("/fxml/DemandeConge.fxml"));
+                loader = new FXMLLoader(getClass().getResource("/fxml/congesAbsences/DemandeConge.fxml"));
                 Scene employeScene = new Scene(loader.load());
                 DemandeCongeController employeController = loader.getController();
                 employeController.setEmployeId(user.getId());
