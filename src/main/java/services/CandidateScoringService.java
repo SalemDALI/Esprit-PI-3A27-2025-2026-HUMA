@@ -71,6 +71,14 @@ public class CandidateScoringService {
         return CvRankingStorageUtil.saveRankingAsJson(offre, ranking);
     }
 
+    public String saveRankingAsJson(int offreId, List<CandidateScoringResult> ranking) throws java.io.IOException {
+        OffreEmploi offre = serviceOffre.getById(offreId);
+        if (offre == null) {
+            throw new IllegalArgumentException("Offre introuvable: " + offreId);
+        }
+        return CvRankingStorageUtil.saveRankingAsJson(offre, ranking);
+    }
+
     private CandidateScoringResult scoreCandidature(Candidature candidature, OffreEmploi offre) {
         if (candidature.getCheminCv() == null || candidature.getCheminCv().isBlank()) {
             return null;

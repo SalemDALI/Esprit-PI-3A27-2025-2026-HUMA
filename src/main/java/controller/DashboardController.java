@@ -810,17 +810,34 @@ public class DashboardController {
 
             List<CandidateScoringResult> ranking = candidateScoringService.rankTopCandidatesForOffer(offreId, topN);
             tableTopCv.getChildren().clear();
+            int rank = 1;
             for (CandidateScoringResult item : ranking) {
                 String nom = (item.getCandidatNom() == null || item.getCandidatNom().isBlank()) ? "Candidat" : item.getCandidatNom();
                 String email = item.getCandidatEmail() == null ? "" : item.getCandidatEmail();
+                String xp = item.getCvAnalysis() == null ? "0" : String.format(Locale.US, "%.1f", item.getCvAnalysis().getYearsExperience());
+                String skills = item.getCvAnalysis() == null || item.getCvAnalysis().getSkills().isEmpty()
+                        ? "N/A"
+                        : String.join(", ", item.getCvAnalysis().getSkills().stream().limit(6).collect(Collectors.toList()));
+                String summary = item.getCvAnalysis() == null ? "" : item.getCvAnalysis().getSummary();
+                if (summary == null) {
+                    summary = "";
+                }
+                if (summary.length() > 120) {
+                    summary = summary.substring(0, 120) + "...";
+                }
                 VBox card = buildCard(
-                        nom + " | score global: " + item.getScoreGlobal() + "/100",
-                        "email: " + email + " | " + item.getCommentaire()
+                        "#" + rank + " " + nom + " | score global: " + item.getScoreGlobal() + "/100",
+                        "email: " + email
+                                + " | exp: " + xp + " ans"
+                                + " | skills: " + skills
+                                + " | " + item.getCommentaire()
+                                + (summary.isBlank() ? "" : " | nlp: " + summary)
                 );
                 tableTopCv.getChildren().add(card);
+                rank++;
             }
 
-            String jsonPath = candidateScoringService.rankTopCandidatesForOfferAndSaveJson(offreId, topN);
+            String jsonPath = candidateScoringService.saveRankingAsJson(offreId, ranking);
             if (lblTopCvJsonPath != null) {
                 lblTopCvJsonPath.setText("JSON: " + jsonPath);
             }
