@@ -37,7 +37,7 @@ public class ManagerAbsenceController {
             setMessage("Selectionnez un conge.", true);
             return;
         }
-        if (service.changerStatut(selectedAbsence.getId(), "ACCEPTE")) {
+        if (service.changerStatut(selectedAbsence.getId(), "ACCEPTE", managerId, "Valide par manager")) {
             setMessage("Conge accepte.", false);
             refresh();
         } else {
@@ -51,7 +51,7 @@ public class ManagerAbsenceController {
             setMessage("Selectionnez un conge.", true);
             return;
         }
-        if (service.changerStatut(selectedAbsence.getId(), "REFUSE")) {
+        if (service.changerStatut(selectedAbsence.getId(), "REFUSE", managerId, "Refuse par manager")) {
             setMessage("Conge refuse.", false);
             refresh();
         } else {

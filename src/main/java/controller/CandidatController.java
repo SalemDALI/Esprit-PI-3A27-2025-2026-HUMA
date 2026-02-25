@@ -94,7 +94,11 @@ public class CandidatController {
         }
 
         try {
-            selectedCvPath = CvFileStorageUtil.savePdfCv(selected.toPath());
+            if (Session.getUser() == null) {
+                showError("Session invalide. Reconnectez-vous.");
+                return;
+            }
+            selectedCvPath = CvFileStorageUtil.savePdfCv(selected.toPath(), Session.getUser().getId());
             lblCvPath.setText(selectedCvPath);
         } catch (IllegalArgumentException e) {
             showError(e.getMessage());

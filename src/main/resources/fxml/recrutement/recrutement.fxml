@@ -2,252 +2,187 @@
 
 <?import java.lang.String?>
 <?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
 <?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
 
-<BorderPane styleClass="app-root" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DashboardController">
+<BorderPane fx:controller="controller.DashboardController" stylesheets="@../dashboard.css"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" styleClass="dash-root">
 
     <left>
-        <VBox prefWidth="220" spacing="10" styleClass="sidebar dashboard-sidebar left-panel">
-            <HBox spacing="8" styleClass="brand-row">
-                <ImageView fitHeight="90.0" fitWidth="260.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../../images/huma.png" />
-                    </image>
-                </ImageView>
-            </HBox>
-
-            <Button onAction="#openDashboard" styleClass="nav-button" text="Tableau de bord">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/dashboard.png" /></image></ImageView></graphic>
-            </Button>
-            <Button onAction="#openRecrutement" styleClass="nav-button nav-active" text="Recrutement">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/recrutement.png" /></image></ImageView></graphic>
-            </Button>
-            <Button onAction="#openConges" styleClass="nav-button" text="Congés">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/conge.png" /></image></ImageView></graphic>
-            </Button>
-            <Button onAction="#openAbsences" styleClass="nav-button" text="Absences">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/absences.png" /></image></ImageView></graphic>
-            </Button>
-            <Button onAction="#openCommunication" styleClass="nav-button" text="Communication">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/communication.png" /></image></ImageView></graphic>
-            </Button>
-            <Button onAction="#openFormations" styleClass="nav-button" text="Formations">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/recrutement.png" /></image></ImageView></graphic>
-            </Button>
-            <Button onAction="#openFeedback" styleClass="nav-button" text="FeedBack">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/feedback.png" /></image></ImageView></graphic>
-            </Button>
-            <Button onAction="#openParametres" styleClass="nav-button" text="Paramètres">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/parametre.png" /></image></ImageView></graphic>
-            </Button>
+        <VBox prefWidth="240" styleClass="sidebar">
+            <Label text="HUMA RH" styleClass="brand" />
+            <Button text="🏠  Dashboard" styleClass="side-btn side-btn-active" onAction="#openRecrutement" />
+            <Button text="👥  Utilisateurs" styleClass="side-btn" />
+            <Button text="💼  Offres d’Emploi" styleClass="side-btn" />
+            <Button text="📄  Candidatures" styleClass="side-btn" />
+            <Button text="📊  Statistiques" styleClass="side-btn" />
+            <Button text="⚙️  Paramètres" styleClass="side-btn" onAction="#openParametres" />
             <Region VBox.vgrow="ALWAYS" />
-            <Button onAction="#logout" styleClass="nav-button" text="Logout" />
+            <Button text="Logout" styleClass="side-btn" onAction="#logout" />
         </VBox>
     </left>
 
     <center>
-        <VBox spacing="16" styleClass="main-content">
-            <HBox styleClass="top-toolbar">
-                <Label styleClass="dashboard-title" text="Recrutement" />
+        <VBox spacing="14" styleClass="content-root">
+            <HBox alignment="CENTER_LEFT" styleClass="topbar" spacing="12">
+                <Label text="Tableau de Bord - Gestion de Recrutement" styleClass="page-title" />
                 <Region HBox.hgrow="ALWAYS" />
-                <HBox spacing="8" styleClass="tool-group">
-                    <TextField promptText="Rechercher..." styleClass="search-input" />
-                    <Button styleClass="tool-btn" text="☰" />
-                    <Button styleClass="tool-btn" text="🔔" />
-                    <Button styleClass="tool-btn tool-btn-accent" text="＋" />
-                    <StackPane styleClass="profile-wrap">
-                        <ImageView fitHeight="34.0" fitWidth="34.0" preserveRatio="false" styleClass="profile-avatar">
-                            <clip>
-                                <Circle centerX="17.0" centerY="17.0" radius="17.0" />
-                            </clip>
-                            <image>
-                                <Image url="@../../images/huma.png" />
-                            </image>
-                        </ImageView>
-                    </StackPane>
-                </HBox>
+                <TextField fx:id="txtGlobalSearch" promptText="Recherche..." styleClass="search-input" onAction="#refreshModernSections" />
+                <Button text="🔔" styleClass="icon-btn" />
+                <Button text="👤" styleClass="icon-btn" />
             </HBox>
 
-            <HBox spacing="12" styleClass="cards-row">
-                <VBox styleClass="metric-card metric-green">
-                    <Label fx:id="lblCardDemandes" styleClass="card-number" text="0" />
-                    <Label styleClass="card-subtitle" text="Demandes en attente" />
-                </VBox>
-                <VBox styleClass="metric-card metric-orange">
-                    <Label fx:id="lblCardPostes" styleClass="card-number" text="0" />
-                    <Label styleClass="card-subtitle" text="Postes ouverts" />
-                </VBox>
-                <VBox styleClass="metric-card metric-blue">
-                    <Label fx:id="lblCardEmployes" styleClass="card-number" text="0" />
-                    <Label styleClass="card-subtitle" text="Employés" />
-                </VBox>
-            </HBox>
+            <Label fx:id="lblPageMessage" text="" styleClass="page-message" />
 
-            <HBox spacing="12" styleClass="cards-row">
-                <VBox styleClass="metric-card metric-dark">
-                    <Label fx:id="lblCardCandidats" styleClass="card-number" text="0" />
-                    <Label styleClass="card-subtitle" text="Candidats" />
+            <HBox spacing="12" styleClass="kpi-row">
+                <VBox styleClass="kpi-card">
+                    <Label text="📄 Total Candidatures" styleClass="kpi-title" />
+                    <Label fx:id="lblKpiTotalCandidatures" text="0" styleClass="kpi-value" />
+                    <Label text="volume global" styleClass="kpi-sub" />
                 </VBox>
-                <VBox styleClass="metric-card metric-green-soft">
-                    <Label fx:id="lblCardAcceptees" styleClass="card-number" text="0" />
-                    <Label styleClass="card-subtitle" text="Candidatures acceptées" />
+                <VBox styleClass="kpi-card">
+                    <Label text="✅ Taux d’Acceptation" styleClass="kpi-title" />
+                    <Label fx:id="lblKpiTauxAcceptation" text="0%" styleClass="kpi-value" />
+                    <Label text="tendance recrutement" styleClass="kpi-sub" />
                 </VBox>
-                <VBox styleClass="metric-card metric-orange">
-                    <Label fx:id="lblCardRefusees" styleClass="card-number" text="0" />
-                    <Label styleClass="card-subtitle" text="Candidatures refusées" />
+                <VBox styleClass="kpi-card">
+                    <Label text="⏳ Temps Moyen de Traitement" styleClass="kpi-title" />
+                    <Label fx:id="lblKpiTempsMoyen" text="0 j" styleClass="kpi-value" />
+                    <Label text="candidatures clôturées" styleClass="kpi-sub" />
+                </VBox>
+                <VBox styleClass="kpi-card">
+                    <Label text="📣 Offres Actives" styleClass="kpi-title" />
+                    <Label fx:id="lblKpiOffresActives" text="0" styleClass="kpi-value" />
+                    <Label text="postes ouverts" styleClass="kpi-sub" />
+                </VBox>
+                <VBox styleClass="kpi-card">
+                    <Label text="👤 Employés Actifs" styleClass="kpi-title" />
+                    <Label fx:id="lblKpiEmployesActifs" text="0" styleClass="kpi-value" />
+                    <Label text="utilisateurs EMPLOYE" styleClass="kpi-sub" />
                 </VBox>
             </HBox>
 
-            <Label fx:id="lblPageMessage" styleClass="page-message" text="" />
+            <HBox spacing="12">
+                <VBox styleClass="panel" HBox.hgrow="ALWAYS">
+                    <Label text="Candidatures par Département" styleClass="panel-title" />
+                    <PieChart fx:id="chartCandidaturesDept" prefHeight="290" />
+                </VBox>
+                <VBox styleClass="panel" HBox.hgrow="ALWAYS" spacing="8">
+                    <Label text="Évolution Mensuelle des Candidatures" styleClass="panel-title" />
+                    <LineChart fx:id="chartEvolutionLine" createSymbols="true" legendVisible="true" prefHeight="145">
+                        <xAxis><CategoryAxis /></xAxis>
+                        <yAxis><NumberAxis /></yAxis>
+                    </LineChart>
+                    <BarChart fx:id="chartEvolutionBar" legendVisible="true" prefHeight="145">
+                        <xAxis><CategoryAxis /></xAxis>
+                        <yAxis><NumberAxis /></yAxis>
+                    </BarChart>
+                </VBox>
+            </HBox>
 
-            <StackPane styleClass="workspace-panel" VBox.vgrow="ALWAYS">
-                <TabPane styleClass="dashboard-tabs" tabClosingPolicy="UNAVAILABLE">
-                    <tabs>
-                        <Tab text="Users">
-                            <VBox spacing="12" styleClass="content">
-                                <HBox spacing="10">
-                                    <TextField fx:id="txtUserId" disable="true" prefWidth="70" promptText="Utilisateur" />
-                                    <TextField fx:id="txtNom" promptText="Nom" />
-                                    <TextField fx:id="txtPrenom" promptText="Prenom" />
-                                    <TextField fx:id="txtEmail" promptText="Email" />
-                                    <PasswordField fx:id="txtMdp" promptText="Mot de passe" />
-                                    <ComboBox fx:id="cbRole" promptText="Role">
-                                        <items>
-                                            <FXCollections fx:factory="observableArrayList">
-                                                <String fx:value="ADMIN_RH" />
-                                                <String fx:value="MANAGER" />
-                                                <String fx:value="EMPLOYE" />
-                                                <String fx:value="CANDIDAT" />
-                                            </FXCollections>
-                                        </items>
-                                    </ComboBox>
-                                    <TextField fx:id="txtManagerId" prefWidth="180" promptText="Manager (optionnel)" />
-                                </HBox>
-                                <HBox spacing="10" styleClass="action-row">
-                                    <Button onAction="#addUser" styleClass="btn btn-primary" text="Ajouter" />
-                                    <Button onAction="#updateUser" styleClass="btn btn-warning" text="Modifier" />
-                                    <Button onAction="#deleteUser" styleClass="btn btn-danger" text="Supprimer" />
-                                    <Button onAction="#clearUserForm" styleClass="btn" text="Annuler" />
-                                </HBox>
-                                <ScrollPane fitToWidth="true" prefHeight="420" styleClass="cards-scroll">
-                                    <content>
-                                        <VBox fx:id="tableUsers" spacing="10" styleClass="cards-container" />
-                                    </content>
-                                </ScrollPane>
-                            </VBox>
-                        </Tab>
+            <HBox spacing="12">
+                <VBox styleClass="panel" HBox.hgrow="ALWAYS" spacing="8">
+                    <Label text="Liste des offres avec taux de remplissage" styleClass="panel-title" />
+                    <VBox fx:id="tableOffresFillRate" spacing="6" />
+                </VBox>
+                <VBox styleClass="panel" HBox.hgrow="ALWAYS" spacing="8">
+                    <Label text="Postes à pourvoir" styleClass="panel-title" />
+                    <VBox fx:id="tablePostesPourvoir" spacing="6" />
+                </VBox>
+            </HBox>
 
-                        <Tab text="Candidats">
-                            <VBox spacing="12" styleClass="content">
-                                <HBox spacing="10">
-                                    <TextField fx:id="txtCandidatId" promptText="Nom Prenom ou email candidat" />
-                                </HBox>
-                                <HBox spacing="10" styleClass="action-row">
-                                    <Button onAction="#addCandidat" styleClass="btn btn-primary" text="Ajouter" />
-                                    <Button onAction="#updateCandidat" styleClass="btn btn-warning" text="Modifier" />
-                                    <Button onAction="#deleteCandidat" styleClass="btn btn-danger" text="Supprimer" />
-                                    <Button onAction="#clearCandidatForm" styleClass="btn" text="Clear" />
-                                </HBox>
-                                <ScrollPane fitToWidth="true" prefHeight="420" styleClass="cards-scroll">
-                                    <content>
-                                        <VBox fx:id="tableCandidats" spacing="10" styleClass="cards-container" />
-                                    </content>
-                                </ScrollPane>
-                            </VBox>
-                        </Tab>
+            <ScrollPane fitToWidth="true" styleClass="content-scroll" VBox.vgrow="ALWAYS">
+                <content>
+                    <VBox spacing="12" styleClass="stack-content">
+                        <VBox styleClass="panel" spacing="8">
+                            <HBox spacing="8" alignment="CENTER_LEFT">
+                                <Label text="Utilisateurs" styleClass="panel-title" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <TextField fx:id="txtSearchUsers" promptText="Recherche utilisateur" onAction="#refreshModernSections" />
+                                <ComboBox fx:id="cbFilterRole" promptText="Rôle" onAction="#refreshModernSections" />
+                                <Button text="+ Add New User" styleClass="action-btn" onAction="#addUserQuick" />
+                            </HBox>
+                            <FlowPane fx:id="flowUsers" hgap="10" vgap="10" prefWrapLength="1200" />
+                            <HBox spacing="8" alignment="CENTER_RIGHT">
+                                <Button text="Prev" onAction="#prevUsersPage" />
+                                <Label fx:id="lblUsersPage" text="Page 1" />
+                                <Button text="Next" onAction="#nextUsersPage" />
+                            </HBox>
+                        </VBox>
 
-                        <Tab text="Offres">
-                            <VBox spacing="12" styleClass="content">
-                                <HBox spacing="10">
-                                    <TextField fx:id="txtOffreId" disable="true" prefWidth="70" promptText="Offre" />
-                                    <TextField fx:id="txtTitre" promptText="Titre" />
-                                    <ComboBox fx:id="txtDepartement" prefWidth="250" promptText="Departement">
-                                        <items>
-                                            <FXCollections fx:factory="observableArrayList">
-                                                <String fx:value="Ressources Humaines (RH)" />
-                                                <String fx:value="Informatique (IT)" />
-                                                <String fx:value="Finance &amp; Comptabilite" />
-                                                <String fx:value="Marketing &amp; Communication" />
-                                                <String fx:value="Commercial &amp; Ventes" />
-                                                <String fx:value="⚙️ Production &amp; Operations" />
-                                                <String fx:value="📦 Logistique &amp; Supply Chain" />
-                                                <String fx:value="📊 Controle de Gestion" />
-                                                <String fx:value="🏢 Administration Generale" />
-                                                <String fx:value="🧪 Recherche &amp; Developpement (R&amp;D)" />
-                                            </FXCollections>
-                                        </items>
-                                    </ComboBox>
-                                    <TextField fx:id="txtTypeContrat" promptText="Type contrat" />
-                                    <TextField fx:id="txtNombrePostes" prefWidth="100" promptText="Nb postes" />
-                                    <DatePicker fx:id="dpDatePublication" promptText="Date publication" />
-                                    <TextField fx:id="txtAdminId" prefWidth="100" promptText="Responsable RH" />
-                                </HBox>
-                                <HBox spacing="10" styleClass="action-row">
-                                    <Button onAction="#addOffre" styleClass="btn btn-primary" text="Ajouter" />
-                                    <Button onAction="#updateOffre" styleClass="btn btn-warning" text="Modifier" />
-                                    <Button onAction="#deleteOffre" styleClass="btn btn-danger" text="Supprimer" />
-                                    <Button onAction="#clearOffreForm" styleClass="btn" text="Clear" />
-                                </HBox>
-                                <ScrollPane fitToWidth="true" prefHeight="390" styleClass="cards-scroll">
-                                    <content>
-                                        <VBox fx:id="tableOffres" spacing="10" styleClass="cards-container" />
-                                    </content>
-                                </ScrollPane>
-                            </VBox>
-                        </Tab>
+                        <VBox styleClass="panel" spacing="8">
+                            <HBox spacing="8" alignment="CENTER_LEFT">
+                                <Label text="Offres d’Emploi" styleClass="panel-title" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <TextField fx:id="txtSearchOffres" promptText="Recherche offre" onAction="#refreshModernSections" />
+                                <ComboBox fx:id="cbFilterDepartement" promptText="Département" onAction="#refreshModernSections" />
+                                <Button text="+ Add New Offer" styleClass="action-btn" onAction="#addOffreQuick" />
+                            </HBox>
+                            <FlowPane fx:id="flowOffres" hgap="10" vgap="10" prefWrapLength="1200" />
+                            <HBox spacing="8" alignment="CENTER_RIGHT">
+                                <Button text="Prev" onAction="#prevOffresPage" />
+                                <Label fx:id="lblOffresPage" text="Page 1" />
+                                <Button text="Next" onAction="#nextOffresPage" />
+                            </HBox>
+                        </VBox>
 
-                        <Tab text="Candidatures">
-                            <VBox spacing="12" styleClass="content">
-                                <HBox spacing="10">
-                                    <TextField fx:id="txtCandidatureId" disable="true" prefWidth="70" promptText="Candidature" />
-                                    <TextField fx:id="txtCandUserId" promptText="Candidat" />
-                                    <TextField fx:id="txtCandOffreId" promptText="Offre" />
-                                    <DatePicker fx:id="dpDateCandidature" promptText="Date" />
-                                    <ComboBox fx:id="cbStatut" promptText="Statut">
-                                        <items>
-                                            <FXCollections fx:factory="observableArrayList">
-                                                <String fx:value="EN_ATTENTE" />
-                                                <String fx:value="ACCEPTEE" />
-                                                <String fx:value="REFUSEE" />
-                                            </FXCollections>
-                                        </items>
-                                    </ComboBox>
-                                </HBox>
-                                <HBox spacing="10" styleClass="action-row">
-                                    <Button onAction="#addCandidature" styleClass="btn btn-primary" text="Ajouter" />
-                                    <Button onAction="#updateCandidature" styleClass="btn btn-warning" text="Modifier" />
-                                    <Button onAction="#deleteCandidature" styleClass="btn btn-danger" text="Supprimer" />
-                                    <Button onAction="#accepter" styleClass="btn btn-primary" text="Accepter" />
-                                    <Button onAction="#refuser" styleClass="btn btn-danger" text="Refuser" />
-                                    <Button onAction="#clearCandidatureForm" styleClass="btn" text="Clear" />
-                                </HBox>
-                                <ScrollPane fitToWidth="true" prefHeight="420" styleClass="cards-scroll">
-                                    <content>
-                                        <VBox fx:id="tableCandidatures" spacing="10" styleClass="cards-container" />
-                                    </content>
-                                </ScrollPane>
-                            </VBox>
-                        </Tab>
-                    </tabs>
-                </TabPane>
-            </StackPane>
+                        <VBox styleClass="panel" spacing="8">
+                            <HBox spacing="8" alignment="CENTER_LEFT">
+                                <Label text="Candidatures" styleClass="panel-title" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <TextField fx:id="txtSearchCandidatures" promptText="Recherche candidature" onAction="#refreshModernSections" />
+                                <ComboBox fx:id="cbFilterStatut" promptText="Statut" onAction="#refreshModernSections">
+                                    <items>
+                                        <FXCollections fx:factory="observableArrayList">
+                                            <String fx:value="EN_ATTENTE" />
+                                            <String fx:value="ACCEPTEE" />
+                                            <String fx:value="REFUSEE" />
+                                        </FXCollections>
+                                    </items>
+                                </ComboBox>
+                                <Button text="+ Add New Application" styleClass="action-btn" onAction="#addCandidatureQuick" />
+                            </HBox>
+                            <FlowPane fx:id="flowCandidatures" hgap="10" vgap="10" prefWrapLength="1200" />
+                            <HBox spacing="8" alignment="CENTER_RIGHT">
+                                <Button text="Prev" onAction="#prevCandidaturesPage" />
+                                <Label fx:id="lblCandidaturesPage" text="Page 1" />
+                                <Button text="Next" onAction="#nextCandidaturesPage" />
+                            </HBox>
+                        </VBox>
+
+                        <VBox styleClass="panel" spacing="8">
+                            <HBox spacing="8" alignment="CENTER_LEFT">
+                                <Label text="NLP Top 5 Profiles" styleClass="panel-title" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <TextField fx:id="txtTopCvOffreId" promptText="Offre id ou titre" />
+                                <Button text="Analyser Top 5" styleClass="action-btn" onAction="#analyzeTopCvQuick" />
+                            </HBox>
+                            <Label fx:id="lblTopCvJsonPath" styleClass="kpi-sub" text="" />
+                            <VBox fx:id="tableTopCv" spacing="8" />
+                        </VBox>
+                    </VBox>
+                </content>
+            </ScrollPane>
         </VBox>
     </center>
 
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10" />
+    </padding>
 </BorderPane>

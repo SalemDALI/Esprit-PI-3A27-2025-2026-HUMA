@@ -11,6 +11,10 @@ public class Absence {
     private LocalDate dateFin;
     private String typeAbsence; // CONGE, MALADIE, RETARD
     private String statut;      // EN_ATTENTE, ACCEPTE, REFUSE
+    private LocalDate dateDemandeConge;
+    private Integer managerValidationId;
+    private String commentaireValidation;
+    private LocalDate dateValidation;
 
     public Absence() {}
 
@@ -43,4 +47,16 @@ public class Absence {
 
     public String getStatut() { return statut; }
     public void setStatut(String statut) { this.statut = statut; }
+
+    public LocalDate getDateDemandeConge() { return dateDemandeConge; }
+    public void setDateDemandeConge(LocalDate dateDemandeConge) { this.dateDemandeConge = dateDemandeConge; }
+
+    public Integer getManagerValidationId() { return managerValidationId; }
+    public void setManagerValidationId(Integer managerValidationId) { this.managerValidationId = managerValidationId; }
+
+    public String getCommentaireValidation() { return commentaireValidation; }
+    public void setCommentaireValidation(String commentaireValidation) { this.commentaireValidation = commentaireValidation; }
+
+    public LocalDate getDateValidation() { return dateValidation; }
+    public void setDateValidation(LocalDate dateValidation) { this.dateValidation = dateValidation; }
 }
