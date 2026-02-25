@@ -1,0 +1,171 @@
+.dash-root {
+    -fx-background-color: linear-gradient(to bottom right, #f2f5fb, #eef2f9);
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+.sidebar {
+    -fx-background-color: linear-gradient(to bottom, #0f2748, #1d3f6f);
+    -fx-background-radius: 14;
+    -fx-padding: 16;
+    -fx-spacing: 8;
+}
+
+.brand {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: 800;
+    -fx-padding: 0 0 12 0;
+}
+
+.side-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #dbe7ff;
+    -fx-font-size: 14px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10 12;
+    -fx-background-radius: 10;
+}
+
+.side-btn:hover {
+    -fx-background-color: rgba(255,255,255,0.15);
+}
+
+.side-btn-active {
+    -fx-background-color: rgba(255,255,255,0.2);
+    -fx-text-fill: white;
+}
+
+.content-root {
+    -fx-padding: 8;
+}
+
+.topbar {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+    -fx-padding: 14;
+    -fx-effect: dropshadow(three-pass-box, rgba(20,35,70,0.08), 14, 0, 0, 2);
+}
+
+.page-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1a315b;
+}
+
+.search-input {
+    -fx-background-color: #f5f8ff;
+    -fx-background-radius: 10;
+    -fx-border-color: #d7e2f7;
+    -fx-border-radius: 10;
+    -fx-pref-width: 260;
+}
+
+.icon-btn {
+    -fx-background-color: #edf3ff;
+    -fx-background-radius: 12;
+    -fx-padding: 8 12;
+}
+
+.page-message {
+    -fx-font-size: 12px;
+    -fx-text-fill: #445;
+}
+
+.kpi-row {
+    -fx-padding: 2 0 2 0;
+}
+
+.kpi-card {
+    -fx-background-color: linear-gradient(to bottom right, #dfeaff, #f0f6ff);
+    -fx-background-radius: 14;
+    -fx-padding: 12;
+    -fx-spacing: 6;
+    -fx-pref-width: 220;
+    -fx-effect: dropshadow(three-pass-box, rgba(21,44,86,0.09), 12, 0, 0, 2);
+}
+
+.kpi-title {
+    -fx-font-size: 14px;
+    -fx-text-fill: #37507b;
+    -fx-font-weight: 700;
+}
+
+.kpi-value {
+    -fx-font-size: 30px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #16315d;
+}
+
+.kpi-sub {
+    -fx-font-size: 12px;
+    -fx-text-fill: #5c6f90;
+}
+
+.panel {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+    -fx-padding: 12;
+    -fx-effect: dropshadow(three-pass-box, rgba(20,35,70,0.08), 14, 0, 0, 2);
+}
+
+.panel-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1d3a68;
+}
+
+.action-btn {
+    -fx-background-color: linear-gradient(to right, #3f8df7, #2f74d3);
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-background-radius: 10;
+}
+
+.content-scroll {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+}
+
+.stack-content {
+    -fx-padding: 2;
+}
+
+.entity-card {
+    -fx-background-color: #f8fbff;
+    -fx-background-radius: 12;
+    -fx-padding: 10;
+    -fx-spacing: 6;
+    -fx-border-color: #d9e4f8;
+    -fx-border-radius: 12;
+}
+
+.entity-card-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #1e3f70;
+}
+
+.entity-card-meta {
+    -fx-font-size: 13px;
+    -fx-text-fill: #4a628a;
+}
+
+.badge {
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-padding: 4 8;
+    -fx-background-radius: 16;
+}
+
+.badge-admin { -fx-background-color: #29a36a; -fx-text-fill: white; }
+.badge-manager { -fx-background-color: #f0b84a; -fx-text-fill: white; }
+.badge-employe { -fx-background-color: #3686e0; -fx-text-fill: white; }
+.badge-candidat { -fx-background-color: #7d8ca8; -fx-text-fill: white; }
+.badge-accepted { -fx-background-color: #26a55f; -fx-text-fill: white; }
+.badge-pending { -fx-background-color: #3f8df7; -fx-text-fill: white; }
+.badge-rejected { -fx-background-color: #d05555; -fx-text-fill: white; }
+
+.card-actions .button {
+    -fx-background-color: #edf3ff;
+    -fx-background-radius: 10;
+}
