@@ -17,79 +17,79 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Priority?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:controller="controller.DashboardController" stylesheets="@../dashboard.css"
-            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" styleClass="dash-root">
+<BorderPane fx:id="rootPane" styleClass="mock-root" stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.recrutement.RecrutementController">
 
     <left>
-        <VBox prefWidth="240" styleClass="sidebar">
-            <Label text="HUMA RH" styleClass="brand" />
-            <Button text="🏠  Dashboard" styleClass="side-btn side-btn-active" onAction="#openRecrutement" />
-            <Button text="👥  Utilisateurs" styleClass="side-btn" />
-            <Button text="💼  Offres d’Emploi" styleClass="side-btn" />
-            <Button text="📄  Candidatures" styleClass="side-btn" />
-            <Button text="📊  Statistiques" styleClass="side-btn" />
-            <Button text="⚙️  Paramètres" styleClass="side-btn" onAction="#openParametres" />
+        <VBox prefWidth="66" styleClass="mock-sidebar">
+            <Button styleClass="side-icon side-icon-active" text="🛡" />
+            <Separator />
+            <Button styleClass="side-icon" text="" />
+            <Button styleClass="side-icon" text="" />
+            <Button styleClass="side-icon" text="" />
+            <Button styleClass="side-icon" text="" />
+            <Button styleClass="side-icon" text="" />
+            <Button styleClass="side-icon" text="" />
+            <Button onAction="#openParametres" styleClass="side-icon" text="⚙" />
             <Region VBox.vgrow="ALWAYS" />
-            <Button text="Logout" styleClass="side-btn" onAction="#logout" />
+            <Button onAction="#logout" styleClass="side-icon" text="⎋" />
         </VBox>
     </left>
 
     <center>
-        <VBox spacing="14" styleClass="content-root">
-            <HBox alignment="CENTER_LEFT" styleClass="topbar" spacing="12">
-                <Label text="Tableau de Bord - Gestion de Recrutement" styleClass="page-title" />
+        <ScrollPane fx:id="pageScroll" fitToWidth="true" hbarPolicy="NEVER" pannable="true" styleClass="page-scroll" vbarPolicy="AS_NEEDED">
+            <content>
+        <VBox spacing="12" styleClass="mock-content">
+            <HBox alignment="CENTER_LEFT" spacing="12" styleClass="mock-topbar">
+                <Label styleClass="mock-title" text="Admin - Gestion de Recrutement" />
                 <Region HBox.hgrow="ALWAYS" />
-                <TextField fx:id="txtGlobalSearch" promptText="Recherche..." styleClass="search-input" onAction="#refreshModernSections" />
-                <Button text="🔔" styleClass="icon-btn" />
-                <Button text="👤" styleClass="icon-btn" />
+                <TextField fx:id="txtGlobalSearch" onAction="#refreshModernSections" promptText="Recherche..." styleClass="mock-search" />
+                <Button styleClass="top-icon" text="✈" />
+                <Button styleClass="top-icon" text="⚙" />
+                <Button styleClass="top-icon" text="🔔" />
+                <Button styleClass="top-avatar" text="👤" />
             </HBox>
 
-            <Label fx:id="lblPageMessage" text="" styleClass="page-message" />
+            <Label fx:id="lblPageMessage" styleClass="page-message" text="" />
 
-            <HBox spacing="12" styleClass="kpi-row">
-                <VBox styleClass="kpi-card">
-                    <Label text="📄 Total Candidatures" styleClass="kpi-title" />
-                    <Label fx:id="lblKpiTotalCandidatures" text="0" styleClass="kpi-value" />
-                    <Label text="volume global" styleClass="kpi-sub" />
+            <HBox spacing="10" styleClass="kpi-wrap">
+                <VBox styleClass="kpi-mini-card">
+                    <Label styleClass="kpi-mini-title" text="Total Candidatures" />
+                    <Label fx:id="lblKpiTotalCandidatures" styleClass="kpi-mini-value" text="0" />
                 </VBox>
-                <VBox styleClass="kpi-card">
-                    <Label text="✅ Taux d’Acceptation" styleClass="kpi-title" />
-                    <Label fx:id="lblKpiTauxAcceptation" text="0%" styleClass="kpi-value" />
-                    <Label text="tendance recrutement" styleClass="kpi-sub" />
+                <VBox styleClass="kpi-mini-card">
+                    <Label styleClass="kpi-mini-title" text="Taux Acceptation" />
+                    <Label fx:id="lblKpiTauxAcceptation" styleClass="kpi-mini-value" text="0%" />
                 </VBox>
-                <VBox styleClass="kpi-card">
-                    <Label text="⏳ Temps Moyen de Traitement" styleClass="kpi-title" />
-                    <Label fx:id="lblKpiTempsMoyen" text="0 j" styleClass="kpi-value" />
-                    <Label text="candidatures clôturées" styleClass="kpi-sub" />
+                <VBox styleClass="kpi-mini-card">
+                    <Label styleClass="kpi-mini-title" text="Temps Moyen" />
+                    <Label fx:id="lblKpiTempsMoyen" styleClass="kpi-mini-value" text="0 j" />
                 </VBox>
-                <VBox styleClass="kpi-card">
-                    <Label text="📣 Offres Actives" styleClass="kpi-title" />
-                    <Label fx:id="lblKpiOffresActives" text="0" styleClass="kpi-value" />
-                    <Label text="postes ouverts" styleClass="kpi-sub" />
+                <VBox styleClass="kpi-mini-card">
+                    <Label styleClass="kpi-mini-title" text="Offres Actives" />
+                    <Label fx:id="lblKpiOffresActives" styleClass="kpi-mini-value" text="0" />
                 </VBox>
-                <VBox styleClass="kpi-card">
-                    <Label text="👤 Employés Actifs" styleClass="kpi-title" />
-                    <Label fx:id="lblKpiEmployesActifs" text="0" styleClass="kpi-value" />
-                    <Label text="utilisateurs EMPLOYE" styleClass="kpi-sub" />
+                <VBox styleClass="kpi-mini-card">
+                    <Label styleClass="kpi-mini-title" text="Employés Actifs" />
+                    <Label fx:id="lblKpiEmployesActifs" styleClass="kpi-mini-value" text="0" />
                 </VBox>
             </HBox>
 
             <HBox spacing="12">
-                <VBox styleClass="panel" HBox.hgrow="ALWAYS">
-                    <Label text="Candidatures par Département" styleClass="panel-title" />
-                    <PieChart fx:id="chartCandidaturesDept" prefHeight="290" />
+                <VBox prefHeight="371.0" prefWidth="580.0" spacing="10" styleClass="mock-panel" HBox.hgrow="ALWAYS">
+                    <Label styleClass="mock-panel-title" text="Candidatures par Département" />
+                    <PieChart fx:id="chartCandidaturesDept" prefHeight="280" />
                 </VBox>
-                <VBox styleClass="panel" HBox.hgrow="ALWAYS" spacing="8">
-                    <Label text="Évolution Mensuelle des Candidatures" styleClass="panel-title" />
-                    <LineChart fx:id="chartEvolutionLine" createSymbols="true" legendVisible="true" prefHeight="145">
+
+                <VBox spacing="10" styleClass="mock-panel" HBox.hgrow="ALWAYS">
+                    <Label styleClass="mock-panel-title" text="Évolution Mensuelle des Candidatures" />
+                    <LineChart fx:id="chartEvolutionLine" createSymbols="true" legendVisible="true" prefHeight="155">
                         <xAxis><CategoryAxis /></xAxis>
                         <yAxis><NumberAxis /></yAxis>
                     </LineChart>
-                    <BarChart fx:id="chartEvolutionBar" legendVisible="true" prefHeight="145">
+                    <BarChart fx:id="chartEvolutionBar" legendVisible="true" prefHeight="155">
                         <xAxis><CategoryAxis /></xAxis>
                         <yAxis><NumberAxis /></yAxis>
                     </BarChart>
@@ -97,92 +97,89 @@
             </HBox>
 
             <HBox spacing="12">
-                <VBox styleClass="panel" HBox.hgrow="ALWAYS" spacing="8">
-                    <Label text="Liste des offres avec taux de remplissage" styleClass="panel-title" />
-                    <VBox fx:id="tableOffresFillRate" spacing="6" />
+                <VBox spacing="10" styleClass="mock-panel" HBox.hgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label styleClass="mock-panel-title" text="Utilisateurs" />
+                        <Label styleClass="mock-panel-sub" text="Total Utilisateurs:" />
+                        <Label fx:id="lblHeaderTotalUsers" styleClass="mock-count" text="0" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="txtSearchUsers" onAction="#refreshModernSections" promptText="Recherche utilisateur" styleClass="small-search" />
+                        <ComboBox fx:id="cbFilterRole" onAction="#refreshModernSections" promptText="Rôle" />
+                        <Button onAction="#addUserQuick" styleClass="mock-add-btn" text="+ Nouvel Utilisateur" />
+                    </HBox>
+                    <ScrollPane fx:id="scrollUsers" fitToWidth="true" prefHeight="560.0" prefWidth="722.0" styleClass="panel-scroll" VBox.vgrow="ALWAYS">
+                        <content>
+                            <FlowPane fx:id="flowUsers" hgap="10" prefWrapLength="720" vgap="10" />
+                        </content>
+                    </ScrollPane>
                 </VBox>
-                <VBox styleClass="panel" HBox.hgrow="ALWAYS" spacing="8">
-                    <Label text="Postes à pourvoir" styleClass="panel-title" />
-                    <VBox fx:id="tablePostesPourvoir" spacing="6" />
+
+                <VBox prefHeight="610.0" spacing="10" styleClass="mock-panel" HBox.hgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label styleClass="mock-panel-title" text="Offres d'Emploi" />
+                        <Label styleClass="mock-panel-sub" text="Total Offres Actives:" />
+                        <Label fx:id="lblHeaderTotalOffres" styleClass="mock-count" text="0" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="txtSearchOffres" onAction="#refreshModernSections" promptText="Recherche offre" styleClass="small-search" />
+                        <ComboBox fx:id="cbFilterDepartement" onAction="#refreshModernSections" promptText="Département" />
+                        <Button onAction="#addOffreQuick" styleClass="mock-add-btn" text="+ Nouvelle Offre" />
+                    </HBox>
+                    <ScrollPane fx:id="scrollOffres" fitToWidth="true" prefHeight="560.0" prefWidth="722.0" styleClass="panel-scroll" VBox.vgrow="ALWAYS">
+                        <content>
+                            <FlowPane fx:id="flowOffres" hgap="10" prefWrapLength="720" vgap="10" />
+                        </content>
+                    </ScrollPane>
                 </VBox>
             </HBox>
 
-            <ScrollPane fitToWidth="true" styleClass="content-scroll" VBox.vgrow="ALWAYS">
-                <content>
-                    <VBox spacing="12" styleClass="stack-content">
-                        <VBox styleClass="panel" spacing="8">
-                            <HBox spacing="8" alignment="CENTER_LEFT">
-                                <Label text="Utilisateurs" styleClass="panel-title" />
-                                <Region HBox.hgrow="ALWAYS" />
-                                <TextField fx:id="txtSearchUsers" promptText="Recherche utilisateur" onAction="#refreshModernSections" />
-                                <ComboBox fx:id="cbFilterRole" promptText="Rôle" onAction="#refreshModernSections" />
-                                <Button text="+ Add New User" styleClass="action-btn" onAction="#addUserQuick" />
-                            </HBox>
-                            <FlowPane fx:id="flowUsers" hgap="10" vgap="10" prefWrapLength="1200" />
-                            <HBox spacing="8" alignment="CENTER_RIGHT">
-                                <Button text="Prev" onAction="#prevUsersPage" />
-                                <Label fx:id="lblUsersPage" text="Page 1" />
-                                <Button text="Next" onAction="#nextUsersPage" />
-                            </HBox>
-                        </VBox>
-
-                        <VBox styleClass="panel" spacing="8">
-                            <HBox spacing="8" alignment="CENTER_LEFT">
-                                <Label text="Offres d’Emploi" styleClass="panel-title" />
-                                <Region HBox.hgrow="ALWAYS" />
-                                <TextField fx:id="txtSearchOffres" promptText="Recherche offre" onAction="#refreshModernSections" />
-                                <ComboBox fx:id="cbFilterDepartement" promptText="Département" onAction="#refreshModernSections" />
-                                <Button text="+ Add New Offer" styleClass="action-btn" onAction="#addOffreQuick" />
-                            </HBox>
-                            <FlowPane fx:id="flowOffres" hgap="10" vgap="10" prefWrapLength="1200" />
-                            <HBox spacing="8" alignment="CENTER_RIGHT">
-                                <Button text="Prev" onAction="#prevOffresPage" />
-                                <Label fx:id="lblOffresPage" text="Page 1" />
-                                <Button text="Next" onAction="#nextOffresPage" />
-                            </HBox>
-                        </VBox>
-
-                        <VBox styleClass="panel" spacing="8">
-                            <HBox spacing="8" alignment="CENTER_LEFT">
-                                <Label text="Candidatures" styleClass="panel-title" />
-                                <Region HBox.hgrow="ALWAYS" />
-                                <TextField fx:id="txtSearchCandidatures" promptText="Recherche candidature" onAction="#refreshModernSections" />
-                                <ComboBox fx:id="cbFilterStatut" promptText="Statut" onAction="#refreshModernSections">
-                                    <items>
-                                        <FXCollections fx:factory="observableArrayList">
-                                            <String fx:value="EN_ATTENTE" />
-                                            <String fx:value="ACCEPTEE" />
-                                            <String fx:value="REFUSEE" />
-                                        </FXCollections>
-                                    </items>
-                                </ComboBox>
-                                <Button text="+ Add New Application" styleClass="action-btn" onAction="#addCandidatureQuick" />
-                            </HBox>
-                            <FlowPane fx:id="flowCandidatures" hgap="10" vgap="10" prefWrapLength="1200" />
-                            <HBox spacing="8" alignment="CENTER_RIGHT">
-                                <Button text="Prev" onAction="#prevCandidaturesPage" />
-                                <Label fx:id="lblCandidaturesPage" text="Page 1" />
-                                <Button text="Next" onAction="#nextCandidaturesPage" />
-                            </HBox>
-                        </VBox>
-
-                        <VBox styleClass="panel" spacing="8">
-                            <HBox spacing="8" alignment="CENTER_LEFT">
-                                <Label text="NLP Top 5 Profiles" styleClass="panel-title" />
-                                <Region HBox.hgrow="ALWAYS" />
-                                <TextField fx:id="txtTopCvOffreId" promptText="Offre id ou titre" />
-                                <Button text="Analyser Top 5" styleClass="action-btn" onAction="#analyzeTopCvQuick" />
-                            </HBox>
-                            <Label fx:id="lblTopCvJsonPath" styleClass="kpi-sub" text="" />
+            <HBox spacing="12" VBox.vgrow="ALWAYS">
+                <VBox prefHeight="610.0" spacing="10" styleClass="mock-panel" HBox.hgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label styleClass="mock-panel-title" text="NLP Top 5 CV" />
+                        <Label styleClass="mock-panel-sub" text="Scoring intelligent" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="txtTopCvOffreId" promptText="Offre id ou titre" styleClass="small-search" />
+                        <Button onAction="#analyzeTopCvQuick" styleClass="mock-add-btn" text="Analyser Top 5" />
+                    </HBox>
+                    <Label fx:id="lblTopCvJsonPath" styleClass="mock-panel-sub" text="" />
+                    <ScrollPane fx:id="scrollTopCv" fitToWidth="true" styleClass="panel-scroll" VBox.vgrow="ALWAYS">
+                        <content>
                             <VBox fx:id="tableTopCv" spacing="8" />
-                        </VBox>
-                    </VBox>
-                </content>
-            </ScrollPane>
+                        </content>
+                    </ScrollPane>
+                </VBox>
+
+                <VBox prefHeight="610.0" prefWidth="464.0" spacing="10" styleClass="mock-panel" HBox.hgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label styleClass="mock-panel-title" text="Candidatures" />
+                        <Label styleClass="mock-panel-sub" text="Total Candidatures:" />
+                        <Label fx:id="lblHeaderTotalCandidatures" styleClass="mock-count" text="0" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="txtSearchCandidatures" onAction="#refreshModernSections" promptText="Recherche candidature" styleClass="small-search" />
+                        <ComboBox fx:id="cbFilterStatut" onAction="#refreshModernSections" promptText="Statut">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="EN_ATTENTE" />
+                                    <String fx:value="ACCEPTEE" />
+                                    <String fx:value="REFUSEE" />
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+                        <Button onAction="#addCandidatureQuick" styleClass="mock-add-btn" text="+ Nouvelle Candidature" />
+                    </HBox>
+                    <ScrollPane fx:id="scrollCandidatures" fitToWidth="true" prefHeight="560.0" prefWidth="755.0" styleClass="panel-scroll" VBox.vgrow="ALWAYS">
+                        <content>
+                            <FlowPane fx:id="flowCandidatures" hgap="10" prefWrapLength="720" vgap="10" />
+                        </content>
+                    </ScrollPane>
+                </VBox>
+            </HBox>
         </VBox>
+            </content>
+        </ScrollPane>
     </center>
 
     <padding>
-        <Insets top="10" right="10" bottom="10" left="10" />
+        <Insets bottom="12" left="12" right="12" top="12" />
     </padding>
 </BorderPane>

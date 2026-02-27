@@ -1,9 +1,10 @@
 package services;
 
-import models.Participant;
+import models.formation.Participant;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import services.formation.CrudParticipant;
 
 import java.sql.Connection;
 import java.sql.Date;

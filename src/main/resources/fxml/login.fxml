@@ -4,7 +4,8 @@
 <?import javafx.scene.layout.*?>
 
 <VBox spacing="15" alignment="CENTER"
-      xmlns:fx="http://javafx.com/fxml"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="controller.LoginController"
       stylesheets="@style.css"
       styleClass="login-root">

@@ -1,0 +1,207 @@
+.mock-root {
+    -fx-background-color: #e9edf5;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+.mock-sidebar {
+    -fx-background-color: linear-gradient(to bottom, #1f3b64, #223f6d);
+    -fx-background-radius: 14;
+    -fx-padding: 12 8;
+    -fx-spacing: 10;
+}
+
+.side-icon {
+    -fx-background-color: transparent;
+    -fx-text-fill: #dbe8ff;
+    -fx-font-size: 18px;
+    -fx-background-radius: 12;
+    -fx-min-width: 46;
+    -fx-min-height: 46;
+}
+
+.side-icon:hover {
+    -fx-background-color: rgba(255,255,255,0.14);
+}
+
+.side-icon-active {
+    -fx-background-color: rgba(255,255,255,0.2);
+    -fx-text-fill: white;
+}
+
+.mock-content {
+    -fx-spacing: 12;
+}
+
+.page-scroll {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+}
+
+.mock-topbar {
+    -fx-background-color: #f1f4fb;
+    -fx-background-radius: 14;
+    -fx-padding: 12;
+    -fx-effect: dropshadow(three-pass-box, rgba(26,48,84,0.08), 14, 0, 0, 2);
+}
+
+.mock-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #273b61;
+}
+
+.mock-search {
+    -fx-pref-width: 430;
+    -fx-background-color: #edf1fa;
+    -fx-background-radius: 12;
+    -fx-border-color: #d3dbee;
+    -fx-border-radius: 12;
+}
+
+.top-icon {
+    -fx-background-color: #e7ecf6;
+    -fx-background-radius: 12;
+    -fx-min-width: 44;
+    -fx-min-height: 44;
+}
+
+.top-avatar {
+    -fx-background-color: #d9e8ff;
+    -fx-background-radius: 20;
+    -fx-min-width: 44;
+    -fx-min-height: 44;
+}
+
+.page-message {
+    -fx-text-fill: #42567d;
+    -fx-font-size: 12px;
+}
+
+.kpi-wrap {
+    -fx-padding: 2 0 4 0;
+}
+
+.kpi-mini-card {
+    -fx-background-color: linear-gradient(to bottom right, #f6f9ff, #eaf2ff);
+    -fx-background-radius: 12;
+    -fx-padding: 10;
+    -fx-pref-width: 220;
+    -fx-effect: dropshadow(three-pass-box, rgba(26,48,84,0.08), 10, 0, 0, 2);
+}
+
+.kpi-mini-title {
+    -fx-font-size: 13px;
+    -fx-text-fill: #58739d;
+    -fx-font-weight: 700;
+}
+
+.kpi-mini-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #2c4f82;
+}
+
+.mock-panel {
+    -fx-background-color: #eef2f8;
+    -fx-background-radius: 16;
+    -fx-padding: 12;
+    -fx-effect: dropshadow(three-pass-box, rgba(16,35,62,0.08), 14, 0, 0, 2);
+}
+
+.mock-panel-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #253b61;
+}
+
+.mock-panel-sub {
+    -fx-font-size: 9px;
+    -fx-text-fill: #6d7f9f;
+}
+
+.mock-count {
+    -fx-font-size: 13px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #2f5f9f;
+}
+
+.mock-add-btn {
+    -fx-background-color: linear-gradient(to right, #58a2ff, #3a86e8);
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-font-weight: 700;
+    -fx-font-size: 11px;
+    -fx-padding: 6 10;
+}
+
+.small-search {
+    -fx-pref-width: 130;
+    -fx-font-size: 10px;
+}
+
+.panel-scroll {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+}
+
+.entity-card {
+    -fx-background-color: #f7f9ff;
+    -fx-background-radius: 14;
+    -fx-padding: 10;
+    -fx-spacing: 8;
+    -fx-border-color: #d7deee;
+    -fx-border-radius: 14;
+}
+
+.user-card {
+    -fx-background-color: #f6f8fe;
+}
+
+.offer-card {
+    -fx-background-color: #f6f8fd;
+}
+
+.app-card {
+    -fx-background-color: #f7f9ff;
+}
+
+.entity-card-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #263a5f;
+}
+
+.entity-card-meta {
+    -fx-font-size: 11px;
+    -fx-text-fill: #607292;
+}
+
+.avatar-chip {
+    -fx-background-color: #dfe9fb;
+    -fx-background-radius: 20;
+    -fx-min-width: 40;
+    -fx-min-height: 40;
+    -fx-alignment: CENTER;
+    -fx-text-fill: #2f4f82;
+    -fx-font-size: 20px;
+}
+
+.badge {
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-padding: 4 10;
+    -fx-background-radius: 16;
+}
+
+.badge-admin { -fx-background-color: #67c07c; -fx-text-fill: white; }
+.badge-manager { -fx-background-color: #f0b94a; -fx-text-fill: white; }
+.badge-employe { -fx-background-color: #3d89eb; -fx-text-fill: white; }
+.badge-candidat { -fx-background-color: #7f90ad; -fx-text-fill: white; }
+.badge-accepted { -fx-background-color: #5fc47f; -fx-text-fill: white; }
+.badge-pending { -fx-background-color: #7bb7ff; -fx-text-fill: #154684; }
+.badge-rejected { -fx-background-color: #ffd7d7; -fx-text-fill: #a93d3d; }
+
+.card-actions .button {
+    -fx-background-color: #eaf0fb;
+    -fx-background-radius: 10;
+}

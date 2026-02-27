@@ -2,8 +2,8 @@ package utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import models.CandidateScoringResult;
-import models.OffreEmploi;
+import models.recrutement.CandidateScoringResult;
+import models.recrutement.OffreEmploi;
 
 import java.io.IOException;
 import java.nio.file.Files;

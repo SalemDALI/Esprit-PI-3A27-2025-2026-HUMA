@@ -1,5 +1,7 @@
 package controller;
 
+import controller.congesAbsences.DemandeCongeController;
+import controller.congesAbsences.ManagerAbsenceController;
 import models.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;

@@ -15,6 +15,8 @@ public class Main extends Application {
         ));
 
         stage.setTitle("Gestion RH");
+        stage.setMaximized(true);
+        stage.setFullScreen(true);
         stage.show();
     }
 

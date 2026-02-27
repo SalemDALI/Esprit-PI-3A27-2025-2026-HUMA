@@ -29,7 +29,7 @@ public final class CvFileStorageUtil {
         Path targetPath = uploadDir.resolve(finalName);
         Files.copy(sourcePdfPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
 
-        return targetPath.toString().replace("\\", "/");
+        return targetPath.toAbsolutePath().normalize().toString().replace("\\", "/");
     }
 
     public static String savePdfCv(Path sourcePdfPath, int candidatId) throws IOException {
@@ -50,6 +50,6 @@ public final class CvFileStorageUtil {
 
         Path targetPath = uploadDir.resolve(candidatId + ".pdf");
         Files.copy(sourcePdfPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-        return targetPath.toString().replace("\\", "/");
+        return targetPath.toAbsolutePath().normalize().toString().replace("\\", "/");
     }
 }
