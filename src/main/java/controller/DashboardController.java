@@ -1,5 +1,9 @@
 package controller;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
+import models.CandidateScoringResult;
 import models.Candidat;
 import models.Candidature;
 import models.OffreEmploi;
@@ -13,7 +17,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import services.ServiceCandidat;
@@ -24,17 +33,25 @@ import services.ServiceAbsence;
 import services.PublicationService;
 import services.CrudFormation;
 import services.CrudParticipant;
+import services.CandidateScoringService;
 import utils.Session;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DashboardController {
+    @FXML private HBox mediaPreviewBox;
     @FXML
     private TabPane mainTabPane;
     @FXML
@@ -75,7 +92,7 @@ public class DashboardController {
     @FXML
     private TextField txtTitre;
     @FXML
-    private TextField txtDepartement;
+    private ComboBox<String> txtDepartement;
     @FXML
     private TextField txtTypeContrat;
     @FXML
@@ -98,6 +115,60 @@ public class DashboardController {
     @FXML
     private ComboBox<String> cbStatut;
     @FXML
+    private TextField txtGlobalSearch;
+    @FXML
+    private Label lblKpiTotalCandidatures;
+    @FXML
+    private Label lblKpiTauxAcceptation;
+    @FXML
+    private Label lblKpiTempsMoyen;
+    @FXML
+    private Label lblKpiOffresActives;
+    @FXML
+    private Label lblKpiEmployesActifs;
+    @FXML
+    private PieChart chartCandidaturesDept;
+    @FXML
+    private LineChart<String, Number> chartEvolutionLine;
+    @FXML
+    private BarChart<String, Number> chartEvolutionBar;
+    @FXML
+    private VBox tableOffresFillRate;
+    @FXML
+    private VBox tablePostesPourvoir;
+    @FXML
+    private javafx.scene.layout.FlowPane flowUsers;
+    @FXML
+    private javafx.scene.layout.FlowPane flowOffres;
+    @FXML
+    private javafx.scene.layout.FlowPane flowCandidatures;
+    @FXML
+    private TextField txtSearchUsers;
+    @FXML
+    private TextField txtSearchOffres;
+    @FXML
+    private TextField txtSearchCandidatures;
+    @FXML
+    private ComboBox<String> cbFilterRole;
+    @FXML
+    private ComboBox<String> cbFilterDepartement;
+    @FXML
+    private ComboBox<String> cbFilterStatut;
+    @FXML
+    private Label lblUsersPage;
+    @FXML
+    private Label lblOffresPage;
+    @FXML
+    private Label lblCandidaturesPage;
+    @FXML
+    private TextField txtTopCvOffreId;
+    @FXML
+    private TextField txtTopCvLimit;
+    @FXML
+    private VBox tableTopCv;
+    @FXML
+    private Label lblTopCvJsonPath;
+    @FXML
     private Label lblPageMessage;
     @FXML
     private Label lblCardPostes;
@@ -105,6 +176,12 @@ public class DashboardController {
     private Label lblCardDemandes;
     @FXML
     private Label lblCardEmployes;
+    @FXML
+    private Label lblCardCandidats;
+    @FXML
+    private Label lblCardAcceptees;
+    @FXML
+    private Label lblCardRefusees;
 
     @FXML
     private VBox tableConges;
@@ -178,6 +255,13 @@ public class DashboardController {
     private final ServiceAbsence serviceAbsence = new ServiceAbsence();
     private final CrudFormation crudFormation = new CrudFormation();
     private final CrudParticipant crudParticipant = new CrudParticipant();
+    private final CandidateScoringService candidateScoringService = new CandidateScoringService();
+    private static final int USERS_PAGE_SIZE = 6;
+    private static final int OFFRES_PAGE_SIZE = 6;
+    private static final int CANDIDATURES_PAGE_SIZE = 6;
+    private int usersPage = 0;
+    private int offresPage = 0;
+    private int candidaturesPage = 0;
     private User selectedUser;
     private Candidat selectedCandidat;
     private OffreEmploi selectedOffre;
@@ -197,7 +281,8 @@ public class DashboardController {
     private Node selectedFormationCard;
     private Participant selectedParticipant;
     private Node selectedParticipantCard;
-
+    private final List<String> imagesToAdd = new ArrayList<>();
+    private final List<String> videosToAdd = new ArrayList<>();
     @FXML
     public void initialize() {
         if (tableUsers != null) {
@@ -211,6 +296,9 @@ public class DashboardController {
         }
         if (tableCandidatures != null) {
             initCandidatureSection();
+        }
+        if (tableTopCv != null) {
+            initTopCvSection();
         }
         if (tableConges != null) {
             initCongeSection();
@@ -235,8 +323,24 @@ public class DashboardController {
         if (Session.getUser() != null && txtFormationAdminId != null) {
             txtFormationAdminId.setText(String.valueOf(Session.getUser().getId()));
         }
+        initDashboardFilters();
 
         refreshData();
+    }
+
+    private void initDashboardFilters() {
+        if (cbFilterRole != null) {
+            cbFilterRole.getItems().setAll("ADMIN_RH", "MANAGER", "EMPLOYE", "CANDIDAT");
+        }
+        if (cbFilterDepartement != null) {
+            List<String> depts = serviceOffre.getAll().stream()
+                    .map(OffreEmploi::getDepartement)
+                    .filter(d -> d != null && !d.isBlank())
+                    .distinct()
+                    .sorted()
+                    .collect(Collectors.toList());
+            cbFilterDepartement.getItems().setAll(depts);
+        }
     }
 
     private void initUserSection() {
@@ -253,6 +357,10 @@ public class DashboardController {
 
     private void initCandidatureSection() {
         tableCandidatures.getStyleClass().add("cards-container");
+    }
+
+    private void initTopCvSection() {
+        tableTopCv.getStyleClass().add("cards-container");
     }
 
     private void initCongeSection() {
@@ -289,6 +397,11 @@ public class DashboardController {
         if (tableCandidatures != null) {
             renderCandidatureCards();
         }
+        if (tableTopCv != null) {
+            tableTopCv.getChildren().clear();
+        }
+        refreshModernSections();
+        refreshKpiAndCharts();
         if (tableConges != null) {
             renderCongeCards();
         }
@@ -309,23 +422,30 @@ public class DashboardController {
     }
 
     @FXML
+    public void refreshModernSections() {
+        renderModernUsers();
+        renderModernOffres();
+        renderModernCandidatures();
+    }
+
+    @FXML
     public void openRecrutement(ActionEvent event) {
-        navigateTo(event, "/fxml/recrutement.fxml");
+        navigateTo(event, "/fxml/recrutement/recrutement.fxml");
     }
 
     @FXML
     public void openDashboard(ActionEvent event) {
-        navigateTo(event, "/fxml/dashboard.fxml");
+        navigateTo(event, "/fxml/recrutement/dashboard.fxml");
     }
 
     @FXML
     public void openConges(ActionEvent event) {
-        navigateTo(event, "/fxml/conges.fxml");
+        navigateTo(event, "/fxml/congesAbsences/Conges.fxml");
     }
 
     @FXML
     public void openAbsences(ActionEvent event) {
-        navigateTo(event, "/fxml/absences.fxml");
+        navigateTo(event, "/fxml/congesAbsences/absences.fxml");
     }
 
     @FXML
@@ -335,12 +455,12 @@ public class DashboardController {
 
     @FXML
     public void openFormations(ActionEvent event) {
-        navigateTo(event, "/fxml/formation.fxml");
+        navigateTo(event, "/fxml/formation/formation.fxml");
     }
 
     @FXML
     public void openFeedback(ActionEvent event) {
-        navigateTo(event, "/fxml/feedback.fxml");
+        navigateTo(event, "/fxml/feedback/feedback.fxml");
     }
 
     @FXML
@@ -357,6 +477,15 @@ public class DashboardController {
         }
         if (lblCardEmployes != null) {
             lblCardEmployes.setText(String.valueOf(serviceUser.countByRole("EMPLOYE")));
+        }
+        if (lblCardCandidats != null) {
+            lblCardCandidats.setText(String.valueOf(serviceCandidat.getAll().size()));
+        }
+        if (lblCardAcceptees != null) {
+            lblCardAcceptees.setText(String.valueOf(serviceCandidature.countByStatut("ACCEPTEE")));
+        }
+        if (lblCardRefusees != null) {
+            lblCardRefusees.setText(String.valueOf(serviceCandidature.countByStatut("REFUSEE")));
         }
     }
 
@@ -501,7 +630,7 @@ public class DashboardController {
             OffreEmploi o = new OffreEmploi();
             o.setTitre(txtTitre.getText().trim());
             o.setDescription("");
-            o.setDepartement(txtDepartement.getText().trim());
+            o.setDepartement(txtDepartement.getValue() == null ? "" : txtDepartement.getValue().trim());
             o.setTypeContrat(txtTypeContrat.getText().trim());
             o.setNombrePostes(Integer.parseInt(txtNombrePostes.getText().trim()));
             o.setDatePublication(dpDatePublication.getValue() == null ? LocalDate.now() : dpDatePublication.getValue());
@@ -531,7 +660,7 @@ public class DashboardController {
             o.setId(Integer.parseInt(txtOffreId.getText()));
             o.setTitre(txtTitre.getText().trim());
             o.setDescription("");
-            o.setDepartement(txtDepartement.getText().trim());
+            o.setDepartement(txtDepartement.getValue() == null ? "" : txtDepartement.getValue().trim());
             o.setTypeContrat(txtTypeContrat.getText().trim());
             o.setNombrePostes(Integer.parseInt(txtNombrePostes.getText().trim()));
             o.setDatePublication(dpDatePublication.getValue() == null ? LocalDate.now() : dpDatePublication.getValue());
@@ -565,7 +694,7 @@ public class DashboardController {
     public void clearOffreForm() {
         txtOffreId.clear();
         txtTitre.clear();
-        txtDepartement.clear();
+        txtDepartement.setValue(null);
         txtTypeContrat.clear();
         txtNombrePostes.clear();
         dpDatePublication.setValue(null);
@@ -659,6 +788,633 @@ public class DashboardController {
         clearSelection(tableCandidatures, selectedCandidatureCard);
         selectedCandidature = null;
         selectedCandidatureCard = null;
+    }
+
+    @FXML
+    public void analyzeTopCv() {
+        if (tableTopCv == null) {
+            return;
+        }
+
+        try {
+            Integer offreId = resolveOffreId(txtTopCvOffreId == null ? null : txtTopCvOffreId.getText());
+            if (offreId == null && selectedOffre != null) {
+                offreId = selectedOffre.getId();
+            }
+            if (offreId == null) {
+                showError("Saisissez une offre (id ou titre).");
+                return;
+            }
+
+            int topN = 5;
+            if (txtTopCvLimit != null && txtTopCvLimit.getText() != null && !txtTopCvLimit.getText().isBlank()) {
+                topN = Integer.parseInt(txtTopCvLimit.getText().trim());
+            }
+            if (topN <= 0) {
+                topN = 5;
+            }
+
+            List<CandidateScoringResult> ranking = candidateScoringService.rankTopCandidatesForOffer(offreId, topN);
+            tableTopCv.getChildren().clear();
+            int rank = 1;
+            for (CandidateScoringResult item : ranking) {
+                String nom = (item.getCandidatNom() == null || item.getCandidatNom().isBlank()) ? "Candidat" : item.getCandidatNom();
+                String email = item.getCandidatEmail() == null ? "" : item.getCandidatEmail();
+                String xp = item.getCvAnalysis() == null ? "0" : String.format(Locale.US, "%.1f", item.getCvAnalysis().getYearsExperience());
+                String skills = item.getCvAnalysis() == null || item.getCvAnalysis().getSkills().isEmpty()
+                        ? "N/A"
+                        : String.join(", ", item.getCvAnalysis().getSkills().stream().limit(6).collect(Collectors.toList()));
+                String summary = item.getCvAnalysis() == null ? "" : item.getCvAnalysis().getSummary();
+                if (summary == null) {
+                    summary = "";
+                }
+                if (summary.length() > 120) {
+                    summary = summary.substring(0, 120) + "...";
+                }
+                VBox card = buildCard(
+                        "#" + rank + " " + nom + " | score global: " + item.getScoreGlobal() + "/100",
+                        "email: " + email
+                                + " | exp: " + xp + " ans"
+                                + " | skills: " + skills
+                                + " | " + item.getCommentaire()
+                                + (summary.isBlank() ? "" : " | nlp: " + summary)
+                );
+                tableTopCv.getChildren().add(card);
+                rank++;
+            }
+
+            String jsonPath = candidateScoringService.saveRankingAsJson(offreId, ranking);
+            if (lblTopCvJsonPath != null) {
+                lblTopCvJsonPath.setText("JSON: " + jsonPath);
+            }
+            setPageMessage("Top CV genere: " + ranking.size() + " candidat(s).", false);
+        } catch (NumberFormatException e) {
+            showError("Top N invalide.");
+        } catch (Exception e) {
+            showError("Erreur analyse Top CV: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    public void analyzeTopCvQuick() {
+        if (txtTopCvLimit != null) {
+            txtTopCvLimit.setText("5");
+        }
+        analyzeTopCv();
+    }
+
+    private void refreshKpiAndCharts() {
+        refreshModernKpis();
+        refreshModernCharts();
+        renderOfferFillAndPostesPanels();
+    }
+
+    private void refreshModernKpis() {
+        if (lblKpiTotalCandidatures == null) {
+            return;
+        }
+        List<Candidature> candidatures = serviceCandidature.getAll();
+        int total = candidatures.size();
+        long accepted = candidatures.stream().filter(c -> "ACCEPTEE".equalsIgnoreCase(c.getStatut())).count();
+        double acceptanceRate = total == 0 ? 0 : (accepted * 100.0 / total);
+
+        List<Candidature> closed = candidatures.stream()
+                .filter(c -> "ACCEPTEE".equalsIgnoreCase(c.getStatut()) || "REFUSEE".equalsIgnoreCase(c.getStatut()))
+                .collect(Collectors.toList());
+        double avgDays = closed.isEmpty() ? 0 : closed.stream()
+                .mapToLong(c -> Math.max(0, java.time.temporal.ChronoUnit.DAYS.between(c.getDateCandidature(), LocalDate.now())))
+                .average().orElse(0);
+
+        Map<Integer, Long> acceptedByOffre = candidatures.stream()
+                .filter(c -> "ACCEPTEE".equalsIgnoreCase(c.getStatut()))
+                .collect(Collectors.groupingBy(Candidature::getOffreId, Collectors.counting()));
+        int activeOffers = (int) serviceOffre.getAll().stream()
+                .filter(o -> acceptedByOffre.getOrDefault(o.getId(), 0L) < o.getNombrePostes())
+                .count();
+
+        lblKpiTotalCandidatures.setText(String.valueOf(total));
+        lblKpiTauxAcceptation.setText(String.format(Locale.US, "%.1f%%", acceptanceRate));
+        lblKpiTempsMoyen.setText(String.format(Locale.US, "%.1f jours", avgDays));
+        lblKpiOffresActives.setText(String.valueOf(activeOffers));
+        if (lblKpiEmployesActifs != null) {
+            lblKpiEmployesActifs.setText(String.valueOf(serviceUser.countByRole("EMPLOYE")));
+        }
+    }
+
+    private void refreshModernCharts() {
+        if (chartCandidaturesDept == null) {
+            return;
+        }
+        List<Candidature> candidatures = serviceCandidature.getAll();
+        Map<Integer, OffreEmploi> offersById = serviceOffre.getAll().stream()
+                .collect(Collectors.toMap(OffreEmploi::getId, o -> o));
+
+        Map<String, Long> byDept = candidatures.stream()
+                .collect(Collectors.groupingBy(c -> {
+                    OffreEmploi o = offersById.get(c.getOffreId());
+                    return o == null || o.getDepartement() == null || o.getDepartement().isBlank()
+                            ? "Non défini" : o.getDepartement();
+                }, Collectors.counting()));
+
+        chartCandidaturesDept.getData().clear();
+        byDept.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .forEach(e -> chartCandidaturesDept.getData().add(new PieChart.Data(e.getKey(), e.getValue())));
+
+        if (chartEvolutionLine == null || chartEvolutionBar == null) {
+            return;
+        }
+
+        Map<YearMonth, List<Candidature>> byMonth = candidatures.stream()
+                .collect(Collectors.groupingBy(c -> YearMonth.from(c.getDateCandidature()), LinkedHashMap::new, Collectors.toList()));
+
+        List<YearMonth> months = new ArrayList<>(byMonth.keySet());
+        months.sort(Comparator.naturalOrder());
+        if (months.size() > 6) {
+            months = months.subList(months.size() - 6, months.size());
+        }
+
+        XYChart.Series<String, Number> barSeries = new XYChart.Series<>();
+        barSeries.setName("Total Candidatures");
+        XYChart.Series<String, Number> lineSeries = new XYChart.Series<>();
+        lineSeries.setName("Taux d'Acceptation");
+        DateTimeFormatter monthFmt = DateTimeFormatter.ofPattern("MMM yy", Locale.FRENCH);
+
+        for (YearMonth month : months) {
+            List<Candidature> monthRows = byMonth.getOrDefault(month, List.of());
+            int total = monthRows.size();
+            long accepted = monthRows.stream().filter(c -> "ACCEPTEE".equalsIgnoreCase(c.getStatut())).count();
+            double rate = total == 0 ? 0 : accepted * 100.0 / total;
+            String label = month.format(monthFmt);
+            barSeries.getData().add(new XYChart.Data<>(label, total));
+            lineSeries.getData().add(new XYChart.Data<>(label, rate));
+        }
+
+        chartEvolutionBar.getData().setAll(barSeries);
+        chartEvolutionLine.getData().setAll(lineSeries);
+    }
+
+    private void renderModernUsers() {
+        if (flowUsers == null) {
+            return;
+        }
+        String q = lower(txtSearchUsers);
+        String global = lower(txtGlobalSearch);
+        String role = cbFilterRole == null ? null : cbFilterRole.getValue();
+
+        List<User> filtered = serviceUser.getAll().stream()
+                .filter(u -> role == null || role.isBlank() || role.equalsIgnoreCase(u.getRole()))
+                .filter(u -> matchesUserSearch(u, q) && matchesUserSearch(u, global))
+                .sorted(Comparator.comparingInt(User::getId).reversed())
+                .collect(Collectors.toList());
+
+        flowUsers.getChildren().setAll(pageSliceUsers(filtered).stream()
+                .map(this::buildModernUserCard)
+                .collect(Collectors.toList()));
+        updatePageLabel(lblUsersPage, usersPage, filtered.size(), USERS_PAGE_SIZE);
+    }
+
+    private void renderModernOffres() {
+        if (flowOffres == null) {
+            return;
+        }
+        String q = lower(txtSearchOffres);
+        String global = lower(txtGlobalSearch);
+        String dept = cbFilterDepartement == null ? null : cbFilterDepartement.getValue();
+
+        List<OffreEmploi> filtered = serviceOffre.getAll().stream()
+                .filter(o -> dept == null || dept.isBlank() || dept.equalsIgnoreCase(o.getDepartement()))
+                .filter(o -> matchesOffreSearch(o, q) && matchesOffreSearch(o, global))
+                .sorted(Comparator.comparingInt(OffreEmploi::getId).reversed())
+                .collect(Collectors.toList());
+
+        flowOffres.getChildren().setAll(pageSliceOffres(filtered).stream()
+                .map(this::buildModernOffreCard)
+                .collect(Collectors.toList()));
+        updatePageLabel(lblOffresPage, offresPage, filtered.size(), OFFRES_PAGE_SIZE);
+    }
+
+    private void renderModernCandidatures() {
+        if (flowCandidatures == null) {
+            return;
+        }
+        String q = lower(txtSearchCandidatures);
+        String global = lower(txtGlobalSearch);
+        String status = cbFilterStatut == null ? null : cbFilterStatut.getValue();
+
+        Map<Integer, User> usersById = serviceUser.getAll().stream().collect(Collectors.toMap(User::getId, u -> u));
+        Map<Integer, OffreEmploi> offersById = serviceOffre.getAll().stream().collect(Collectors.toMap(OffreEmploi::getId, o -> o));
+        List<Candidature> filtered = serviceCandidature.getAll().stream()
+                .filter(c -> status == null || status.isBlank() || status.equalsIgnoreCase(c.getStatut()))
+                .filter(c -> matchesCandidatureSearch(c, usersById, offersById, q)
+                        && matchesCandidatureSearch(c, usersById, offersById, global))
+                .sorted(Comparator.comparingInt(Candidature::getId).reversed())
+                .collect(Collectors.toList());
+
+        flowCandidatures.getChildren().setAll(pageSliceCandidatures(filtered).stream()
+                .map(c -> buildModernCandidatureCard(c, usersById, offersById))
+                .collect(Collectors.toList()));
+        updatePageLabel(lblCandidaturesPage, candidaturesPage, filtered.size(), CANDIDATURES_PAGE_SIZE);
+    }
+
+    private VBox buildModernUserCard(User user) {
+        Label title = new Label(user.getNom() + " " + user.getPrenom());
+        title.getStyleClass().add("entity-card-title");
+        Label email = new Label(user.getEmail());
+        email.getStyleClass().add("entity-card-meta");
+        Label role = buildRoleBadge(user.getRole());
+        HBox actions = new HBox(8);
+        actions.getStyleClass().add("card-actions");
+        Button edit = new Button("Edit");
+        edit.setOnAction(e -> openUserDialog(user));
+        Button delete = new Button("Delete");
+        delete.setOnAction(e -> {
+            serviceUser.delete(user.getId());
+            refreshData();
+        });
+        actions.getChildren().addAll(edit, delete);
+
+        VBox card = new VBox(8, title, email, role, actions);
+        card.getStyleClass().add("entity-card");
+        card.setPrefWidth(340);
+        return card;
+    }
+
+    private VBox buildModernOffreCard(OffreEmploi offre) {
+        Label title = new Label(offre.getTitre());
+        title.getStyleClass().add("entity-card-title");
+        int accepted = (int) serviceCandidature.getAll().stream()
+                .filter(c -> c.getOffreId() == offre.getId() && "ACCEPTEE".equalsIgnoreCase(c.getStatut()))
+                .count();
+        double fillRate = offre.getNombrePostes() <= 0 ? 0 : (accepted * 100.0 / offre.getNombrePostes());
+
+        Label meta = new Label(offre.getDepartement() + " | " + offre.getTypeContrat()
+                + " | " + accepted + "/" + offre.getNombrePostes() + " (" + String.format(Locale.US, "%.0f%%", fillRate) + ")");
+        meta.getStyleClass().add("entity-card-meta");
+        Label date = new Label("Publication: " + offre.getDatePublication());
+        date.getStyleClass().add("entity-card-meta");
+
+        HBox actions = new HBox(8);
+        actions.getStyleClass().add("card-actions");
+        Button edit = new Button("Edit");
+        edit.setOnAction(e -> openOffreDialog(offre));
+        Button delete = new Button("Delete");
+        delete.setOnAction(e -> {
+            serviceOffre.delete(offre.getId());
+            refreshData();
+        });
+        actions.getChildren().addAll(edit, delete);
+
+        VBox card = new VBox(8, title, meta, date, actions);
+        card.getStyleClass().add("entity-card");
+        card.setPrefWidth(340);
+        return card;
+    }
+
+    private VBox buildModernCandidatureCard(Candidature c, Map<Integer, User> usersById, Map<Integer, OffreEmploi> offersById) {
+        User u = usersById.get(c.getCandidatId());
+        OffreEmploi o = offersById.get(c.getOffreId());
+        String nom = u == null ? ("Candidat #" + c.getCandidatId()) : (u.getNom() + " " + u.getPrenom());
+        String offre = o == null ? ("Offre #" + c.getOffreId()) : o.getTitre();
+
+        Label title = new Label(nom);
+        title.getStyleClass().add("entity-card-title");
+        Label offerLabel = new Label("Poste: " + offre);
+        offerLabel.getStyleClass().add("entity-card-meta");
+        Label date = new Label("Date: " + c.getDateCandidature());
+        date.getStyleClass().add("entity-card-meta");
+        Label status = buildStatusBadge(c.getStatut());
+
+        HBox actions = new HBox(8);
+        actions.getStyleClass().add("card-actions");
+        Button viewCv = new Button("View CV");
+        viewCv.setOnAction(e -> setPageMessage(c.getCheminCv() == null ? "CV non disponible" : c.getCheminCv(), false));
+        Button update = new Button("Update Status");
+        update.setOnAction(e -> {
+            String next = "EN_ATTENTE";
+            if ("EN_ATTENTE".equalsIgnoreCase(c.getStatut())) next = "ACCEPTEE";
+            else if ("ACCEPTEE".equalsIgnoreCase(c.getStatut())) next = "REFUSEE";
+            serviceCandidature.updateStatut(c.getId(), next);
+            refreshData();
+        });
+        Button delete = new Button("Delete");
+        delete.setOnAction(e -> {
+            serviceCandidature.supprimer(c.getId());
+            refreshData();
+        });
+        actions.getChildren().addAll(viewCv, update, delete);
+
+        VBox card = new VBox(8, title, offerLabel, status, date, actions);
+        card.getStyleClass().add("entity-card");
+        card.setPrefWidth(340);
+        return card;
+    }
+
+    private Label buildRoleBadge(String role) {
+        String value = role == null ? "UNKNOWN" : role.toUpperCase(Locale.ROOT);
+        Label label = new Label(value);
+        label.getStyleClass().add("badge");
+        if (value.contains("ADMIN")) label.getStyleClass().add("badge-admin");
+        else if (value.contains("MANAGER")) label.getStyleClass().add("badge-manager");
+        else if (value.contains("EMPLOYE")) label.getStyleClass().add("badge-employe");
+        else label.getStyleClass().add("badge-candidat");
+        return label;
+    }
+
+    private Label buildStatusBadge(String status) {
+        String value = status == null ? "EN_ATTENTE" : status.toUpperCase(Locale.ROOT);
+        Label label = new Label(value);
+        label.getStyleClass().add("badge");
+        if ("ACCEPTEE".equals(value)) label.getStyleClass().add("badge-accepted");
+        else if ("REFUSEE".equals(value)) label.getStyleClass().add("badge-rejected");
+        else label.getStyleClass().add("badge-pending");
+        return label;
+    }
+
+    private String lower(TextField tf) {
+        return tf == null || tf.getText() == null ? "" : tf.getText().trim().toLowerCase(Locale.ROOT);
+    }
+
+    private boolean matchesUserSearch(User u, String q) {
+        if (q == null || q.isBlank()) return true;
+        return (u.getNom() + " " + u.getPrenom() + " " + u.getEmail() + " " + u.getRole()).toLowerCase(Locale.ROOT).contains(q);
+    }
+
+    private boolean matchesOffreSearch(OffreEmploi o, String q) {
+        if (q == null || q.isBlank()) return true;
+        return (o.getTitre() + " " + o.getDepartement() + " " + o.getTypeContrat()).toLowerCase(Locale.ROOT).contains(q);
+    }
+
+    private boolean matchesCandidatureSearch(Candidature c, Map<Integer, User> usersById, Map<Integer, OffreEmploi> offersById, String q) {
+        if (q == null || q.isBlank()) return true;
+        User u = usersById.get(c.getCandidatId());
+        OffreEmploi o = offersById.get(c.getOffreId());
+        String full = (u == null ? "" : (u.getNom() + " " + u.getPrenom() + " " + u.getEmail()))
+                + " " + (o == null ? "" : o.getTitre()) + " " + c.getStatut();
+        return full.toLowerCase(Locale.ROOT).contains(q);
+    }
+
+    private List<User> pageSliceUsers(List<User> list) {
+        int maxPage = Math.max(0, (list.size() - 1) / USERS_PAGE_SIZE);
+        usersPage = Math.min(usersPage, maxPage);
+        int from = usersPage * USERS_PAGE_SIZE;
+        int to = Math.min(list.size(), from + USERS_PAGE_SIZE);
+        return from >= to ? List.of() : list.subList(from, to);
+    }
+
+    private List<OffreEmploi> pageSliceOffres(List<OffreEmploi> list) {
+        int maxPage = Math.max(0, (list.size() - 1) / OFFRES_PAGE_SIZE);
+        offresPage = Math.min(offresPage, maxPage);
+        int from = offresPage * OFFRES_PAGE_SIZE;
+        int to = Math.min(list.size(), from + OFFRES_PAGE_SIZE);
+        return from >= to ? List.of() : list.subList(from, to);
+    }
+
+    private List<Candidature> pageSliceCandidatures(List<Candidature> list) {
+        int maxPage = Math.max(0, (list.size() - 1) / CANDIDATURES_PAGE_SIZE);
+        candidaturesPage = Math.min(candidaturesPage, maxPage);
+        int from = candidaturesPage * CANDIDATURES_PAGE_SIZE;
+        int to = Math.min(list.size(), from + CANDIDATURES_PAGE_SIZE);
+        return from >= to ? List.of() : list.subList(from, to);
+    }
+
+    private void updatePageLabel(Label label, int currentPage, int totalRows, int pageSize) {
+        if (label == null) {
+            return;
+        }
+        int totalPages = Math.max(1, (int) Math.ceil(totalRows / (double) pageSize));
+        label.setText("Page " + (currentPage + 1) + " / " + totalPages);
+    }
+
+    @FXML
+    public void prevUsersPage() {
+        usersPage = Math.max(0, usersPage - 1);
+        renderModernUsers();
+    }
+
+    @FXML
+    public void nextUsersPage() {
+        usersPage++;
+        renderModernUsers();
+    }
+
+    @FXML
+    public void prevOffresPage() {
+        offresPage = Math.max(0, offresPage - 1);
+        renderModernOffres();
+    }
+
+    @FXML
+    public void nextOffresPage() {
+        offresPage++;
+        renderModernOffres();
+    }
+
+    @FXML
+    public void prevCandidaturesPage() {
+        candidaturesPage = Math.max(0, candidaturesPage - 1);
+        renderModernCandidatures();
+    }
+
+    @FXML
+    public void nextCandidaturesPage() {
+        candidaturesPage++;
+        renderModernCandidatures();
+    }
+
+    @FXML
+    public void addUserQuick() {
+        openUserDialog(null);
+    }
+
+    @FXML
+    public void addOffreQuick() {
+        openOffreDialog(null);
+    }
+
+    @FXML
+    public void addCandidatureQuick() {
+        openCandidatureDialog();
+    }
+
+    private void openUserDialog(User existing) {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle(existing == null ? "Ajouter Utilisateur" : "Modifier Utilisateur");
+        ButtonType saveType = new ButtonType("Enregistrer", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveType, ButtonType.CANCEL);
+
+        TextField nom = new TextField(existing == null ? "" : existing.getNom());
+        TextField prenom = new TextField(existing == null ? "" : existing.getPrenom());
+        TextField email = new TextField(existing == null ? "" : existing.getEmail());
+        PasswordField mdp = new PasswordField();
+        if (existing != null && existing.getMdp() != null) {
+            mdp.setText(existing.getMdp());
+        }
+        ComboBox<String> role = new ComboBox<>();
+        role.getItems().setAll("ADMIN_RH", "MANAGER", "EMPLOYE", "CANDIDAT");
+        role.setValue(existing == null ? "EMPLOYE" : existing.getRole());
+        TextField managerId = new TextField(existing == null || existing.getManagerId() == null ? "" : String.valueOf(existing.getManagerId()));
+
+        VBox form = new VBox(8,
+                new Label("Nom"), nom,
+                new Label("Prenom"), prenom,
+                new Label("Email"), email,
+                new Label("Mot de passe"), mdp,
+                new Label("Role"), role,
+                new Label("Manager ID (optionnel)"), managerId
+        );
+        form.setPrefWidth(380);
+        dialog.getDialogPane().setContent(form);
+
+        dialog.showAndWait().ifPresent(bt -> {
+            if (bt != saveType) {
+                return;
+            }
+            try {
+                User u = existing == null ? new User() : existing;
+                u.setNom(nom.getText().trim());
+                u.setPrenom(prenom.getText().trim());
+                u.setEmail(email.getText().trim());
+                u.setMdp(mdp.getText().trim());
+                u.setRole(role.getValue());
+                String mgrText = managerId.getText() == null ? "" : managerId.getText().trim();
+                u.setManagerId(mgrText.isBlank() ? null : Integer.parseInt(mgrText));
+                boolean ok = existing == null ? serviceUser.ajouter(u) : serviceUser.update(u);
+                if (ok) {
+                    refreshData();
+                } else {
+                    showError("Operation utilisateur echouee.");
+                }
+            } catch (Exception ex) {
+                showError("Erreur utilisateur: " + ex.getMessage());
+            }
+        });
+    }
+
+    private void openOffreDialog(OffreEmploi existing) {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle(existing == null ? "Ajouter Offre" : "Modifier Offre");
+        ButtonType saveType = new ButtonType("Enregistrer", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveType, ButtonType.CANCEL);
+
+        TextField titre = new TextField(existing == null ? "" : existing.getTitre());
+        TextField description = new TextField(existing == null ? "" : existing.getDescription());
+        TextField departement = new TextField(existing == null ? "" : existing.getDepartement());
+        TextField typeContrat = new TextField(existing == null ? "" : existing.getTypeContrat());
+        TextField nbPostes = new TextField(existing == null ? "1" : String.valueOf(existing.getNombrePostes()));
+        DatePicker datePub = new DatePicker(existing == null ? LocalDate.now() : existing.getDatePublication());
+        TextField adminId = new TextField(existing == null
+                ? (Session.getUser() == null ? "" : String.valueOf(Session.getUser().getId()))
+                : String.valueOf(existing.getAdminId()));
+
+        VBox form = new VBox(8,
+                new Label("Titre"), titre,
+                new Label("Description"), description,
+                new Label("Departement"), departement,
+                new Label("Type contrat"), typeContrat,
+                new Label("Nombre postes"), nbPostes,
+                new Label("Date publication"), datePub,
+                new Label("Admin ID"), adminId
+        );
+        form.setPrefWidth(420);
+        dialog.getDialogPane().setContent(form);
+
+        dialog.showAndWait().ifPresent(bt -> {
+            if (bt != saveType) {
+                return;
+            }
+            try {
+                OffreEmploi o = existing == null ? new OffreEmploi() : existing;
+                o.setTitre(titre.getText().trim());
+                o.setDescription(description.getText().trim());
+                o.setDepartement(departement.getText().trim());
+                o.setTypeContrat(typeContrat.getText().trim());
+                o.setNombrePostes(Integer.parseInt(nbPostes.getText().trim()));
+                o.setDatePublication(datePub.getValue() == null ? LocalDate.now() : datePub.getValue());
+                o.setAdminId(Integer.parseInt(adminId.getText().trim()));
+                boolean ok = existing == null ? serviceOffre.ajouter(o) : serviceOffre.update(o);
+                if (ok) {
+                    refreshData();
+                } else {
+                    showError("Operation offre echouee.");
+                }
+            } catch (Exception ex) {
+                showError("Erreur offre: " + ex.getMessage());
+            }
+        });
+    }
+
+    private void openCandidatureDialog() {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Ajouter Candidature");
+        ButtonType saveType = new ButtonType("Enregistrer", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveType, ButtonType.CANCEL);
+
+        TextField candidatId = new TextField();
+        TextField offreId = new TextField();
+        DatePicker date = new DatePicker(LocalDate.now());
+        ComboBox<String> statut = new ComboBox<>();
+        statut.getItems().setAll("EN_ATTENTE", "ACCEPTEE", "REFUSEE");
+        statut.setValue("EN_ATTENTE");
+        TextField cvPath = new TextField();
+
+        VBox form = new VBox(8,
+                new Label("Candidat ID"), candidatId,
+                new Label("Offre ID"), offreId,
+                new Label("Date candidature"), date,
+                new Label("Statut"), statut,
+                new Label("Chemin CV (optionnel)"), cvPath
+        );
+        form.setPrefWidth(360);
+        dialog.getDialogPane().setContent(form);
+
+        dialog.showAndWait().ifPresent(bt -> {
+            if (bt != saveType) {
+                return;
+            }
+            try {
+                Candidature c = new Candidature();
+                c.setCandidatId(Integer.parseInt(candidatId.getText().trim()));
+                c.setOffreId(Integer.parseInt(offreId.getText().trim()));
+                c.setDateCandidature(date.getValue() == null ? LocalDate.now() : date.getValue());
+                c.setStatut(statut.getValue());
+                c.setCheminCv(cvPath.getText() == null ? "" : cvPath.getText().trim());
+                if (serviceCandidature.ajouter(c)) {
+                    refreshData();
+                } else {
+                    showError("Ajout candidature echoue.");
+                }
+            } catch (Exception ex) {
+                showError("Erreur candidature: " + ex.getMessage());
+            }
+        });
+    }
+
+    private void renderOfferFillAndPostesPanels() {
+        if (tableOffresFillRate == null || tablePostesPourvoir == null) {
+            return;
+        }
+        tableOffresFillRate.getChildren().clear();
+        tablePostesPourvoir.getChildren().clear();
+
+        List<Candidature> allCandidatures = serviceCandidature.getAll();
+        List<OffreEmploi> offres = serviceOffre.getAll();
+
+        for (OffreEmploi o : offres) {
+            int accepted = (int) allCandidatures.stream()
+                    .filter(c -> c.getOffreId() == o.getId() && "ACCEPTEE".equalsIgnoreCase(c.getStatut()))
+                    .count();
+            int totalPostes = Math.max(0, o.getNombrePostes());
+            int remaining = Math.max(0, totalPostes - accepted);
+            double fillRate = totalPostes == 0 ? 0 : accepted * 100.0 / totalPostes;
+
+            VBox rowFill = buildCard(o.getTitre(),
+                    o.getDepartement() + " | " + accepted + "/" + totalPostes + " (" + String.format(Locale.US, "%.0f%%", fillRate) + ")");
+            tableOffresFillRate.getChildren().add(rowFill);
+
+            VBox rowNeed = buildCard(o.getTitre(), "Postes restants: " + remaining);
+            tablePostesPourvoir.getChildren().add(rowNeed);
+        }
     }
 
     @FXML
@@ -1008,7 +1764,24 @@ public class DashboardController {
         }
 
         String auteur = current.getNom() + " " + current.getPrenom();
-        if (publicationService.publish(titre, contenu, auteur)) {
+
+        // Récupérer l'ID au lieu d'un boolean
+        int pubId = publicationService.addPublicationAndGetId(titre, contenu);
+
+        if (pubId > 0) {
+            // Sauvegarder les médias en base
+            for (String img : imagesToAdd) {
+                publicationService.addMedia(pubId, "image", img);
+            }
+            for (String vid : videosToAdd) {
+                publicationService.addMedia(pubId, "video", vid);
+            }
+
+            // Vider les listes et l'aperçu
+            imagesToAdd.clear();
+            videosToAdd.clear();
+            mediaPreviewBox.getChildren().clear();
+
             txtPublicationTitre.clear();
             txtPublicationContenu.clear();
             renderCommunicationCards();
@@ -1018,6 +1791,54 @@ public class DashboardController {
         }
     }
 
+    @FXML
+    public void updateCommunicationPublication() {
+        User current = Session.getUser();
+        if (current == null) {
+            showError("Session invalide.");
+            return;
+        }
+        String role = current.getRole() == null ? "" : current.getRole().trim().toUpperCase();
+        if (!role.contains("ADMIN")) {
+            showError("Seul ADMIN RH peut modifier une publication.");
+            return;
+        }
+        if (selectedPublication == null) {
+            showError("Selectionnez une publication a modifier.");
+            return;
+        }
+        String titre = txtPublicationTitre.getText() == null ? "" : txtPublicationTitre.getText().trim();
+        String contenu = txtPublicationContenu.getText() == null ? "" : txtPublicationContenu.getText().trim();
+        if (titre.isBlank() || contenu.isBlank()) {
+            showError("Titre et contenu sont obligatoires.");
+            return;
+        }
+        boolean ok = publicationService.updatePublication(
+                selectedPublication.getId(),
+                current.getId(),
+                true,
+                titre,
+                contenu
+        );
+        if (ok) {
+            // Mettre à jour les médias si de nouveaux ont été sélectionnés
+            if (!imagesToAdd.isEmpty() || !videosToAdd.isEmpty()) {
+                for (String img : imagesToAdd) {
+                    publicationService.addMedia(selectedPublication.getId(), "image", img);
+                }
+                for (String vid : videosToAdd) {
+                    publicationService.addMedia(selectedPublication.getId(), "video", vid);
+                }
+                imagesToAdd.clear();
+                videosToAdd.clear();
+                mediaPreviewBox.getChildren().clear();
+            }
+            renderCommunicationCards();
+            setPageMessage("Publication modifiee.", false);
+        } else {
+            showError("Echec modification publication.");
+        }
+    }
     @FXML
     public void deleteCommunicationPublication() {
         User current = Session.getUser();
@@ -1046,7 +1867,40 @@ public class DashboardController {
             showError("Suppression impossible.");
         }
     }
+    @FXML
+    private void selectImage() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choisir une image");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg")
+        );
+        Stage stage = (Stage) publicationList.getScene().getWindow();
+        File file = fileChooser.showOpenDialog(stage);
+        if (file != null) {
+            imagesToAdd.add(file.getAbsolutePath());
+            ImageView preview = new ImageView(new Image("file:" + file.getAbsolutePath()));
+            preview.setFitWidth(100);
+            preview.setPreserveRatio(true);
+            mediaPreviewBox.getChildren().add(preview);
+            setPageMessage("Image sélectionnée : " + file.getName(), false);
+        }
+    }
 
+    @FXML
+    private void selectVideo() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choisir une vidéo");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Vidéos", "*.mp4", "*.mov", "*.avi", "*.flv")
+        );
+        Stage stage = (Stage) publicationList.getScene().getWindow();
+        File file = fileChooser.showOpenDialog(stage);
+        if (file != null) {
+            videosToAdd.add(file.getAbsolutePath());
+            mediaPreviewBox.getChildren().add(new Label("Vidéo : " + file.getName()));
+            setPageMessage("Vidéo sélectionnée : " + file.getName(), false);
+        }
+    }
     @FXML
     public void logout(ActionEvent event) {
         Session.clear();
@@ -1243,11 +2097,14 @@ public class DashboardController {
                 selectedOffre = offre;
                 txtOffreId.setText(String.valueOf(offre.getId()));
                 txtTitre.setText(offre.getTitre());
-                txtDepartement.setText(offre.getDepartement());
+                txtDepartement.setValue(offre.getDepartement());
                 txtTypeContrat.setText(offre.getTypeContrat());
                 txtNombrePostes.setText(String.valueOf(offre.getNombrePostes()));
                 dpDatePublication.setValue(offre.getDatePublication());
                 txtAdminId.setText(String.valueOf(offre.getAdminId()));
+                if (txtTopCvOffreId != null) {
+                    txtTopCvOffreId.setText(String.valueOf(offre.getId()));
+                }
             });
             tableOffres.getChildren().add(card);
         }
@@ -1433,6 +2290,12 @@ public class DashboardController {
                 selectedPublicationCard = card;
                 selectedPublicationCard.getStyleClass().add("entity-card-selected");
                 selectedPublication = publication;
+                if (txtPublicationTitre != null) {
+                    txtPublicationTitre.setText(publication.getTitre());
+                }
+                if (txtPublicationContenu != null) {
+                    txtPublicationContenu.setText(publication.getContenu());
+                }
             });
             publicationList.getChildren().add(card);
         }

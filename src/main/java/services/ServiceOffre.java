@@ -111,4 +111,29 @@ public class ServiceOffre {
         }
         return 0;
     }
+
+    public OffreEmploi getById(int id) {
+        String sql = "SELECT * FROM offre_emploi WHERE id = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    OffreEmploi o = new OffreEmploi();
+                    o.setId(rs.getInt("id"));
+                    o.setTitre(rs.getString("titre"));
+                    o.setDescription(rs.getString("description"));
+                    o.setDepartement(rs.getString("departement"));
+                    Date d = rs.getDate("date_publication");
+                    o.setDatePublication(d == null ? null : d.toLocalDate());
+                    o.setTypeContrat(rs.getString("type_contrat"));
+                    o.setNombrePostes(rs.getInt("nombre_postes"));
+                    o.setAdminId(rs.getInt("admin_id"));
+                    return o;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
 }

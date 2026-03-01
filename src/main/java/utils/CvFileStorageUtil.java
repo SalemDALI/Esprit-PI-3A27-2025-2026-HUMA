@@ -31,4 +31,25 @@ public final class CvFileStorageUtil {
 
         return targetPath.toString().replace("\\", "/");
     }
+
+    public static String savePdfCv(Path sourcePdfPath, int candidatId) throws IOException {
+        if (sourcePdfPath == null) {
+            throw new IllegalArgumentException("Aucun fichier selectionne");
+        }
+        if (candidatId <= 0) {
+            throw new IllegalArgumentException("Id candidat invalide");
+        }
+
+        String fileName = sourcePdfPath.getFileName().toString();
+        if (!fileName.toLowerCase().endsWith(".pdf")) {
+            throw new IllegalArgumentException("Le fichier doit etre un PDF");
+        }
+
+        Path uploadDir = Path.of("uploads", "cv");
+        Files.createDirectories(uploadDir);
+
+        Path targetPath = uploadDir.resolve(candidatId + ".pdf");
+        Files.copy(sourcePdfPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+        return targetPath.toString().replace("\\", "/");
+    }
 }

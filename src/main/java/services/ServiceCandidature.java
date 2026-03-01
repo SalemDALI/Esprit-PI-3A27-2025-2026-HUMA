@@ -85,6 +85,41 @@ public class ServiceCandidature {
         return list;
     }
 
+    public List<Candidature> getByOffreId(int offreId) {
+        List<Candidature> list = new ArrayList<>();
+        String sql = "SELECT c.id, c.date_candidature, c.statut, c.candidat_id, c.offre_id, c.cv, " +
+                "o.titre AS offre_titre, CONCAT(COALESCE(u.nom, ''), ' ', COALESCE(u.prenom, '')) AS candidat_nom, " +
+                "u.email AS candidat_email " +
+                "FROM candidature c " +
+                "JOIN offre_emploi o ON o.id = c.offre_id " +
+                "JOIN users u ON u.id = c.candidat_id " +
+                "WHERE c.offre_id = ? " +
+                "ORDER BY c.date_candidature DESC, c.id DESC";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, offreId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Candidature c = new Candidature();
+                    c.setId(rs.getInt("id"));
+                    c.setDateCandidature(rs.getDate("date_candidature").toLocalDate());
+                    c.setStatut(rs.getString("statut"));
+                    c.setCandidatId(rs.getInt("candidat_id"));
+                    c.setOffreId(rs.getInt("offre_id"));
+                    c.setOffreTitre(rs.getString("offre_titre"));
+                    c.setCheminCv(rs.getString("cv"));
+                    c.setCandidatNom(rs.getString("candidat_nom") == null ? "" : rs.getString("candidat_nom").trim());
+                    c.setCandidatEmail(rs.getString("candidat_email"));
+                    list.add(c);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return list;
+    }
+
     public boolean update(Candidature c) {
         String sql = "UPDATE candidature SET date_candidature=?, statut=?, candidat_id=?, offre_id=?, cv=? WHERE id=?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {

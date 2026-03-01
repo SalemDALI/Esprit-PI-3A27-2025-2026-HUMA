@@ -11,69 +11,153 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
 
-<BorderPane styleClass="app-root" stylesheets="@style.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25" fx:controller="controller.DashboardController">
+<BorderPane styleClass="app-root"
+            stylesheets="@publication.css"
+            xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/21"
+            fx:controller="controller.DashboardController">
 
+    <!-- ════════════════ SIDEBAR ════════════════ -->
     <left>
-        <VBox prefWidth="220" spacing="10" styleClass="sidebar dashboard-sidebar left-panel">
-            <HBox spacing="8" styleClass="brand-row">
-                <ImageView fitHeight="78.0" fitWidth="240.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/huma.png" />
-                    </image>
+        <VBox prefWidth="200" spacing="8" styleClass="sidebar dashboard-sidebar left-panel">
+
+            <!-- Logo -->
+            <HBox styleClass="brand-row" alignment="CENTER">
+                <ImageView fitHeight="72" fitWidth="160" preserveRatio="true">
+                    <image><Image url="@../images/huma.png"/></image>
                 </ImageView>
             </HBox>
 
-            <Button onAction="#openDashboard" styleClass="nav-button" text="Tableau de bord">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/dashboard.png" /></image></ImageView></graphic>
-            </Button>
-            <Button onAction="#openRecrutement" styleClass="nav-button" text="Recrutement">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/recrutement.png" /></image></ImageView></graphic>
-            </Button>
-            <Button onAction="#openConges" styleClass="nav-button" text="Congés">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/conge.png" /></image></ImageView></graphic>
-            </Button>
-            <Button onAction="#openAbsences" styleClass="nav-button" text="Absences">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/absences.png" /></image></ImageView></graphic>
-            </Button>
-            <Button onAction="#openCommunication" styleClass="nav-button nav-active" text="Communication">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/communication.png" /></image></ImageView></graphic>
-            </Button>
-            <Button onAction="#openFormations" styleClass="nav-button" text="Formations">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/recrutement.png" /></image></ImageView></graphic>
-            </Button>
-            <Button onAction="#openFeedback" styleClass="nav-button" text="FeedBack">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/feedback.png" /></image></ImageView></graphic>
-            </Button>
-            <Button onAction="#openParametres" styleClass="nav-button" text="Paramètres">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/parametre.png" /></image></ImageView></graphic>
-            </Button>
-            <Region VBox.vgrow="ALWAYS" />
-            <Button onAction="#logout" styleClass="nav-button" text="Logout" />
+            <!-- Séparateur -->
+            <Label text="NAVIGATION"
+                   style="-fx-font-size:10px; -fx-font-weight:bold;
+                          -fx-text-fill:#4b5563; -fx-padding: 8 0 4 14;"/>
+
+            <Button onAction="#openDashboard"     styleClass="nav-button" text="🏠  Tableau de bord" maxWidth="Infinity"/>
+            <Button onAction="#openRecrutement"   styleClass="nav-button" text="📋  Recrutement"      maxWidth="Infinity"/>
+            <Button onAction="#openConges"        styleClass="nav-button" text="🗓  Congés"           maxWidth="Infinity"/>
+            <Button onAction="#openAbsences"      styleClass="nav-button" text="📊  Absences"         maxWidth="Infinity"/>
+            <Button onAction="#openCommunication" styleClass="nav-button nav-active" text="📢  Communication" maxWidth="Infinity"/>
+            <Button onAction="#openFormations"    styleClass="nav-button" text="🎓  Formations"       maxWidth="Infinity"/>
+            <Button onAction="#openFeedback"      styleClass="nav-button" text="💬  FeedBack"         maxWidth="Infinity"/>
+            <Button onAction="#openParametres"    styleClass="nav-button" text="⚙  Paramètres"       maxWidth="Infinity"/>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Label text="COMPTE"
+                   style="-fx-font-size:10px; -fx-font-weight:bold;
+                          -fx-text-fill:#4b5563; -fx-padding: 0 0 4 14;"/>
+            <Button onAction="#logout" styleClass="nav-button" text="↩  Logout" maxWidth="Infinity"/>
+
+            <VBox.margin><Insets bottom="12"/></VBox.margin>
         </VBox>
     </left>
 
+    <!-- ════════════════ MAIN CONTENT ════════════════ -->
     <center>
-        <VBox spacing="12" styleClass="main-content">
-            <HBox styleClass="top-toolbar" />
+        <VBox styleClass="main-content" spacing="16">
 
-            <Label fx:id="lblPageMessage" styleClass="page-message" text="" />
+            <!-- ── Header ── -->
+            <HBox styleClass="top-toolbar" alignment="CENTER_LEFT" spacing="14">
+                <VBox spacing="3">
+                    <Label style="-fx-font-size:11px; -fx-text-fill:#6b7280;
+                                  -fx-font-weight:bold;"
+                           text="ESPACE RH  ›  COMMUNICATION"/>
+                    <Label styleClass="title" text="Gestion des Publications"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="lblInfo" styleClass="page-message" text=""/>
+            </HBox>
 
-            <VBox spacing="10" styleClass="content">
-                <Label styleClass="title" text="Publication Admin RH" />
-                <TextField fx:id="txtPublicationTitre" promptText="Titre de publication" />
-                <TextArea fx:id="txtPublicationContenu" prefRowCount="4" promptText="Contenu de publication" wrapText="true" />
-                <HBox spacing="10" styleClass="action-row">
-                    <Button onAction="#publishCommunication" styleClass="btn btn-primary" text="Publier" />
-                    <Button onAction="#deleteCommunicationPublication" styleClass="btn btn-danger" text="Supprimer publication" />
+            <!-- ── FORM CARD ── -->
+            <VBox styleClass="content" spacing="14">
+
+                <!-- En-tête formulaire -->
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label style="-fx-background-color:#20c997;
+                                  -fx-min-width:4; -fx-min-height:24;
+                                  -fx-background-radius:2;"/>
+                    <Label text="Nouvelle Publication"
+                           style="-fx-font-size:15px; -fx-font-weight:bold;
+                                  -fx-text-fill:#111827;"/>
                 </HBox>
 
-                <ScrollPane fitToWidth="true" prefHeight="420" styleClass="cards-scroll">
-                    <content>
-                        <VBox fx:id="publicationList" spacing="10" styleClass="cards-container" />
-                    </content>
-                </ScrollPane>
+                <!-- Titre -->
+                <TextField fx:id="txtPublicationTitre"
+                           promptText="✦  Titre de la publication…"
+                           maxWidth="Infinity"/>
+
+                <!-- Contenu -->
+                <TextArea fx:id="txtPublicationContenu"
+                          prefRowCount="4"
+                          promptText="Rédigez votre communication RH…"
+                          wrapText="true"
+                          maxWidth="Infinity"/>
+
+                <!-- Médias -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Button fx:id="btnSelectImage" onAction="#selectImage"
+                            styleClass="btn btn-secondary"
+                            text="🖼  Sélectionner Image"/>
+                    <Button fx:id="btnSelectVideo" onAction="#selectVideo"
+                            styleClass="btn btn-secondary"
+                            text="🎬  Sélectionner Vidéo"/>
+                    <Label text="PNG · JPG · MP4"
+                           style="-fx-font-size:11px; -fx-text-fill:#a0aec0;"/>
+                </HBox>
+
+                <!-- Aperçu médias -->
+                <HBox fx:id="mediaPreviewBox" spacing="10" minHeight="10"/>
+
+                <!-- Ligne séparatrice -->
+                <Region style="-fx-background-color:#f0f4f8; -fx-min-height:1; -fx-max-height:1;"
+                        maxWidth="Infinity"/>
+
+                <!-- Boutons action -->
+                <HBox styleClass="action-row" spacing="10">
+                    <Button onAction="#publishCommunication"
+                            styleClass="btn btn-primary"
+                            text="✉  Publier"/>
+                    <Button onAction="#updateCommunicationPublication"
+                            styleClass="btn btn-warning"
+                            text="✏  Modifier"/>
+                    <Button onAction="#deleteCommunicationPublication"
+                            styleClass="btn btn-danger"
+                            text="🗑  Supprimer"/>
+                </HBox>
+
             </VBox>
+
+            <!-- ── List header ── -->
+            <HBox alignment="CENTER_LEFT" spacing="10"
+                  style="-fx-padding: 2 0 0 2;">
+                <Label style="-fx-background-color:#20c997;
+                              -fx-min-width:4; -fx-min-height:18;
+                              -fx-background-radius:2;"/>
+                <Label text="Publications récentes"
+                       style="-fx-font-size:14px; -fx-font-weight:bold;
+                              -fx-text-fill:#1f2937;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="Cliquez sur une carte pour la sélectionner"
+                       style="-fx-font-size:11px; -fx-text-fill:#a0aec0;"/>
+            </HBox>
+
+            <!-- ── Cards ── -->
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                        styleClass="cards-scroll" prefHeight="400">
+                <content>
+                    <VBox fx:id="publicationList"
+                          styleClass="cards-container"
+                          spacing="12">
+                        <padding>
+                            <Insets top="4" right="6" bottom="8" left="4"/>
+                        </padding>
+                    </VBox>
+                </content>
+            </ScrollPane>
+
         </VBox>
     </center>
 

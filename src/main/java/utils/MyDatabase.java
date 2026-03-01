@@ -9,9 +9,9 @@ public class MyDatabase {
     private static MyDatabase instance;
     private Connection cnx;
 
-    private final String URL = "jdbc:mysql://localhost:8889/humaDB?useSSL=false&serverTimezone=UTC";;
+    private final String URL = "jdbc:mysql://localhost:3307/humadb";;
     private final String USER = "root";
-    private final String PASSWORD = "root";
+    private final String PASSWORD = "";
 
     private MyDatabase() {
         try {

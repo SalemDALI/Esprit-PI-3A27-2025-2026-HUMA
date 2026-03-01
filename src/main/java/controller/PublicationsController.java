@@ -1,23 +1,23 @@
 package controller;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
 import models.Publication;
 import models.PublicationComment;
 import models.User;
 import services.PublicationService;
 import utils.Session;
 
-import java.io.IOException;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.io.File;
+import java.util.*;
 
 public class PublicationsController {
 
@@ -28,152 +28,118 @@ public class PublicationsController {
     @FXML
     private VBox publicationList;
     @FXML
-    private TextArea txtComment;
+    private Button btnSelectImage;
+    @FXML
+    private Button btnSelectVideo;
+    @FXML
+    private TextField txtPublicationTitre;
+    @FXML
+    private TextArea txtPublicationContenu;
 
     private final PublicationService publicationService = new PublicationService();
-    private Publication selectedPublication;
-    private Node selectedCard;
+    private final List<String> imagesToAdd = new ArrayList<>();
+    private final List<String> videosToAdd = new ArrayList<>();
 
     @FXML
     public void initialize() {
         User user = Session.getUser();
         if (user != null) {
-            welcomeLabel.setText("Publications - " + user.getNom() + " " + user.getPrenom());
+            welcomeLabel.setText("Publications - " + user.getNom());
         }
+
         renderPublications();
     }
 
-    @FXML
-    public void refreshPublications() {
-        renderPublications();
-        setInfo("", false);
-    }
+
 
     @FXML
-    public void addComment() {
-        if (selectedPublication == null) {
-            setInfo("Selectionnez une publication.", true);
-            return;
-        }
-        String comment = txtComment.getText() == null ? "" : txtComment.getText().trim();
-        if (comment.isBlank()) {
-            setInfo("Ecrivez un commentaire.", true);
+    public void publishCommunication() {
+        String titre = txtPublicationTitre.getText().trim();
+        String contenu = txtPublicationContenu.getText().trim();
+
+        if (titre.isEmpty() || contenu.isEmpty()) {
+            lblInfo.setText("Titre et contenu obligatoires");
             return;
         }
 
-        User user = Session.getUser();
-        String auteur = user == null ? "Utilisateur" : user.getNom() + " " + user.getPrenom();
-        if (publicationService.addComment(selectedPublication.getId(), auteur, comment)) {
-            txtComment.clear();
-            renderPublications();
-            setInfo("Commentaire ajoute.", false);
-        } else {
-            setInfo("Impossible d'ajouter le commentaire.", true);
-        }
-    }
+        int pubId = publicationService.addPublicationAndGetId(titre, contenu);
 
-    @FXML
-    public void back(ActionEvent event) {
-        User user = Session.getUser();
-        if (user == null) {
-            logout(event);
-            return;
-        }
+        if (pubId > 0) {
 
-        String role = user.getRole() == null ? "" : user.getRole().trim().toUpperCase();
-        try {
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            FXMLLoader loader;
-
-            if (role.contains("MANAG")) {
-                loader = new FXMLLoader(getClass().getResource("/fxml/ManagerAbsence.fxml"));
-                Scene scene = new Scene(loader.load());
-                ManagerAbsenceController c = loader.getController();
-                c.setManagerId(user.getId());
-                stage.setScene(scene);
-            } else {
-                loader = new FXMLLoader(getClass().getResource("/fxml/DemandeConge.fxml"));
-                Scene scene = new Scene(loader.load());
-                DemandeCongeController c = loader.getController();
-                c.setEmployeId(user.getId());
-                stage.setScene(scene);
+            for (String img : imagesToAdd) {
+                publicationService.addMedia(pubId, "image", img);
             }
-            stage.show();
-        } catch (IOException e) {
-            setInfo("Erreur retour: " + e.getMessage(), true);
-        }
-    }
 
-    @FXML
-    public void logout(ActionEvent event) {
-        Session.clear();
-        try {
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/login.fxml"))));
-            stage.show();
-        } catch (IOException e) {
-            setInfo("Erreur logout: " + e.getMessage(), true);
+            for (String vid : videosToAdd) {
+                publicationService.addMedia(pubId, "video", vid);
+            }
+
+            imagesToAdd.clear();
+            videosToAdd.clear();
+
+            txtPublicationTitre.clear();
+            txtPublicationContenu.clear();
+
+            lblInfo.setText("Publication ajoutée avec succès");
+
+            renderPublications();
         }
     }
 
     private void renderPublications() {
         publicationList.getChildren().clear();
-        selectedPublication = null;
-        selectedCard = null;
 
-        List<Publication> all = publicationService.getAll();
-        if (all.isEmpty()) {
-            publicationList.getChildren().add(buildCard("Aucune publication", "Pas encore de publication admin."));
-            return;
-        }
+        List<Publication> publications = publicationService.getAll();
 
-        for (Publication publication : all) {
-            String date = publication.getDatePublication() == null ? "" :
-                    publication.getDatePublication().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
-            String latestComment = "Aucun commentaire";
-            if (!publication.getCommentaires().isEmpty()) {
-                PublicationComment c = publication.getCommentaires().get(publication.getCommentaires().size() - 1);
-                latestComment = "Dernier commentaire: " + c.getAuteur() + " - " + c.getContenu();
+        for (Publication publication : publications) {
+
+            VBox card = new VBox(5);
+            card.getStyleClass().add("entity-card");
+
+            Label titre = new Label(publication.getTitre());
+            Label contenu = new Label(publication.getContenu());
+
+            card.getChildren().addAll(titre, contenu);
+
+            List<Map<String, String>> medias =
+                    publicationService.getMedia(publication.getId());
+
+            for (Map<String, String> media : medias) {
+                card.getChildren().add(createMediaNode(media));
             }
 
-            VBox card = buildCard(
-                    publication.getTitre(),
-                    "Par " + publication.getAuteur() + " | " + date + "\n"
-                            + publication.getContenu() + "\n" + latestComment
-            );
-            card.setOnMouseClicked(e -> {
-                if (selectedCard != null) {
-                    selectedCard.getStyleClass().remove("entity-card-selected");
-                }
-                selectedCard = card;
-                selectedCard.getStyleClass().add("entity-card-selected");
-                selectedPublication = publication;
-                setInfo("Selection: " + publication.getTitre(), false);
-            });
             publicationList.getChildren().add(card);
         }
     }
 
-    private VBox buildCard(String title, String meta) {
-        Label titleLabel = new Label(title);
-        titleLabel.getStyleClass().add("entity-card-title");
-        Label metaLabel = new Label(meta);
-        metaLabel.getStyleClass().add("entity-card-meta");
-        metaLabel.setWrapText(true);
-        VBox card = new VBox(6, titleLabel, metaLabel);
-        card.getStyleClass().add("entity-card");
-        return card;
-    }
+    private Node createMediaNode(Map<String, String> media) {
 
-    private void setInfo(String message, boolean isError) {
-        if (lblInfo == null) {
-            return;
-        }
-        lblInfo.setText(message == null ? "" : message);
-        if (isError) {
-            lblInfo.setStyle("-fx-text-fill: #d64545; -fx-font-weight: 700;");
+        String type = media.get("type");
+        String path = media.get("path");
+
+        HBox box = new HBox();
+
+        if ("image".equals(type)) {
+            ImageView img = new ImageView(new Image("file:" + path));
+            img.setFitWidth(120);
+            img.setPreserveRatio(true);
+            box.getChildren().add(img);
         } else {
-            lblInfo.setStyle("-fx-text-fill: #2f855a; -fx-font-weight: 700;");
+            Label video = new Label("Vidéo : " + new File(path).getName());
+            box.getChildren().add(video);
+        }
+
+        return box;
+    }
+    private void setInfo(String message, boolean isError) {
+        if (lblInfo == null) return;
+
+        lblInfo.setText(message == null ? "" : message);
+
+        if (isError) {
+            lblInfo.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+        } else {
+            lblInfo.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
         }
     }
 }

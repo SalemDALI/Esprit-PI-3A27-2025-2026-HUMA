@@ -14,10 +14,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PublicationService {
 
@@ -62,6 +59,9 @@ public class PublicationService {
                 Object commentaireIdObj = rs.getObject("commentaire_id");
                 if (commentaireIdObj != null) {
                     PublicationComment comment = new PublicationComment();
+                    comment.setId(((Number) commentaireIdObj).intValue());
+                    comment.setPublicationId(publicationId);
+                    comment.setUserId(rs.getInt("commentaire_user_id"));
                     comment.setContenu(rs.getString("commentaire_contenu"));
 
                     String nom = rs.getString("commentaire_nom");
@@ -148,5 +148,112 @@ public class PublicationService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public boolean updatePublication(int publicationId, int userId, boolean admin, String titre, String contenu) {
+        String sql = admin
+                ? "UPDATE publication SET type=?, contenu=? WHERE id=?"
+                : "UPDATE publication SET type=?, contenu=? WHERE id=? AND user_id=?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, titre);
+            ps.setString(2, contenu);
+            ps.setInt(3, publicationId);
+            if (!admin) {
+                ps.setInt(4, userId);
+            }
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateComment(int commentId, int userId, boolean admin, String contenu) {
+        String sql = admin
+                ? "UPDATE commentaire SET contenu=?, date_commentaire=? WHERE id=?"
+                : "UPDATE commentaire SET contenu=?, date_commentaire=? WHERE id=? AND user_id=?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, contenu);
+            ps.setDate(2, Date.valueOf(LocalDate.now()));
+            ps.setInt(3, commentId);
+            if (!admin) {
+                ps.setInt(4, userId);
+            }
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean deleteComment(int commentId, int userId, boolean admin) {
+        String sql = admin
+                ? "DELETE FROM commentaire WHERE id=?"
+                : "DELETE FROM commentaire WHERE id=? AND user_id=?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, commentId);
+            if (!admin) {
+                ps.setInt(2, userId);
+            }
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    // Ajouter un média
+    public boolean addMedia(int publicationId, String type, String path) {
+        String sql = "INSERT INTO media_publication (publication_id, type, path) VALUES (?, ?, ?)";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, publicationId);
+            ps.setString(2, type);
+            ps.setString(3, path);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Récupérer les médias d'une publication
+    public List<Map<String,String>> getMedia(int publicationId) {
+        List<Map<String,String>> list = new ArrayList<>();
+        String sql = "SELECT type, path FROM media_publication WHERE publication_id=?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, publicationId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Map<String,String> media = new HashMap<>();
+                media.put("type", rs.getString("type"));
+                media.put("path", rs.getString("path"));
+                list.add(media);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    // Ajoute cette méthode à la classe PublicationService
+    public int addPublicationAndGetId(String titre, String contenu) {
+        User currentUser = Session.getUser();
+        if (currentUser == null) return -1;
+
+        String sql = "INSERT INTO publication (contenu, date_publication, type, user_id) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, contenu);
+            ps.setDate(2, Date.valueOf(LocalDate.now()));
+            ps.setString(3, titre);
+            ps.setInt(4, currentUser.getId());
+
+            ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                return rs.getInt(1); // retourne l'ID généré
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 }

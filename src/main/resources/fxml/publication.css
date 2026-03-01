@@ -1,0 +1,381 @@
+/* ============================================================
+   HUMA RH — Communication / Publication
+   Design: Editorial magazine meets modern SaaS
+   Sidebar: identique global | Publication: premium redesign
+   Palette: #20c997 menthe | #1f2937 anthracite | #f59e0b ambre | #eef1f6 fond
+   ============================================================ */
+
+.root {
+    -fx-font-family: "Segoe UI", "Inter", sans-serif;
+    -fx-font-size: 13px;
+}
+
+.app-root {
+    -fx-background-color: #eef1f6;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SIDEBAR — 100% identique au style global HUMA
+══════════════════════════════════════════════════════════ */
+.sidebar {
+    -fx-background-color: linear-gradient(to bottom, #1f2937, #111827);
+    -fx-padding: 20 14;
+    -fx-spacing: 12;
+}
+
+.logo {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #dbe3ef;
+    -fx-padding: 10 14;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-alignment: center-left;
+}
+
+.nav-button:hover {
+    -fx-background-color: rgba(255,255,255,0.1);
+    -fx-text-fill: white;
+}
+
+.nav-active {
+    -fx-background-color: #20c997;
+    -fx-text-fill: white;
+}
+
+/* ══════════════════════════════════════════════════════════
+   TOP TOOLBAR — identique global
+══════════════════════════════════════════════════════════ */
+.top-toolbar {
+    -fx-background-color: white;
+    -fx-padding: 12 20;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #dce3ec;
+}
+
+.dashboard-title {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+}
+
+/* ══════════════════════════════════════════════════════════
+   MAIN CONTENT
+══════════════════════════════════════════════════════════ */
+.main-content {
+    -fx-background-color: #eef1f6;
+    -fx-padding: 24 28 24 28;
+    -fx-spacing: 18;
+}
+
+/* ── PAGE TITLE ─────────────────────────────────────────── */
+.title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #111827;
+}
+
+/* ── MESSAGE INFO ───────────────────────────────────────── */
+.page-message {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 7 16 7 16;
+    -fx-background-radius: 20;
+    -fx-min-height: 12px;
+}
+
+#lblInfo {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 7 16 7 16;
+    -fx-background-radius: 20;
+    -fx-min-height: 12px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   FORM PANEL — redesign premium
+   Effet : carte blanche avec accent vert en haut
+══════════════════════════════════════════════════════════ */
+.content {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-border-color: #20c997;
+    -fx-border-width: 0 0 0 5;
+    -fx-border-radius: 0 16 16 0;
+    -fx-padding: 26 28 26 28;
+    -fx-spacing: 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.09), 18, 0, 0, 5);
+}
+
+/* Titre du formulaire */
+.content .title {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #111827;
+    -fx-padding: 0 0 6 0;
+}
+
+/* ══════════════════════════════════════════════════════════
+   INPUTS — raffinés
+══════════════════════════════════════════════════════════ */
+TextField {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 11 16 11 16;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1f2937;
+    -fx-prompt-text-fill: #a0aec0;
+}
+
+TextField:focused {
+    -fx-border-color: #20c997;
+    -fx-background-color: #f0fdf9;
+    -fx-effect: dropshadow(gaussian, rgba(32,201,151,0.22), 10, 0, 0, 0);
+}
+
+TextArea {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1f2937;
+    -fx-prompt-text-fill: #a0aec0;
+    -fx-padding: 11 16 11 16;
+}
+
+TextArea:focused {
+    -fx-border-color: #20c997;
+    -fx-background-color: #f0fdf9;
+    -fx-effect: dropshadow(gaussian, rgba(32,201,151,0.22), 10, 0, 0, 0);
+}
+
+/* ══════════════════════════════════════════════════════════
+   BUTTONS — hiérarchie visuelle claire
+══════════════════════════════════════════════════════════ */
+.btn {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 11 22 11 22;
+    -fx-cursor: hand;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+/* ── Publier : vert menthe premium avec glow ── */
+.btn-primary {
+    -fx-background-color: linear-gradient(to bottom right, #20c997, #0ea47a);
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(32,201,151,0.50), 12, 0, 0, 5);
+}
+
+.btn-primary:hover {
+    -fx-background-color: linear-gradient(to bottom right, #17b589, #0a8a65);
+    -fx-effect: dropshadow(gaussian, rgba(32,201,151,0.65), 16, 0, 0, 6);
+}
+
+/* ── Sélectionner Image/Vidéo : anthracite propre ── */
+.btn-secondary {
+    -fx-background-color: #1f2937;
+    -fx-text-fill: #e8f8f4;
+    -fx-border-color: transparent;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.22), 8, 0, 0, 3);
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #374151;
+    -fx-text-fill: #20c997;
+}
+
+/* ── Modifier : ambre chaud dégradé ── */
+.btn-warning {
+    -fx-background-color: linear-gradient(to bottom right, #f59e0b, #f97316);
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(245,158,11,0.40), 10, 0, 0, 4);
+}
+
+.btn-warning:hover {
+    -fx-background-color: linear-gradient(to bottom right, #d97706, #ea6d0c);
+}
+
+/* ── Supprimer : ghost rouge élégant ── */
+.btn-danger {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e53e3e;
+    -fx-border-color: #feb2b2;
+    -fx-border-width: 1.5;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.btn-danger:hover {
+    -fx-background-color: #fff5f5;
+    -fx-border-color: #e53e3e;
+}
+
+.action-row {
+    -fx-spacing: 10;
+    -fx-padding: 8 0 2 0;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* ══════════════════════════════════════════════════════════
+   MEDIA PREVIEW — zone verte douce
+══════════════════════════════════════════════════════════ */
+#mediaPreviewBox {
+    -fx-background-color: #f0fdf9;
+    -fx-border-color: #6ee7cb;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 12 14 12 14;
+    -fx-spacing: 12;
+    -fx-min-height: 10;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SCROLL PANE
+══════════════════════════════════════════════════════════ */
+.cards-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 2 0 0 0;
+}
+
+.cards-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+.cards-container {
+    -fx-spacing: 13;
+    -fx-padding: 4 4 4 4;
+    -fx-background-color: transparent;
+}
+
+/* ══════════════════════════════════════════════════════════
+   PUBLICATION CARDS — design magazine éditorial
+══════════════════════════════════════════════════════════ */
+.entity-card {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+    -fx-border-color: #e8edf4;
+    -fx-border-width: 1;
+    -fx-border-radius: 14;
+    -fx-padding: 18 22 18 22;
+    -fx-spacing: 8;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(17,24,39,0.07), 12, 0, 0, 3);
+}
+
+.entity-card:hover {
+    -fx-border-color: #20c997;
+    -fx-border-width: 0 0 0 5;
+    -fx-border-radius: 0 14 14 0;
+    -fx-background-color: #fafffe;
+    -fx-effect: dropshadow(gaussian, rgba(32,201,151,0.18), 16, 0, 0, 5);
+}
+
+.entity-card-selected {
+    -fx-border-color: #20c997;
+    -fx-border-width: 0 0 0 5;
+    -fx-border-radius: 0 14 14 0;
+    -fx-background-color: #f0fdf9;
+    -fx-effect: dropshadow(gaussian, rgba(32,201,151,0.28), 18, 0, 0, 6);
+}
+
+/* Titre carte */
+.entity-card-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #111827;
+}
+
+/* Meta : auteur, date */
+.entity-card-meta {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6b7280;
+}
+
+/* ══════════════════════════════════════════════════════════
+   BADGES
+══════════════════════════════════════════════════════════ */
+.badge {
+    -fx-padding: 3 10 3 10;
+    -fx-background-radius: 20;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.badge-admin    { -fx-background-color: #d1fae5; -fx-text-fill: #065f46; }
+.badge-manager  { -fx-background-color: #fef3c7; -fx-text-fill: #92400e; }
+.badge-employe  { -fx-background-color: #f1f5f9; -fx-text-fill: #475569; }
+.badge-candidat { -fx-background-color: #dbeafe; -fx-text-fill: #1e40af; }
+.badge-accepted { -fx-background-color: #d1fae5; -fx-text-fill: #065f46; }
+.badge-rejected { -fx-background-color: #fee2e2; -fx-text-fill: #991b1b; }
+.badge-pending  { -fx-background-color: #fef3c7; -fx-text-fill: #92400e; }
+
+/* ══════════════════════════════════════════════════════════
+   SCROLLBAR — fine et verte
+══════════════════════════════════════════════════════════ */
+.scroll-bar:vertical .track {
+    -fx-background-color: #edf2f7;
+    -fx-background-radius: 4;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #20c997;
+    -fx-background-radius: 4;
+    -fx-opacity: 0.40;
+}
+
+.scroll-bar:vertical .thumb:hover {
+    -fx-opacity: 0.80;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 2;
+}
+
+/* ══════════════════════════════════════════════════════════
+   METRIC CARDS & TABLE — identiques au global
+══════════════════════════════════════════════════════════ */
+.metric-card {
+    -fx-background-radius: 12;
+    -fx-padding: 16;
+    -fx-min-width: 200;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 12, 0, 0, 4);
+}
+
+.metric-green  { -fx-background-color: linear-gradient(to right, #1f2937, #334155); }
+.metric-orange { -fx-background-color: linear-gradient(to right, #f59e0b, #fb923c); }
+.metric-blue   { -fx-background-color: linear-gradient(to right, #0f172a, #1e293b); }
+
+.card-number   { -fx-text-fill: white; -fx-font-size: 32px; -fx-font-weight: bold; }
+.card-subtitle { -fx-text-fill: white; -fx-font-size: 14px; }
+
+.table-view {
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #e5eaf0;
+}
+
+.table-row-cell:odd     { -fx-background-color: #fafbfd; }
+.table-row-cell:selected { -fx-background-color: #d1fae5; }
