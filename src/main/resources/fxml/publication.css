@@ -379,3 +379,19 @@ TextArea:focused {
 
 .table-row-cell:odd     { -fx-background-color: #fafbfd; }
 .table-row-cell:selected { -fx-background-color: #d1fae5; }
+
+/* ══════════════════════════════════════════════════════════
+   MEDIA PREVIEW — taille contrôlée
+══════════════════════════════════════════════════════════ */
+#mediaPreviewBox {
+    -fx-background-color: #f0fdf9;
+    -fx-border-color: #6ee7cb;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 10 12 10 12;
+    -fx-spacing: 10;
+    -fx-min-height: 10;
+    -fx-max-height: 110;
+    -fx-pref-height: 100;
+}

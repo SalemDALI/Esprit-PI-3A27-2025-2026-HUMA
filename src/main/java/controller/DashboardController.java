@@ -1869,19 +1869,33 @@ public class DashboardController {
     }
     @FXML
     private void selectImage() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choisir une image");
-        fileChooser.getExtensionFilters().add(
+        FileChooser fc = new FileChooser();
+        fc.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg")
         );
-        Stage stage = (Stage) publicationList.getScene().getWindow();
-        File file = fileChooser.showOpenDialog(stage);
+        File file = fc.showOpenDialog(publicationList.getScene().getWindow());
         if (file != null) {
             imagesToAdd.add(file.getAbsolutePath());
+
+            // ✅ Taille limitée + clip arrondi
             ImageView preview = new ImageView(new Image("file:" + file.getAbsolutePath()));
-            preview.setFitWidth(100);
+            preview.setFitWidth(80);
+            preview.setFitHeight(80);
             preview.setPreserveRatio(true);
-            mediaPreviewBox.getChildren().add(preview);
+
+            // Conteneur avec taille fixe
+            VBox imgBox = new VBox(preview);
+            imgBox.setMaxWidth(80);
+            imgBox.setMaxHeight(80);
+            imgBox.setStyle(
+                    "-fx-background-radius: 8;" +
+                            "-fx-border-radius: 8;" +
+                            "-fx-border-color: #6ee7cb;" +
+                            "-fx-border-width: 1.5;" +
+                            "-fx-padding: 3;"
+            );
+
+            mediaPreviewBox.getChildren().add(imgBox);
             setPageMessage("Image sélectionnée : " + file.getName(), false);
         }
     }
