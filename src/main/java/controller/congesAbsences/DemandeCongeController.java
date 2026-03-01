@@ -207,7 +207,7 @@ public class DemandeCongeController {
         Session.clear();
         try {
             Stage stage = (Stage) dateDebut.getScene().getWindow();
-            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/login.fxml"))));
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/feedback/login.fxml"))));
             stage.show();
         } catch (IOException e) {
             new Alert(Alert.AlertType.ERROR, "Erreur logout: " + e.getMessage()).show();

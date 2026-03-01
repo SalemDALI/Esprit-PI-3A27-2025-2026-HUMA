@@ -2,7 +2,7 @@ package controller;
 
 import controller.congesAbsences.DemandeCongeController;
 import controller.congesAbsences.ManagerAbsenceController;
-import models.User;
+import models.feedback.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -10,7 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import services.ServiceUser;
+import services.feedback.ServiceUser;
 import utils.Session;
 
 import java.io.IOException;
@@ -118,7 +118,7 @@ public class LoginController {
     public void openSignup(ActionEvent event) {
         try {
             Stage stage = (Stage) emailField.getScene().getWindow();
-            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/signup.fxml"))));
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/feedback/signup.fxml"))));
             stage.show();
         } catch (IOException e) {
             messageLabel.setText("Erreur ouverture signup: " + e.getMessage());

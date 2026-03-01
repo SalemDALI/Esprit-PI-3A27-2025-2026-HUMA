@@ -2,7 +2,7 @@ package services.communication;
 
 import models.communication.Publication;
 import models.communication.PublicationComment;
-import models.User;
+import models.feedback.User;
 import utils.MyDatabase;
 import utils.Session;
 

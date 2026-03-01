@@ -8,8 +8,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import models.User;
-import services.ServiceUser;
+import models.feedback.User;
+import services.feedback.ServiceUser;
 
 import java.io.IOException;
 
@@ -68,7 +68,7 @@ public class SignupController {
     public void backToLogin(ActionEvent event) {
         try {
             Stage stage = (Stage) nomField.getScene().getWindow();
-            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/login.fxml"))));
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/feedback/login.fxml"))));
             stage.show();
         } catch (IOException e) {
             messageLabel.setText("Erreur retour login: " + e.getMessage());

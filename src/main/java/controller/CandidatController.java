@@ -128,7 +128,7 @@ public class CandidatController {
         Session.clear();
         try {
             Stage stage = (Stage) tableOffres.getScene().getWindow();
-            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/login.fxml"))));
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/feedback/login.fxml"))));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

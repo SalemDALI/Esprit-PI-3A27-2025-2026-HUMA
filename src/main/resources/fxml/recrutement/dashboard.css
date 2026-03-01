@@ -1,10 +1,10 @@
 .mock-root {
-    -fx-background-color: #e9edf5;
+    -fx-background-color: #F5F5F5;
     -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 }
 
 .mock-sidebar {
-    -fx-background-color: linear-gradient(to bottom, #1f3b64, #223f6d);
+    -fx-background-color: linear-gradient(to bottom, #303030, #3a3a3a);
     -fx-background-radius: 14;
     -fx-padding: 12 8;
     -fx-spacing: 10;
@@ -12,7 +12,7 @@
 
 .side-icon {
     -fx-background-color: transparent;
-    -fx-text-fill: #dbe8ff;
+    -fx-text-fill: #d4f5e2;
     -fx-font-size: 18px;
     -fx-background-radius: 12;
     -fx-min-width: 46;
@@ -20,12 +20,12 @@
 }
 
 .side-icon:hover {
-    -fx-background-color: rgba(255,255,255,0.14);
+    -fx-background-color: rgba(80,200,120,0.18);
 }
 
 .side-icon-active {
-    -fx-background-color: rgba(255,255,255,0.2);
-    -fx-text-fill: white;
+    -fx-background-color: rgba(80,200,120,0.28);
+    -fx-text-fill: #50C878;
 }
 
 .mock-content {
@@ -38,42 +38,42 @@
 }
 
 .mock-topbar {
-    -fx-background-color: #f1f4fb;
+    -fx-background-color: #efefef;
     -fx-background-radius: 14;
     -fx-padding: 12;
-    -fx-effect: dropshadow(three-pass-box, rgba(26,48,84,0.08), 14, 0, 0, 2);
+    -fx-effect: dropshadow(three-pass-box, rgba(48,48,48,0.10), 14, 0, 0, 2);
 }
 
 .mock-title {
     -fx-font-size: 24px;
     -fx-font-weight: 800;
-    -fx-text-fill: #273b61;
+    -fx-text-fill: #303030;
 }
 
 .mock-search {
     -fx-pref-width: 430;
-    -fx-background-color: #edf1fa;
+    -fx-background-color: #e8e8e8;
     -fx-background-radius: 12;
-    -fx-border-color: #d3dbee;
+    -fx-border-color: #cccccc;
     -fx-border-radius: 12;
 }
 
 .top-icon {
-    -fx-background-color: #e7ecf6;
+    -fx-background-color: #e2e2e2;
     -fx-background-radius: 12;
     -fx-min-width: 44;
     -fx-min-height: 44;
 }
 
 .top-avatar {
-    -fx-background-color: #d9e8ff;
+    -fx-background-color: #c8f0d8;
     -fx-background-radius: 20;
     -fx-min-width: 44;
     -fx-min-height: 44;
 }
 
 .page-message {
-    -fx-text-fill: #42567d;
+    -fx-text-fill: #505050;
     -fx-font-size: 12px;
 }
 
@@ -82,51 +82,51 @@
 }
 
 .kpi-mini-card {
-    -fx-background-color: linear-gradient(to bottom right, #f6f9ff, #eaf2ff);
+    -fx-background-color: linear-gradient(to bottom right, #F5F5F5, #e6f7ec);
     -fx-background-radius: 12;
     -fx-padding: 10;
     -fx-pref-width: 220;
-    -fx-effect: dropshadow(three-pass-box, rgba(26,48,84,0.08), 10, 0, 0, 2);
+    -fx-effect: dropshadow(three-pass-box, rgba(48,48,48,0.09), 10, 0, 0, 2);
 }
 
 .kpi-mini-title {
     -fx-font-size: 13px;
-    -fx-text-fill: #58739d;
+    -fx-text-fill: #606060;
     -fx-font-weight: 700;
 }
 
 .kpi-mini-value {
     -fx-font-size: 24px;
     -fx-font-weight: 800;
-    -fx-text-fill: #2c4f82;
+    -fx-text-fill: #303030;
 }
 
 .mock-panel {
-    -fx-background-color: #eef2f8;
+    -fx-background-color: #ebebeb;
     -fx-background-radius: 16;
     -fx-padding: 12;
-    -fx-effect: dropshadow(three-pass-box, rgba(16,35,62,0.08), 14, 0, 0, 2);
+    -fx-effect: dropshadow(three-pass-box, rgba(48,48,48,0.09), 14, 0, 0, 2);
 }
 
 .mock-panel-title {
     -fx-font-size: 13px;
     -fx-font-weight: 800;
-    -fx-text-fill: #253b61;
+    -fx-text-fill: #303030;
 }
 
 .mock-panel-sub {
     -fx-font-size: 9px;
-    -fx-text-fill: #6d7f9f;
+    -fx-text-fill: #808080;
 }
 
 .mock-count {
     -fx-font-size: 13px;
     -fx-font-weight: 800;
-    -fx-text-fill: #2f5f9f;
+    -fx-text-fill: #50C878;
 }
 
 .mock-add-btn {
-    -fx-background-color: linear-gradient(to right, #58a2ff, #3a86e8);
+    -fx-background-color: linear-gradient(to right, #50C878, #3aad62);
     -fx-text-fill: white;
     -fx-background-radius: 10;
     -fx-font-weight: 700;
@@ -145,44 +145,44 @@
 }
 
 .entity-card {
-    -fx-background-color: #f7f9ff;
+    -fx-background-color: #F5F5F5;
     -fx-background-radius: 14;
     -fx-padding: 10;
     -fx-spacing: 8;
-    -fx-border-color: #d7deee;
+    -fx-border-color: #d0d0d0;
     -fx-border-radius: 14;
 }
 
 .user-card {
-    -fx-background-color: #f6f8fe;
+    -fx-background-color: #f2f2f2;
 }
 
 .offer-card {
-    -fx-background-color: #f6f8fd;
+    -fx-background-color: #f3f3f3;
 }
 
 .app-card {
-    -fx-background-color: #f7f9ff;
+    -fx-background-color: #F5F5F5;
 }
 
 .entity-card-title {
     -fx-font-size: 14px;
     -fx-font-weight: 700;
-    -fx-text-fill: #263a5f;
+    -fx-text-fill: #303030;
 }
 
 .entity-card-meta {
     -fx-font-size: 11px;
-    -fx-text-fill: #607292;
+    -fx-text-fill: #707070;
 }
 
 .avatar-chip {
-    -fx-background-color: #dfe9fb;
+    -fx-background-color: #c8f0d8;
     -fx-background-radius: 20;
     -fx-min-width: 40;
     -fx-min-height: 40;
     -fx-alignment: CENTER;
-    -fx-text-fill: #2f4f82;
+    -fx-text-fill: #303030;
     -fx-font-size: 20px;
 }
 
@@ -193,15 +193,30 @@
     -fx-background-radius: 16;
 }
 
-.badge-admin { -fx-background-color: #67c07c; -fx-text-fill: white; }
-.badge-manager { -fx-background-color: #f0b94a; -fx-text-fill: white; }
-.badge-employe { -fx-background-color: #3d89eb; -fx-text-fill: white; }
-.badge-candidat { -fx-background-color: #7f90ad; -fx-text-fill: white; }
-.badge-accepted { -fx-background-color: #5fc47f; -fx-text-fill: white; }
-.badge-pending { -fx-background-color: #7bb7ff; -fx-text-fill: #154684; }
-.badge-rejected { -fx-background-color: #ffd7d7; -fx-text-fill: #a93d3d; }
+.badge-admin    { -fx-background-color: #50C878; -fx-text-fill: white; }
+.badge-manager  { -fx-background-color: #FF7F50; -fx-text-fill: white; }
+.badge-employe  { -fx-background-color: #3aad62; -fx-text-fill: white; }
+.badge-candidat { -fx-background-color: #909090; -fx-text-fill: white; }
+.badge-accepted { -fx-background-color: #50C878; -fx-text-fill: white; }
+.badge-pending  { -fx-background-color: #ffd0be; -fx-text-fill: #b34a20; }
+.badge-rejected { -fx-background-color: #ffe0d8; -fx-text-fill: #c0392b; }
 
 .card-actions .button {
-    -fx-background-color: #eaf0fb;
+    -fx-background-color: #e2e2e2;
     -fx-background-radius: 10;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #d4d4d4;
+    -fx-padding: 10 14;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-alignment: center-left;
+    -fx-max-width: 10000;
+}
+
+.nav-button.active {
+    -fx-background-color: rgba(80,200,120,0.15);
+    -fx-text-fill: #50C878;
 }

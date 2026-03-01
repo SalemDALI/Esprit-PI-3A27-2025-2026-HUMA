@@ -22,7 +22,7 @@
     <left>
         <VBox prefWidth="220" spacing="10" styleClass="sidebar dashboard-sidebar left-panel">
             <HBox spacing="8" styleClass="brand-row">
-                <ImageView fitHeight="78.0" fitWidth="240.0" preserveRatio="true">
+                <ImageView fitHeight="110.0" fitWidth="320.0" preserveRatio="true">
                     <image><Image url="@../../images/huma.png" /></image>
                 </ImageView>
             </HBox>

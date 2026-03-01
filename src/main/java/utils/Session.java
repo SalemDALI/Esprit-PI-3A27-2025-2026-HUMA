@@ -1,6 +1,6 @@
 package utils;
 
-import models.User;
+import models.feedback.User;
 
 public class Session {
 

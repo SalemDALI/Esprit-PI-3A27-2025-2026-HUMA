@@ -10,7 +10,7 @@
       xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="controller.SignupController"
-      stylesheets="@style.css"
+      stylesheets="@../style.css"
       styleClass="login-root">
 
     <Label text="SIGN UP" styleClass="title"/>

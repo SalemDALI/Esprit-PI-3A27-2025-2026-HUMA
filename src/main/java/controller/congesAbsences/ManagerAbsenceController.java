@@ -111,7 +111,7 @@ public class ManagerAbsenceController {
         Session.clear();
         try {
             Stage stage = (Stage) tableAbsences.getScene().getWindow();
-            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/login.fxml"))));
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/feedback/login.fxml"))));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,6 +1,6 @@
-package services;
+package services.feedback;
 
-import models.User;
+import models.feedback.User;
 import utils.MyDatabase;
 
 import java.sql.Connection;

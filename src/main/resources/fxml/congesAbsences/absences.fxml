@@ -18,9 +18,9 @@
 <BorderPane styleClass="app-root" stylesheets="@../style.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="controller.DashboardController">
 
     <left>
-        <VBox prefWidth="220" spacing="10" styleClass="sidebar dashboard-sidebar left-panel">
+        <VBox prefHeight="1818.0" prefWidth="179.0" styleClass="mock-sidebar">
             <HBox spacing="8" styleClass="brand-row">
-                <ImageView fitHeight="78.0" fitWidth="240.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="110.0" fitWidth="320.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../../images/huma.png" />
                     </image>
@@ -30,13 +30,13 @@
             <Button onAction="#openDashboard" styleClass="nav-button" text="Tableau de bord">
                 <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/dashboard.png" /></image></ImageView></graphic>
             </Button>
-            <Button onAction="#openRecrutement" styleClass="nav-button" text="Recrutement">
+            <Button onAction="#openRecrutement" styleClass="nav-button nav-active" text="Recrutement">
                 <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/recrutement.png" /></image></ImageView></graphic>
             </Button>
             <Button onAction="#openConges" styleClass="nav-button" text="Congés">
                 <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/conge.png" /></image></ImageView></graphic>
             </Button>
-            <Button onAction="#openAbsences" styleClass="nav-button nav-active" text="Absences">
+            <Button onAction="#openAbsences" styleClass="nav-button" text="Absences">
                 <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/absences.png" /></image></ImageView></graphic>
             </Button>
             <Button onAction="#openCommunication" styleClass="nav-button" text="Communication">

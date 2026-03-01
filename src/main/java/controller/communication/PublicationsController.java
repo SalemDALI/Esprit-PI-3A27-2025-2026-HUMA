@@ -13,7 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.communication.Publication;
 import models.communication.PublicationComment;
-import models.User;
+import models.feedback.User;
 import services.communication.PublicationService;
 import utils.Session;
 
@@ -111,7 +111,7 @@ public class PublicationsController {
         Session.clear();
         try {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/login.fxml"))));
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/feedback/login.fxml"))));
             stage.show();
         } catch (IOException e) {
             setInfo("Erreur logout: " + e.getMessage(), true);
