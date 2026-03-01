@@ -40,7 +40,7 @@ public class chatbotController {
     private final List<ObjectNode> history = new ArrayList<>();
 
     // ✅ Clé Gemini GRATUITE — obtenir sur https://aistudio.google.com/apikey
-    private static final String API_KEY =System.getenv("GROQ_API_KEY");
+
 
     private static final String SYSTEM_PROMPT =
             "Tu es un assistant RH pour l'application HUMA, spécialisé UNIQUEMENT dans la gestion des publications internes.\n\n" +
