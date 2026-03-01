@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.web.WebView?>
+
+<BorderPane styleClass="app-root"
+            stylesheets="@publication.css"
+            xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/21"
+            fx:controller="controller.chatbotController">
+
+    <!-- SIDEBAR identique au reste de l'application -->
+    <left>
+        <VBox prefWidth="200" spacing="8" styleClass="sidebar dashboard-sidebar left-panel">
+            <HBox alignment="CENTER">
+                <ImageView fitHeight="72" fitWidth="160" preserveRatio="true">
+                    <image><Image url="@../images/huma.png"/></image>
+                </ImageView>
+            </HBox>
+            <Label text="NAVIGATION"
+                   style="-fx-font-size:10px;-fx-font-weight:bold;-fx-text-fill:#4b5563;-fx-padding:8 0 4 14;"/>
+            <Button onAction="#openDashboard"     styleClass="nav-button" text="🏠  Tableau de bord"  maxWidth="Infinity"/>
+            <Button onAction="#openRecrutement"   styleClass="nav-button" text="📋  Recrutement"       maxWidth="Infinity"/>
+            <Button onAction="#openConges"        styleClass="nav-button" text="🗓  Congés"            maxWidth="Infinity"/>
+            <Button onAction="#openAbsences"      styleClass="nav-button" text="📊  Absences"          maxWidth="Infinity"/>
+            <Button onAction="#openCommunication" styleClass="nav-button" text="📢  Communication"     maxWidth="Infinity"/>
+            <Button onAction="#openFormations"    styleClass="nav-button" text="🎓  Formations"        maxWidth="Infinity"/>
+            <Button onAction="#openFeedback"      styleClass="nav-button" text="💬  FeedBack"          maxWidth="Infinity"/>
+            <Button onAction="#openCommunication" styleClass="nav-button nav-active" text="🤖  Assistant IA"  maxWidth="Infinity"/>
+            <Button onAction="#openParametres"    styleClass="nav-button" text="⚙  Paramètres"        maxWidth="Infinity"/>
+            <Region VBox.vgrow="ALWAYS"/>
+            <Label text="COMPTE" style="-fx-font-size:10px;-fx-font-weight:bold;-fx-text-fill:#4b5563;-fx-padding:0 0 4 14;"/>
+            <Button onAction="#logout" styleClass="nav-button" text="↩  Logout" maxWidth="Infinity"/>
+        </VBox>
+    </left>
+
+    <!-- WebView = toute l'interface chatbot -->
+    <center>
+        <WebView fx:id="chatbotWebView"/>
+    </center>
+
+</BorderPane>
+

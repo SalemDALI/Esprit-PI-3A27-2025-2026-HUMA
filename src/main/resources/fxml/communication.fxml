@@ -43,7 +43,10 @@
             <Button onAction="#openFormations"    styleClass="nav-button" text="🎓  Formations"       maxWidth="Infinity"/>
             <Button onAction="#openFeedback"      styleClass="nav-button" text="💬  FeedBack"         maxWidth="Infinity"/>
             <Button onAction="#openParametres"    styleClass="nav-button" text="⚙  Paramètres"       maxWidth="Infinity"/>
-
+            <Button onAction="#openChatbot"
+                    styleClass="nav-button"
+                    text="🤖  Assistant IA"
+                    maxWidth="Infinity"/>
             <Region VBox.vgrow="ALWAYS"/>
 
             <Label text="COMPTE"

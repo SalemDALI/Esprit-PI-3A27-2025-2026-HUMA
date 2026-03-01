@@ -2338,5 +2338,14 @@ public class DashboardController {
         }
         selectedCard.getStyleClass().remove("entity-card-selected");
     }
+    @FXML
+    public void openChatbot(ActionEvent event) {
+        try {
+            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(FXMLLoader.load(
+                    getClass().getResource("/fxml/chatbot.fxml"))));
+            stage.show();
+        } catch (IOException e) { e.printStackTrace(); }
+    }
 
 }

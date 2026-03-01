@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Assistant Publications HUMA</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: #eef1f6;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-size: 13px;
+        }
+        .header {
+            background: white; padding: 14px 24px;
+            border-bottom: 1px solid #dce3ec;
+            display: flex; align-items: center; justify-content: space-between;
+            flex-shrink: 0;
+        }
+        .header small { font-size: 11px; color: #6b7280; font-weight: bold; display: block; }
+        .header h2 { font-size: 18px; color: #111827; margin-top: 2px; }
+        .status { background: #d1fae5; color: #065f46; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+
+        .quick-bar {
+            display: flex; gap: 8px; padding: 10px 20px;
+            background: white; border-bottom: 1px solid #f0f4f8;
+            flex-wrap: wrap; flex-shrink: 0;
+        }
+        .qbtn {
+            padding: 5px 13px; background: #f8fafc;
+            border: 1px solid #e2e8f0; border-radius: 20px;
+            cursor: pointer; font-size: 12px; color: #374151; font-family: inherit;
+        }
+        .qbtn:hover { background: #d1fae5; border-color: #20c997; color: #065f46; }
+
+        .messages {
+            flex: 1; overflow-y: auto;
+            padding: 20px 24px;
+            display: flex; flex-direction: column; gap: 14px;
+        }
+        .msg { display: flex; gap: 10px; align-items: flex-start; }
+        .msg.user { flex-direction: row-reverse; }
+
+        .avatar {
+            width: 34px; height: 34px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 15px; flex-shrink: 0;
+        }
+        .avatar.bot  { background: linear-gradient(135deg, #20c997, #0ea47a); }
+        .avatar.user { background: #1f2937; color: white; font-weight: bold; font-size: 11px; }
+
+        .bubble {
+            max-width: 72%; padding: 12px 16px;
+            font-size: 13px; line-height: 1.65;
+            white-space: pre-wrap; word-break: break-word;
+        }
+        .bubble.bot {
+            background: white; color: #1f2937;
+            border: 1px solid #e8edf4;
+            border-radius: 4px 18px 18px 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .bubble.user {
+            background: linear-gradient(135deg, #1f2937, #374151);
+            color: white; border-radius: 18px 4px 18px 18px;
+        }
+
+        .badge {
+            margin-top: 6px; padding: 5px 12px;
+            border-radius: 8px; font-size: 12px; font-weight: bold; display: inline-block;
+        }
+        .badge.ok  { background: #d1fae5; color: #065f46; }
+        .badge.err { background: #fee2e2; color: #991b1b; }
+
+        .pub-card {
+            background: #f8fafc; border: 1px solid #e2e8f0;
+            border-left: 4px solid #20c997;
+            border-radius: 0 10px 10px 0;
+            padding: 10px 14px; margin-top: 8px; font-size: 12px;
+        }
+        .pub-card strong { color: #111827; font-size: 13px; }
+        .pub-card small  { color: #6b7280; }
+        .pub-card p      { margin-top: 4px; color: #374151; }
+
+        .typing { display: flex; gap: 5px; padding: 12px 16px; background: white; border: 1px solid #e8edf4; border-radius: 4px 18px 18px 18px; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: #20c997; animation: b 1.2s infinite; }
+        .dot:nth-child(2){animation-delay:.2s} .dot:nth-child(3){animation-delay:.4s}
+        @keyframes b{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+        .input-area {
+            background: white; border-top: 1px solid #dce3ec;
+            padding: 14px 20px; flex-shrink: 0;
+        }
+        .input-row { display: flex; gap: 10px; align-items: flex-end; }
+        textarea {
+            flex: 1; padding: 11px 16px;
+            border: 1.5px solid #e2e8f0; border-radius: 12px;
+            font-size: 13px; font-family: inherit;
+            resize: none; outline: none; color: #1f2937;
+            background: #f8fafc; line-height: 1.5;
+        }
+        textarea:focus { border-color: #20c997; background: white; }
+        .send-btn {
+            padding: 11px 18px;
+            background: linear-gradient(135deg, #20c997, #0ea47a);
+            color: white; border: none; border-radius: 12px;
+            cursor: pointer; font-weight: bold; font-size: 13px; font-family: inherit;
+            box-shadow: 0 4px 12px rgba(32,201,151,0.35);
+        }
+        .send-btn:disabled { background: #e2e8f0; color: #a0aec0; box-shadow: none; cursor: not-allowed; }
+        .hint { margin-top: 6px; font-size: 11px; color: #a0aec0; }
+
+        ::-webkit-scrollbar{width:5px}
+        ::-webkit-scrollbar-thumb{background:#20c997;border-radius:3px}
+        ::-webkit-scrollbar-track{background:#f1f5f9}
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div>
+        <small>HUMA RH › COMMUNICATION › ASSISTANT IA</small>
+        <h2>🤖 Assistant Publications</h2>
+    </div>
+    <div class="status">● IA Active</div>
+</div>
+
+<div class="quick-bar">
+    <button class="qbtn" onclick="quick('Liste toutes les publications')">📋 Voir tout</button>
+    <button class="qbtn" onclick="quick('Crée une publication pour annoncer la réunion de demain à 10h en salle B')">✉️ Créer</button>
+    <button class="qbtn" onclick="quick('Modifie la publication 1')">✏️ Modifier</button>
+    <button class="qbtn" onclick="quick('Supprime la publication 2')">🗑 Supprimer</button>
+    <button class="qbtn" onclick="quick('Améliore le contenu de la publication 1')">✨ Améliorer</button>
+</div>
+
+<div class="messages" id="msgs">
+    <div class="msg">
+        <div class="avatar bot">🌿</div>
+        <div>
+            <div class="bubble bot">Bonjour ! Je suis votre assistant pour la gestion des publications RH.
+
+                Je peux vous aider à :
+                📝  Créer une nouvelle publication
+                ✏️  Modifier une publication existante
+                🗑  Supprimer une publication
+                📋  Lister toutes les publications
+                ✨  Améliorer le contenu d'une publication
+
+                Que souhaitez-vous faire ?</div>
+        </div>
+    </div>
+</div>
+
+<div class="input-area">
+    <div class="input-row">
+    <textarea id="inp" rows="2"
+              placeholder="Ex: Crée une publication pour annoncer les vacances d'été..."
+              onkeydown="onKey(event)"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="send()">✉️ Envoyer</button>
+    </div>
+    <div class="hint">Entrée pour envoyer · Shift+Entrée pour nouvelle ligne</div>
+</div>
+
+<script>
+    let busy = false;
+
+    // ── Envoyer le message à Java (qui appelle Claude) ────
+    function send() {
+        const inp = document.getElementById("inp");
+        const txt = inp.value.trim();
+        if (!txt || busy) return;
+        inp.value = "";
+        busy = true;
+        document.getElementById("sendBtn").disabled = true;
+
+        addMsg("user", txt);
+        showTyping();
+
+        // Appel vers JavaBridge.sendToAI() — Java gère l'API
+        if (window.javaApp) {
+            window.javaApp.sendToAI(txt);
+        } else {
+            // Mode démo sans Java
+            setTimeout(() => {
+                hideTyping();
+                receiveFromJava("Mode démo : bridge Java non disponible. Lancez l'application JavaFX.", null, null);
+            }, 1000);
+        }
+    }
+
+    // ── Appelé par Java après réponse Claude ─────────────
+    function receiveFromJava(message, result, actionJson) {
+        hideTyping();
+        busy = false;
+        document.getElementById("sendBtn").disabled = false;
+
+        let action = null;
+        try { if (actionJson && actionJson !== "null") action = JSON.parse(actionJson); } catch(e){}
+        let res = null;
+        try { if (result && result !== "null") res = typeof result === "string" ? JSON.parse(result) : result; } catch(e){}
+
+        addMsg("bot", message, action, res);
+    }
+
+    // ── DOM helpers ───────────────────────────────────────
+    function addMsg(role, text, action, result) {
+        const box = document.getElementById("msgs");
+        const row = document.createElement("div");
+        row.className = "msg " + role;
+
+        const av = document.createElement("div");
+        av.className = "avatar " + (role === "bot" ? "bot" : "user");
+        av.textContent = role === "bot" ? "🌿" : "RH";
+
+        const wrap = document.createElement("div");
+        const bub = document.createElement("div");
+        bub.className = "bubble " + (role === "bot" ? "bot" : "user");
+        bub.textContent = text;
+        wrap.appendChild(bub);
+
+        // Cartes publications pour LIST
+        if (action && action.type === "LIST" && result && result.pubs) {
+            result.pubs.forEach(function(p) {
+                const card = document.createElement("div");
+                card.className = "pub-card";
+                card.innerHTML = "<strong>#" + p.id + " — " + p.titre + "</strong>" +
+                    "<small> · " + p.auteur + " · " + p.date + "</small>" +
+                    "<p>" + p.contenu + "</p>";
+                wrap.appendChild(card);
+            });
+        }
+
+        // Badge résultat CREATE / UPDATE / DELETE
+        if (result && action && action.type !== "LIST" && action.type !== "IMPROVE" && action.type !== "NONE") {
+            const badge = document.createElement("div");
+            badge.className = "badge " + (result.success ? "ok" : "err");
+            badge.textContent = result.success
+                ? "✅ " + (result.message || "Opération effectuée")
+                : "❌ " + (result.message || "Erreur");
+            wrap.appendChild(badge);
+        }
+
+        row.appendChild(av);
+        row.appendChild(wrap);
+        box.appendChild(row);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    let typEl = null;
+    function showTyping() {
+        const box = document.getElementById("msgs");
+        typEl = document.createElement("div");
+        typEl.className = "msg";
+        typEl.innerHTML = '<div class="avatar bot">🌿</div>' +
+            '<div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+        box.appendChild(typEl);
+        box.scrollTop = box.scrollHeight;
+    }
+    function hideTyping() { if (typEl) { typEl.remove(); typEl = null; } }
+    function onKey(e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }
+    function quick(t) { document.getElementById("inp").value = t; send(); }
+</script>
+</body>
+</html>
