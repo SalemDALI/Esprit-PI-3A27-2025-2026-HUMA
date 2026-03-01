@@ -220,3 +220,97 @@
     -fx-background-color: rgba(80,200,120,0.15);
     -fx-text-fill: #50C878;
 }
+
+.topcv-profile-row {
+    -fx-background-color: linear-gradient(to bottom right, #f7f8fc, #eef1f7);
+    -fx-border-color: #d8deea;
+    -fx-border-radius: 14;
+    -fx-background-radius: 14;
+    -fx-padding: 7 10;
+    -fx-alignment: center-left;
+}
+
+.topcv-left {
+    -fx-alignment: center-left;
+}
+
+.topcv-rank-badge {
+    -fx-min-width: 30;
+    -fx-min-height: 30;
+    -fx-background-radius: 8;
+    -fx-alignment: center;
+    -fx-font-size: 16px;
+    -fx-font-weight: 800;
+    -fx-background-color: #99a4bc;
+    -fx-text-fill: white;
+}
+
+.topcv-rank-gold {
+    -fx-background-color: #d8b25a;
+}
+
+.topcv-rank-silver {
+    -fx-background-color: #9ba5bc;
+}
+
+.topcv-rank-bronze {
+    -fx-background-color: #c89a58;
+}
+
+.topcv-avatar {
+    -fx-min-width: 40;
+    -fx-min-height: 40;
+    -fx-background-radius: 20;
+    -fx-background-color: linear-gradient(to bottom right, #c8d5ea, #aebfdc);
+    -fx-text-fill: #24304d;
+    -fx-font-weight: 800;
+    -fx-font-size: 12px;
+    -fx-alignment: center;
+}
+
+.topcv-name {
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #28324d;
+}
+
+.topcv-role {
+    -fx-font-size: 11px;
+    -fx-text-fill: #4f5d7f;
+}
+
+.topcv-meta {
+    -fx-font-size: 9px;
+    -fx-text-fill: #7280a0;
+}
+
+.topcv-score-bar {
+    -fx-accent: #66b97b;
+}
+
+.topcv-score-bar .bar {
+    -fx-background-radius: 8;
+}
+
+.topcv-score-bar .track {
+    -fx-background-color: #d9e5f2;
+    -fx-background-radius: 8;
+}
+
+.topcv-score-excellent {
+    -fx-accent: #72bf7b;
+}
+
+.topcv-score-good {
+    -fx-accent: #66a8ce;
+}
+
+.topcv-score-medium {
+    -fx-accent: #8798cc;
+}
+
+.topcv-score-value {
+    -fx-font-size: 22px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #263456;
+}

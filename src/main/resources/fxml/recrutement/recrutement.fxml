@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import java.lang.String?>
 <?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
@@ -16,20 +12,21 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="rootPane" styleClass="mock-root" stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.recrutement.RecrutementController">
+<BorderPane fx:id="rootPane" styleClass="mock-root" stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.recrutement.RecrutementController">
 
     <left>
         <VBox prefHeight="1818.0" prefWidth="175.0" styleClass="mock-sidebar">
             <HBox spacing="8" styleClass="brand-row">
-                <ImageView fitHeight="90.0" fitWidth="175.0"  pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="90.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../../images/huma.png" />
                     </image>
@@ -141,7 +138,7 @@
                     </ScrollPane>
                 </VBox>
 
-                <VBox prefHeight="610.0" spacing="10" styleClass="mock-panel" HBox.hgrow="ALWAYS">
+                <VBox prefHeight="610.0" prefWidth="720.0" spacing="10" styleClass="mock-panel" HBox.hgrow="ALWAYS">
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <Label styleClass="mock-panel-title" text="Offres d'Emploi" />
                         <Label styleClass="mock-panel-sub" text="Total Offres Actives:" />
@@ -176,7 +173,26 @@
                     </ScrollPane>
                 </VBox>
 
-                <VBox prefHeight="610.0" prefWidth="464.0" spacing="10" styleClass="mock-panel" HBox.hgrow="ALWAYS">
+                <VBox prefHeight="610.0" prefWidth="397.0" spacing="10" styleClass="mock-panel" HBox.hgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label styleClass="mock-panel-title" text="Scraping Bot" />
+                        <Label styleClass="mock-panel-sub" text="Recherche profils web selon l'offre" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="txtScrapingOffreId" promptText="Offre id ou titre" styleClass="small-search" />
+                        <TextField fx:id="txtScrapingLimit" promptText="Max profils" styleClass="small-search" />
+                        <Button onAction="#showScrapingResults" styleClass="mock-add-btn" text="Afficher les résultats" />
+                    </HBox>
+                    <Label fx:id="lblScrapingStatus" styleClass="mock-panel-sub" text="" />
+                    <ScrollPane fx:id="scrollScraping" fitToWidth="true" prefHeight="560.0" prefWidth="755.0" styleClass="panel-scroll" VBox.vgrow="ALWAYS">
+                        <content>
+                            <VBox fx:id="tableScrapingResults" spacing="8" />
+                        </content>
+                    </ScrollPane>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="12" VBox.vgrow="ALWAYS">
+                <VBox prefHeight="610.0" prefWidth="755.0" spacing="10" styleClass="mock-panel" HBox.hgrow="ALWAYS">
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <Label styleClass="mock-panel-title" text="Candidatures" />
                         <Label styleClass="mock-panel-sub" text="Total Candidatures:" />

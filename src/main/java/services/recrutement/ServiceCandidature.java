@@ -92,7 +92,7 @@ public class ServiceCandidature {
                 "u.email AS candidat_email " +
                 "FROM candidature c " +
                 "JOIN offre_emploi o ON o.id = c.offre_id " +
-                "JOIN users u ON u.id = c.candidat_id " +
+                "LEFT JOIN users u ON u.id = c.candidat_id " +
                 "WHERE c.offre_id = ? " +
                 "ORDER BY c.date_candidature DESC, c.id DESC";
 

@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class CandidateScoringService {
 
@@ -80,12 +82,13 @@ public class CandidateScoringService {
     }
 
     private CandidateScoringResult scoreCandidature(Candidature candidature, OffreEmploi offre) {
-        if (candidature.getCheminCv() == null || candidature.getCheminCv().isBlank()) {
+        String resolvedCvPath = resolveCvPath(candidature);
+        if (resolvedCvPath == null || resolvedCvPath.isBlank()) {
             return null;
         }
 
         try {
-            String cvText = pdfTextExtractor.extractText(candidature.getCheminCv());
+            String cvText = pdfTextExtractor.extractText(resolvedCvPath);
             CvAnalysisResult analysis = nlpService.analyzeCvText(cvText, offre);
 
             int scoreSkills = computeSkillsScore(analysis, cvText, offre);
@@ -109,6 +112,42 @@ public class CandidateScoringService {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    private String resolveCvPath(Candidature candidature) {
+        String rawPath = candidature == null ? null : candidature.getCheminCv();
+        if (rawPath != null && !rawPath.isBlank()) {
+            String normalized = rawPath.replace("\\", "/").trim();
+            Path raw = Path.of(normalized);
+            if (raw.isAbsolute() && Files.exists(raw)) {
+                return raw.toString();
+            }
+
+            Path cwd = Path.of(System.getProperty("user.dir")).toAbsolutePath().normalize();
+            Path candidate1 = cwd.resolve(raw).normalize();
+            if (Files.exists(candidate1)) {
+                return candidate1.toString();
+            }
+
+            Path candidate2 = cwd.resolve("uploads").resolve("cv").resolve(raw.getFileName()).normalize();
+            if (Files.exists(candidate2)) {
+                return candidate2.toString();
+            }
+        }
+
+        if (candidature != null && candidature.getCandidatId() > 0) {
+            Path fallback = Path.of(System.getProperty("user.dir"))
+                    .toAbsolutePath()
+                    .normalize()
+                    .resolve("uploads")
+                    .resolve("cv")
+                    .resolve(candidature.getCandidatId() + ".pdf")
+                    .normalize();
+            if (Files.exists(fallback)) {
+                return fallback.toString();
+            }
+        }
+        return "";
     }
 
     private int computeSkillsScore(CvAnalysisResult analysis, String cvText, OffreEmploi offre) {
