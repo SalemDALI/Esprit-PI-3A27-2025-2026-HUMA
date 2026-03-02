@@ -18,11 +18,11 @@ import java.nio.charset.StandardCharsets;
 public class GeminiService {
 
     // =====================================================
-    // Colle ta cle OpenRouter ici (commence par sk-or-...)
-    // Obtenir sur : https://openrouter.ai/keys
+    // CLE API GROQ - Gratuite, fonctionne en Tunisie
+    // Obtenir sur : https://console.groq.com → API Keys
     // =====================================================
-    private static final String API_KEY = "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";
-    private static final String BASE_URL = "https://openrouter.ai/api/v1/chat/completions";
+    private static final String API_KEY = "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";
+    private static final String BASE_URL = "https://api.groq.com/openai/v1/chat/completions";
 
     private static final String EMERAUDE   = "#50C878";
     private static final String ANTHRACITE = "#303030";
@@ -33,89 +33,146 @@ public class GeminiService {
                                           int duree, String localisation,
                                           java.util.function.Consumer<String> onDescriptionGeneree) {
         Stage stage = new Stage();
-        stage.setTitle("IA - Description de la Formation");
+        stage.setTitle("HUMA — Description IA");
         stage.setResizable(false);
 
+        // ===== HEADER elegant =====
         Label logoLabel = new Label("HUMA");
-        logoLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;");
-        Label sousTitre = new Label("Assistant IA — Gemini via OpenRouter");
-        sousTitre.setStyle("-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.75);");
-        VBox logoBox = new VBox(2, logoLabel, sousTitre);
+        logoLabel.setStyle("-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white; -fx-font-family: 'Segoe UI';");
+
+        Label aiTag = new Label("✦  Intelligence Artificielle");
+        aiTag.setStyle(
+                "-fx-font-size: 11px; -fx-text-fill: " + EMERAUDE + ";" +
+                        "-fx-background-color: rgba(80,200,120,0.15);" +
+                        "-fx-padding: 3px 10px; -fx-background-radius: 20px;" +
+                        "-fx-font-family: 'Segoe UI';"
+        );
+
+        Label sujetTag = new Label(sujet.toUpperCase());
+        sujetTag.setStyle(
+                "-fx-font-size: 10px; -fx-text-fill: rgba(255,255,255,0.5);" +
+                        "-fx-font-family: 'Segoe UI'; -fx-letter-spacing: 1px;"
+        );
+
+        VBox logoBox = new VBox(4, logoLabel, aiTag, sujetTag);
         logoBox.setAlignment(Pos.CENTER_LEFT);
 
-        HBox header = new HBox();
-        header.setAlignment(Pos.CENTER_LEFT);
-        header.setPadding(new Insets(15, 20, 15, 20));
-        header.setStyle("-fx-background-color: " + ANTHRACITE + ";");
-        HBox.setHgrow(logoBox, Priority.ALWAYS);
-        header.getChildren().add(logoBox);
+        HBox header = new HBox(logoBox);
+        header.setPadding(new Insets(20, 25, 20, 25));
+        header.setStyle(
+                "-fx-background-color: linear-gradient(to right, #1a1a1a, #303030);" +
+                        "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 8, 0, 0, 3);"
+        );
 
+        // ===== META INFO BAR =====
+        HBox metaBar = new HBox(20);
+        metaBar.setPadding(new Insets(10, 25, 10, 25));
+        metaBar.setAlignment(Pos.CENTER_LEFT);
+        metaBar.setStyle("-fx-background-color: #f0f0f0; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;");
+
+        metaBar.getChildren().addAll(
+                metaChip("👤", formateur),
+                metaChip("📍", localisation),
+                metaChip("⏱", duree + " jours"),
+                metaChip("📋", type)
+        );
+
+        // ===== LOADING =====
         ProgressIndicator progress = new ProgressIndicator();
         progress.setStyle("-fx-progress-color: " + EMERAUDE + ";");
-        progress.setPrefSize(50, 50);
+        progress.setPrefSize(40, 40);
 
-        Label loadingLabel = new Label("Generation en cours pour : " + sujet);
-        loadingLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #7f8c8d;");
+        Label loadingLabel = new Label("Génération de la description en cours...");
+        loadingLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #888; -fx-font-family: 'Segoe UI';");
 
-        VBox loadingBox = new VBox(15, progress, loadingLabel);
+        Label loadingSubLabel = new Label("Powered by Groq LLaMA 3.1");
+        loadingSubLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: #bbb; -fx-font-family: 'Segoe UI';");
+
+        VBox loadingBox = new VBox(12, progress, loadingLabel, loadingSubLabel);
         loadingBox.setAlignment(Pos.CENTER);
-        loadingBox.setPadding(new Insets(30));
+        loadingBox.setPadding(new Insets(40));
+
+        // ===== DESCRIPTION AREA =====
+        Label descTitre = new Label("Description générée");
+        descTitre.setStyle(
+                "-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: " + EMERAUDE + ";" +
+                        "-fx-font-family: 'Segoe UI'; -fx-letter-spacing: 1px;"
+        );
+        descTitre.setVisible(false);
 
         TextArea descArea = new TextArea();
         descArea.setWrapText(true);
         descArea.setEditable(false);
-        descArea.setPrefRowCount(8);
+        descArea.setPrefRowCount(7);
         descArea.setStyle(
-                "-fx-font-size: 13px; -fx-font-family: 'Segoe UI';" +
-                        "-fx-border-color: " + EMERAUDE + "; -fx-border-width: 2px;" +
-                        "-fx-border-radius: 8px; -fx-background-radius: 8px; -fx-padding: 10px;"
+                "-fx-font-size: 13.5px;" +
+                        "-fx-font-family: 'Georgia', 'Segoe UI', serif;" +
+                        "-fx-background-color: white;" +
+                        "-fx-border-color: #e8e8e8;" +
+                        "-fx-border-width: 1px;" +
+                        "-fx-border-radius: 8px;" +
+                        "-fx-background-radius: 8px;" +
+                        "-fx-padding: 14px;" +
+                        "-fx-text-fill: #2c3e50;" +
+                        "-fx-line-spacing: 4px;"
         );
         descArea.setVisible(false);
 
-        Label infoLabel = new Label("Description generee par IA");
-        infoLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: " + EMERAUDE + "; -fx-font-weight: bold;");
-        infoLabel.setVisible(false);
-
-        Button btnUtiliser = new Button("Utiliser cette description");
-        btnUtiliser.setStyle(
-                "-fx-background-color: " + EMERAUDE + "; -fx-text-fill: white;" +
-                        "-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 8px 18px;" +
-                        "-fx-background-radius: 8px; -fx-cursor: hand;"
-        );
-        btnUtiliser.setVisible(false);
-
-        Button btnRegenerer = new Button("Regenerer");
+        // ===== FOOTER BUTTONS =====
+        Button btnRegenerer = new Button("↺   Régénérer");
         btnRegenerer.setStyle(
-                "-fx-background-color: #3498db; -fx-text-fill: white;" +
-                        "-fx-font-size: 12px; -fx-padding: 8px 18px;" +
-                        "-fx-background-radius: 8px; -fx-cursor: hand;"
+                "-fx-background-color: " + EMERAUDE + ";" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 13px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-font-family: 'Segoe UI';" +
+                        "-fx-padding: 10px 28px;" +
+                        "-fx-background-radius: 25px;" +
+                        "-fx-cursor: hand;" +
+                        "-fx-effect: dropshadow(three-pass-box, rgba(80,200,120,0.4), 8, 0, 0, 2);"
         );
         btnRegenerer.setVisible(false);
 
         Button btnFermer = new Button("Fermer");
         btnFermer.setStyle(
-                "-fx-background-color: " + CORAIL + "; -fx-text-fill: white;" +
-                        "-fx-font-size: 12px; -fx-padding: 8px 18px;" +
-                        "-fx-background-radius: 8px; -fx-cursor: hand;"
+                "-fx-background-color: transparent;" +
+                        "-fx-text-fill: #888;" +
+                        "-fx-font-size: 12px;" +
+                        "-fx-font-family: 'Segoe UI';" +
+                        "-fx-padding: 10px 20px;" +
+                        "-fx-background-radius: 25px;" +
+                        "-fx-cursor: hand;" +
+                        "-fx-border-color: #ddd;" +
+                        "-fx-border-radius: 25px;" +
+                        "-fx-border-width: 1px;"
         );
         btnFermer.setOnAction(e -> stage.close());
 
-        HBox btnBox = new HBox(10, btnUtiliser, btnRegenerer, btnFermer);
+        Label poweredBy = new Label("Powered by Groq LLaMA 3.1  •  HUMA RH");
+        poweredBy.setStyle("-fx-font-size: 10px; -fx-text-fill: #bbb; -fx-font-family: 'Segoe UI';");
+
+        HBox btnBox = new HBox(12, btnRegenerer, btnFermer);
         btnBox.setAlignment(Pos.CENTER);
-        btnBox.setPadding(new Insets(10, 0, 15, 0));
-        btnBox.setStyle("-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 1px 0 0 0;");
+        btnBox.setPadding(new Insets(15, 25, 8, 25));
 
-        VBox body = new VBox(10, loadingBox, infoLabel, descArea);
-        body.setPadding(new Insets(15, 20, 10, 20));
-        body.setStyle("-fx-background-color: " + FOND + ";");
+        VBox footer = new VBox(6, btnBox, poweredBy);
+        footer.setAlignment(Pos.CENTER);
+        footer.setPadding(new Insets(0, 0, 18, 0));
+        footer.setStyle("-fx-background-color: white; -fx-border-color: #f0f0f0; -fx-border-width: 1px 0 0 0;");
 
-        VBox root = new VBox(0, header, body, btnBox);
-        root.setStyle("-fx-background-color: " + FOND + ";");
+        // ===== BODY =====
+        VBox body = new VBox(10, loadingBox, descTitre, descArea);
+        body.setPadding(new Insets(20, 25, 15, 25));
+        body.setStyle("-fx-background-color: white;");
 
-        Scene scene = new Scene(root, 520, 420);
+        VBox root = new VBox(0, header, metaBar, body, footer);
+        root.setStyle("-fx-background-color: white;");
+
+        Scene scene = new Scene(root, 540, 460);
         stage.setScene(scene);
         stage.show();
 
+        // ===== APPEL API =====
         Thread thread = new Thread(() -> {
             String description = appelAPI(sujet, type, formateur, duree, localisation);
             Platform.runLater(() -> {
@@ -123,28 +180,23 @@ public class GeminiService {
                 loadingBox.setManaged(false);
 
                 if (description != null && !description.isEmpty()) {
-                    descArea.setText(description);
+                    // Nettoyer les guillemets si présents
+                    String cleanDesc = description.replaceAll("^\"|\"$", "").trim();
+                    descArea.setText(cleanDesc);
                     descArea.setVisible(true);
-                    infoLabel.setVisible(true);
-                    btnUtiliser.setVisible(true);
+                    descTitre.setVisible(true);
                     btnRegenerer.setVisible(true);
 
-                    btnUtiliser.setOnAction(e -> {
-                        if (onDescriptionGeneree != null) onDescriptionGeneree.accept(description);
-                        stage.close();
-                    });
                     btnRegenerer.setOnAction(e -> {
                         stage.close();
                         genererDescription(sujet, type, formateur, duree, localisation, onDescriptionGeneree);
                     });
                 } else {
-                    Label errLabel = new Label(
-                            "Impossible de generer la description.\n" +
-                                    "Verifiez votre cle sur : https://openrouter.ai/keys"
-                    );
-                    errLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #e74c3c; -fx-wrap-text: true;");
+                    Label errLabel = new Label("Impossible de générer la description.\nVérifiez votre clé sur : https://console.groq.com");
+                    errLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #e74c3c; -fx-wrap-text: true; -fx-font-family: 'Segoe UI';");
                     errLabel.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
                     body.getChildren().add(errLabel);
+                    btnFermer.setVisible(true);
                 }
             });
         });
@@ -152,22 +204,49 @@ public class GeminiService {
         thread.start();
     }
 
+    // Helper : chip meta info
+    private static javafx.scene.layout.HBox metaChip(String icon, String text) {
+        Label iconLabel = new Label(icon);
+        iconLabel.setStyle("-fx-font-size: 12px;");
+        Label textLabel = new Label(text);
+        textLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #555; -fx-font-family: 'Segoe UI';");
+        javafx.scene.layout.HBox chip = new javafx.scene.layout.HBox(4, iconLabel, textLabel);
+        chip.setAlignment(Pos.CENTER_LEFT);
+        chip.setPadding(new Insets(3, 8, 3, 8));
+        chip.setStyle("-fx-background-color: white; -fx-background-radius: 12px; -fx-border-color: #ddd; -fx-border-radius: 12px; -fx-border-width: 1px;");
+        return chip;
+    }
+
+    // =====================================================
+    // APPEL API GROQ (format OpenAI compatible)
+    // =====================================================
     private static String appelAPI(String sujet, String type, String formateur,
                                    int duree, String localisation) {
         try {
-            String prompt = "Tu es un expert en formation professionnelle. " +
-                    "Genere une description professionnelle (3-4 phrases) en francais pour : " +
-                    "Sujet=" + sujet + ", Type=" + type + ", Formateur=" + formateur +
-                    ", Duree=" + duree + " jours, Lieu=" + localisation +
-                    ". Reponds uniquement avec la description, sans titre.";
+            String prompt = "Tu es un responsable RH expert en formation professionnelle. "
+                    + "Redige une description concise et professionnelle (3 phrases maximum) "
+                    + "pour une formation intitulee \"" + sujet + "\". "
+                    + "La formation est de type " + type + ", animee par " + formateur
+                    + ", d\'une duree de " + duree + " jours, a " + localisation + ". "
+                    + "La description doit : 1) expliquer clairement le contenu et les objectifs de \"" + sujet + "\", "
+                    + "2) mentionner les competences que les participants vont acquerir sur \"" + sujet + "\", "
+                    + "3) etre motivante et professionnelle. "
+                    + "IMPORTANT: parle uniquement du sujet \"" + sujet + "\", pas d\'outils generiques. "
+                    + "Reponds uniquement avec la description, sans titre, sans introduction, sans liste.";
 
-            // ✅ Modele gratuit correct sur OpenRouter
+            String safePrompt = prompt
+                    .replace("\\", "\\\\")
+                    .replace("\"", "\\\"")
+                    .replace("\n", "\\n");
+
+            // Format JSON compatible OpenAI / Groq
             String requestBody = "{"
-                    + "\"model\": \"mistralai/mistral-7b-instruct:free\","
-                    + "\"messages\": [{"
-                    + "\"role\": \"user\","
-                    + "\"content\": \"" + prompt.replace("\\", "\\\\").replace("\"", "\\\"") + "\""
-                    + "}]"
+                    + "\"model\": \"llama-3.1-8b-instant\","
+                    + "\"messages\": ["
+                    + "  {\"role\": \"user\", \"content\": \"" + safePrompt + "\"}"
+                    + "],"
+                    + "\"max_tokens\": 300,"
+                    + "\"temperature\": 0.7"
                     + "}";
 
             URL url = new URL(BASE_URL);
@@ -175,8 +254,6 @@ public class GeminiService {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
-            conn.setRequestProperty("HTTP-Referer", "https://huma-formation.tn");
-            conn.setRequestProperty("X-Title", "HUMA Formation");
             conn.setDoOutput(true);
             conn.setConnectTimeout(20000);
             conn.setReadTimeout(20000);
@@ -186,7 +263,7 @@ public class GeminiService {
             }
 
             int responseCode = conn.getResponseCode();
-            System.out.println("=== OpenRouter response: " + responseCode + " ===");
+            System.out.println("=== Groq response: " + responseCode + " ===");
 
             if (responseCode == 200) {
                 StringBuilder response = new StringBuilder();
@@ -197,8 +274,9 @@ public class GeminiService {
                 }
 
                 String json = response.toString();
-                System.out.println("=== JSON debut: " + json.substring(0, Math.min(300, json.length())) + " ===");
+                System.out.println("=== JSON debut: " + json.substring(0, Math.min(200, json.length())) + " ===");
 
+                // Extraction : {"choices":[{"message":{"content":"..."}}]}
                 int contentStart = json.indexOf("\"content\":\"") + 11;
                 if (contentStart > 11) {
                     int idx = contentStart;
@@ -221,13 +299,11 @@ public class GeminiService {
 
             } else {
                 StringBuilder errBody = new StringBuilder();
-                try {
-                    BufferedReader errReader = new BufferedReader(
-                            new InputStreamReader(conn.getErrorStream(), StandardCharsets.UTF_8));
+                try (BufferedReader errReader = new BufferedReader(
+                        new InputStreamReader(conn.getErrorStream(), StandardCharsets.UTF_8))) {
                     String errLine;
                     while ((errLine = errReader.readLine()) != null) errBody.append(errLine);
-                    errReader.close();
-                } catch (Exception ignored) {}
+                }
                 System.err.println("=== ERREUR " + responseCode + " : " + errBody + " ===");
                 return null;
             }
