@@ -5,7 +5,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.shape.Circle?>
-<BorderPane stylesheets="@../style.css"
+<BorderPane stylesheets="@style.css"
             styleClass="app-root"
             xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
@@ -18,34 +18,34 @@
             <HBox spacing="8" styleClass="brand-row">
                 <ImageView fitHeight="110.0" fitWidth="320.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../../images/huma.png" />
+                        <Image url="@../images/huma.png" />
                     </image>
                 </ImageView>
             </HBox>
 
             <Button onAction="#openDashboard" styleClass="nav-button" text="Tableau de bord">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/dashboard.png" /></image></ImageView></graphic>
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/dashboard.png" /></image></ImageView></graphic>
             </Button>
             <Button onAction="#openRecrutement" styleClass="nav-button nav-active" text="Recrutement">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/recrutement.png" /></image></ImageView></graphic>
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/recrutement.png" /></image></ImageView></graphic>
             </Button>
             <Button onAction="#openConges" styleClass="nav-button" text="Congés">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/conge.png" /></image></ImageView></graphic>
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/conge.png" /></image></ImageView></graphic>
             </Button>
             <Button onAction="#openAbsences" styleClass="nav-button" text="Absences">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/absences.png" /></image></ImageView></graphic>
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/absences.png" /></image></ImageView></graphic>
             </Button>
             <Button onAction="#openCommunication" styleClass="nav-button" text="Communication">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/communication.png" /></image></ImageView></graphic>
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/communication.png" /></image></ImageView></graphic>
             </Button>
             <Button onAction="#openFormations" styleClass="nav-button" text="Formations">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/recrutement.png" /></image></ImageView></graphic>
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/recrutement.png" /></image></ImageView></graphic>
             </Button>
             <Button onAction="#openFeedback" styleClass="nav-button" text="FeedBack">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/feedback.png" /></image></ImageView></graphic>
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/feedback.png" /></image></ImageView></graphic>
             </Button>
             <Button onAction="#openParametres" styleClass="nav-button" text="Paramètres">
-                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/parametre.png" /></image></ImageView></graphic>
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../images/parametre.png" /></image></ImageView></graphic>
             </Button>
             <Region VBox.vgrow="ALWAYS" />
             <Button onAction="#logout" styleClass="nav-button" text="Logout" />
@@ -67,7 +67,7 @@
                             <Circle centerX="17.0" centerY="17.0" radius="17.0" />
                         </clip>
                         <image>
-                            <Image url="@../../images/huma.png" />
+                            <Image url="@../images/huma.png" />
                         </image>
                     </ImageView>
                 </StackPane>

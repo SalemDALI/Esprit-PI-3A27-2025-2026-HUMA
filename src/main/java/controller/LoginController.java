@@ -48,7 +48,7 @@ public class LoginController {
             FXMLLoader loader;
 
             if (isAdminRole(role)) {
-                loader = new FXMLLoader(getClass().getResource("/fxml/recrutement/dashboard.fxml"));
+                loader = new FXMLLoader(getClass().getResource("/fxml/dashboard.fxml"));
                 stage.setScene(new Scene(loader.load()));
             } else if (isCandidatRole(role)) {
                 loader = new FXMLLoader(getClass().getResource("/fxml/recrutement/candidat.fxml"));

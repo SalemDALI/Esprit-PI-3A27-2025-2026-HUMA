@@ -97,44 +97,7 @@
     </left>
 
     <center>
-        <VBox spacing="16" styleClass="main-content">
-            <VBox spacing="20" padding="20">
 
-                <!-- Stat Cards -->
-                <HBox spacing="20">
-                    <VBox styleClass="card">
-                        <Label text="Candidatures"/>
-                        <Label text="1,257" styleClass="big-number"/>
-                    </VBox>
-
-                    <VBox styleClass="card">
-                        <Label text="Postes"/>
-                        <Label text="8" styleClass="big-number"/>
-                    </VBox>
-
-                    <VBox styleClass="card">
-                        <Label text="Entretiens"/>
-                        <Label text="32" styleClass="big-number"/>
-                    </VBox>
-
-                    <VBox styleClass="card">
-                        <Label text="Nouveaux CV"/>
-                        <Label text="18" styleClass="big-number"/>
-                    </VBox>
-                </HBox>
-
-                <!-- Chart -->
-                <LineChart fx:id="lineChart" prefHeight="300">
-                    <xAxis>
-                        <CategoryAxis label="Mois"/>
-                    </xAxis>
-                    <yAxis>
-                        <NumberAxis label="Candidatures"/>
-                    </yAxis>
-                </LineChart>
-
-            </VBox>
-        </VBox>
     </center>
 
 </BorderPane>

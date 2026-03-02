@@ -206,6 +206,12 @@
     -fx-background-radius: 10;
 }
 
+.social-icon-only {
+    -fx-background-color: transparent;
+    -fx-padding: 0 2 0 2;
+    -fx-alignment: center;
+}
+
 .nav-button {
     -fx-background-color: transparent;
     -fx-text-fill: #d4d4d4;

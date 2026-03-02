@@ -65,6 +65,17 @@
                     <Button text="Accepter" styleClass="btn btn-primary" onAction="#accepter"/>
                     <Button text="Refuser" styleClass="btn btn-danger" onAction="#refuser"/>
                 </HBox>
+
+                <Label text="Entretiens planifiés" styleClass="title"/>
+                <ScrollPane fitToWidth="true" prefHeight="260" styleClass="cards-scroll">
+                    <content>
+                        <VBox fx:id="tableEntretiensManager" spacing="10" styleClass="cards-container"/>
+                    </content>
+                </ScrollPane>
+                <HBox spacing="10" styleClass="action-row">
+                    <Button text="Démarrer entretien" styleClass="btn btn-primary" onAction="#demarrerEntretien"/>
+                    <Button text="Actualiser" styleClass="btn" onAction="#refresh"/>
+                </HBox>
             </VBox>
         </VBox>
     </center>

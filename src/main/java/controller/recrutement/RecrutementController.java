@@ -2,6 +2,7 @@ package controller.recrutement;
 
 import models.recrutement.CandidateScoringResult;
 import models.recrutement.Candidature;
+import models.recrutement.Entretien;
 import models.recrutement.OffreEmploi;
 import models.feedback.User;
 import models.congesAbsences.Absence;
@@ -26,6 +27,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import services.feedback.ServiceUser;
 import services.communication.PublicationService;
@@ -37,6 +39,7 @@ import services.recrutement.FacebookJobPublisherService;
 import services.recrutement.LinkedInJobPublisherService;
 import services.recrutement.RedditJobPublisherService;
 import services.recrutement.ServiceCandidature;
+import services.recrutement.ServiceEntretien;
 import services.recrutement.ServiceOffre;
 import utils.Session;
 
@@ -48,6 +51,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.sql.Date;
@@ -219,6 +223,8 @@ public class RecrutementController {
     private Label lblCardAcceptees;
     @FXML
     private Label lblCardRefusees;
+    @FXML
+    private VBox tableEntretiensAdmin;
 
     @FXML
     private VBox tableConges;
@@ -295,6 +301,7 @@ public class RecrutementController {
     private final LinkedInJobPublisherService linkedInJobPublisherService = new LinkedInJobPublisherService();
     private final FacebookJobPublisherService facebookJobPublisherService = new FacebookJobPublisherService();
     private final RedditJobPublisherService redditJobPublisherService = new RedditJobPublisherService();
+    private final ServiceEntretien serviceEntretien = new ServiceEntretien();
     private static final int USERS_PAGE_SIZE = 6;
     private static final int OFFRES_PAGE_SIZE = 6;
     private static final int CANDIDATURES_PAGE_SIZE = 6;
@@ -334,6 +341,9 @@ public class RecrutementController {
         }
         if (tableCandidatures != null) {
             initCandidatureSection();
+        }
+        if (tableEntretiensAdmin != null) {
+            initEntretienSection();
         }
         if (tableTopCv != null) {
             initTopCvSection();
@@ -482,6 +492,10 @@ public class RecrutementController {
         tableCandidatures.getStyleClass().add("cards-container");
     }
 
+    private void initEntretienSection() {
+        tableEntretiensAdmin.getStyleClass().add("cards-container");
+    }
+
     private void initTopCvSection() {
         tableTopCv.getStyleClass().add("cards-container");
     }
@@ -519,6 +533,9 @@ public class RecrutementController {
         }
         if (tableCandidatures != null) {
             renderCandidatureCards();
+        }
+        if (tableEntretiensAdmin != null) {
+            renderEntretienAdminCards();
         }
         if (tableTopCv != null) {
             tableTopCv.getChildren().clear();
@@ -560,8 +577,13 @@ public class RecrutementController {
     }
 
     @FXML
+    public void openEntretienPage(ActionEvent event) {
+        navigateTo(event, "/fxml/recrutement/entretien.fxml");
+    }
+
+    @FXML
     public void openDashboard(ActionEvent event) {
-        navigateTo(event, "/fxml/recrutement/dashboard.fxml");
+        navigateTo(event, "/fxml/dashboard.fxml");
     }
 
     @FXML
@@ -1486,11 +1508,11 @@ public class RecrutementController {
         actions.getStyleClass().add("card-actions");
         Button edit = new Button("✎");
         edit.setOnAction(e -> openOffreDialog(offre));
-        Button publishFacebook = createSocialButton("/images/fb.png", "Publier sur Facebook",
+        Node publishFacebook = createSocialIcon("/images/fb.png", "Publier sur Facebook",
                 () -> publishOffreOnFacebookIfConfigured(offre));
-        Button publishLinkedIn = createSocialButton("/images/in.png", "Publier sur LinkedIn",
+        Node publishLinkedIn = createSocialIcon("/images/in.png", "Publier sur LinkedIn",
                 () -> publishOffreOnLinkedInIfConfigured(offre));
-        Button publishReddit = createSocialButton("/images/reddit.png", "Publier sur Reddit",
+        Node publishReddit = createSocialIcon("/images/reddit.png", "Publier sur Reddit",
                 () -> publishOffreOnRedditIfConfigured(offre));
         Button delete = new Button("🗑");
         delete.setOnAction(e -> {
@@ -1536,12 +1558,17 @@ public class RecrutementController {
             serviceCandidature.updateStatut(c.getId(), next);
             refreshData();
         });
+        Button planifier = new Button("📅");
+        planifier.setOnAction(e -> openPlanifierEntretienDialog(c, u, o));
+        planifier.setDisable(!isCurrentAdminRh());
+        Button demarrer = new Button("🎥");
+        demarrer.setOnAction(e -> openLatestEntretienForCandidature(c.getId()));
         Button delete = new Button("🗑");
         delete.setOnAction(e -> {
             serviceCandidature.supprimer(c.getId());
             refreshData();
         });
-        actions.getChildren().addAll(viewCv, update, delete);
+        actions.getChildren().addAll(viewCv, update, planifier, demarrer, delete);
 
         VBox card = new VBox(10, identity, actions);
         card.getStyleClass().addAll("entity-card", "app-card");
@@ -1617,6 +1644,151 @@ public class RecrutementController {
         else if (value.contains("EMPLOYE")) label.getStyleClass().add("badge-employe");
         else label.getStyleClass().add("badge-candidat");
         return label;
+    }
+
+    private boolean isCurrentAdminRh() {
+        User current = Session.getUser();
+        if (current == null || current.getRole() == null) {
+            return false;
+        }
+        return current.getRole().toUpperCase(Locale.ROOT).contains("ADMIN");
+    }
+
+    private void openPlanifierEntretienDialog(Candidature candidature, User candidat, OffreEmploi offre) {
+        if (!isCurrentAdminRh()) {
+            showError("Seul ADMIN RH peut planifier un entretien.");
+            return;
+        }
+        if (candidature == null) {
+            showError("Candidature invalide.");
+            return;
+        }
+
+        List<User> managers = serviceUser.getAll().stream()
+                .filter(u -> u.getRole() != null && u.getRole().toUpperCase(Locale.ROOT).contains("MANAGER"))
+                .collect(Collectors.toList());
+        if (managers.isEmpty()) {
+            showError("Aucun manager disponible.");
+            return;
+        }
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Planifier Entretien");
+        ButtonType saveType = new ButtonType("Planifier", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveType, ButtonType.CANCEL);
+
+        Label candidatLabel = new Label("Candidat: " + (candidat == null ? ("#" + candidature.getCandidatId()) : (candidat.getNom() + " " + candidat.getPrenom())));
+        Label offreLabel = new Label("Offre: " + (offre == null ? ("#" + candidature.getOffreId()) : offre.getTitre()));
+
+        ComboBox<User> managerBox = new ComboBox<>();
+        managerBox.getItems().setAll(managers);
+        managerBox.setCellFactory(cb -> new ListCell<>() {
+            @Override
+            protected void updateItem(User item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? "" : item.getNom() + " " + item.getPrenom() + " (#" + item.getId() + ")");
+            }
+        });
+        managerBox.setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(User item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? "" : item.getNom() + " " + item.getPrenom() + " (#" + item.getId() + ")");
+            }
+        });
+        managerBox.getSelectionModel().selectFirst();
+
+        DatePicker datePicker = new DatePicker(LocalDate.now().plusDays(1));
+        TextField timeField = new TextField("10:00");
+        TextField dureeField = new TextField("60");
+        TextField meetField = new TextField("https://meet.jit.si/" + buildRoomName(candidature.getId()));
+        TextArea commentaireField = new TextArea();
+        commentaireField.setPromptText("Commentaire (optionnel)");
+        commentaireField.setPrefRowCount(3);
+
+        VBox form = new VBox(8,
+                candidatLabel,
+                offreLabel,
+                new Label("Manager"), managerBox,
+                new Label("Date"), datePicker,
+                new Label("Heure (HH:mm)"), timeField,
+                new Label("Duree (minutes)"), dureeField,
+                new Label("Lien Jitsi/Meet"), meetField,
+                new Label("Commentaire"), commentaireField
+        );
+        form.setPrefWidth(460);
+        dialog.getDialogPane().setContent(form);
+
+        dialog.showAndWait().ifPresent(btn -> {
+            if (btn != saveType) {
+                return;
+            }
+            try {
+                LocalDate date = datePicker.getValue() == null ? LocalDate.now() : datePicker.getValue();
+                String[] hm = (timeField.getText() == null ? "10:00" : timeField.getText().trim()).split(":");
+                int hour = hm.length > 0 ? Integer.parseInt(hm[0]) : 10;
+                int minute = hm.length > 1 ? Integer.parseInt(hm[1]) : 0;
+                LocalDateTime dateEntretien = date.atTime(Math.max(0, Math.min(23, hour)), Math.max(0, Math.min(59, minute)));
+
+                Entretien e = new Entretien();
+                e.setCandidatureId(candidature.getId());
+                e.setAdminId(Session.getUser().getId());
+                e.setManagerId(managerBox.getValue().getId());
+                e.setDateEntretien(dateEntretien);
+                e.setDureeMinutes(Integer.parseInt(dureeField.getText().trim()));
+                e.setMeetLink(meetField.getText() == null || meetField.getText().isBlank()
+                        ? "https://meet.jit.si/" + buildRoomName(candidature.getId())
+                        : meetField.getText().trim());
+                e.setStatut("PLANIFIE");
+                e.setCommentaire(commentaireField.getText());
+
+                if (serviceEntretien.planifier(e)) {
+                    setPageMessage("Entretien planifie avec succes.", false);
+                } else {
+                    showError("Echec planification entretien.");
+                }
+            } catch (Exception ex) {
+                showError("Erreur planification: " + ex.getMessage());
+            }
+        });
+    }
+
+    private String buildRoomName(int candidatureId) {
+        return "huma-entretien-" + candidatureId + "-" + System.currentTimeMillis();
+    }
+
+    private void openLatestEntretienForCandidature(int candidatureId) {
+        Entretien entretien = serviceEntretien.getLatestByCandidatureId(candidatureId);
+        if (entretien == null) {
+            showError("Aucun entretien planifie pour cette candidature.");
+            return;
+        }
+        String link = entretien.getMeetLink() == null ? "" : entretien.getMeetLink().trim();
+        if (link.isBlank()) {
+            showError("Lien entretien manquant.");
+            return;
+        }
+        openEntretienWebView(link, "Entretien #" + entretien.getId());
+    }
+
+    private void openEntretienWebView(String url, String title) {
+        try {
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                Desktop.getDesktop().browse(java.net.URI.create(url));
+                setPageMessage("Ouverture entretien dans navigateur.", false);
+                return;
+            }
+
+            Stage stage = new Stage();
+            WebView webView = new WebView();
+            webView.getEngine().load(url);
+            Scene scene = new Scene(webView, 1100, 760);
+            stage.setScene(scene);
+            stage.setTitle(title == null || title.isBlank() ? "Entretien" : title);
+            stage.show();
+        } catch (Exception e) {
+            showError("Impossible d'ouvrir l'entretien: " + e.getMessage());
+        }
     }
 
     private Label buildStatusBadge(String status) {
@@ -1845,25 +2017,27 @@ public class RecrutementController {
         });
     }
 
-    private Button createSocialButton(String imagePath, String tooltipText, Runnable action) {
-        Button button = new Button();
+    private Node createSocialIcon(String imagePath, String tooltipText, Runnable action) {
+        Label icon = new Label();
+        icon.getStyleClass().add("social-icon-only");
         try (InputStream stream = getClass().getResourceAsStream(imagePath)) {
             if (stream != null) {
                 Image image = new Image(stream);
                 ImageView imageView = new ImageView(image);
-                imageView.setFitWidth(16);
-                imageView.setFitHeight(16);
+                imageView.setFitWidth(20);
+                imageView.setFitHeight(20);
                 imageView.setPreserveRatio(true);
-                button.setGraphic(imageView);
+                icon.setGraphic(imageView);
             } else {
-                button.setText(tooltipText.substring(tooltipText.lastIndexOf(' ') + 1, tooltipText.length()).toUpperCase(Locale.ROOT));
+                icon.setText(tooltipText.substring(tooltipText.lastIndexOf(' ') + 1).toUpperCase(Locale.ROOT));
             }
         } catch (IOException ignored) {
-            button.setText(tooltipText.substring(tooltipText.lastIndexOf(' ') + 1, tooltipText.length()).toUpperCase(Locale.ROOT));
+            icon.setText(tooltipText.substring(tooltipText.lastIndexOf(' ') + 1).toUpperCase(Locale.ROOT));
         }
-        button.setTooltip(new Tooltip(tooltipText));
-        button.setOnAction(e -> action.run());
-        return button;
+        icon.setStyle("-fx-cursor: hand;");
+        icon.setOnMouseClicked(e -> action.run());
+        Tooltip.install(icon, new Tooltip(tooltipText));
+        return icon;
     }
 
     private void publishOffreOnSocialPlatforms(OffreEmploi offre) {
@@ -2686,6 +2860,60 @@ public class RecrutementController {
                 cbStatut.setValue(candidature.getStatut());
             });
             tableCandidatures.getChildren().add(card);
+        }
+    }
+
+    private void renderEntretienAdminCards() {
+        tableEntretiensAdmin.getChildren().clear();
+        User current = Session.getUser();
+        if (current == null) {
+            tableEntretiensAdmin.getChildren().add(buildCard("Session invalide", "Reconnectez-vous."));
+            return;
+        }
+
+        List<Entretien> rows = serviceEntretien.getByAdminId(current.getId());
+        if (rows.isEmpty()) {
+            tableEntretiensAdmin.getChildren().add(buildCard("Aucun entretien", "Planifiez un entretien depuis la liste des candidatures."));
+            return;
+        }
+
+        for (Entretien e : rows) {
+            VBox card = buildCard(
+                    (e.getCandidatNom() == null ? "Candidat" : e.getCandidatNom()) + " | "
+                            + (e.getOffreTitre() == null ? "Offre" : e.getOffreTitre()),
+                    "Date: " + e.getDateEntretien()
+                            + " | Manager: " + (e.getManagerNom() == null ? "" : e.getManagerNom())
+                            + " | Statut: " + (e.getStatut() == null ? "PLANIFIE" : e.getStatut())
+            );
+
+            HBox actions = new HBox(8);
+            Button start = new Button("Démarrer entretien");
+            start.getStyleClass().add("mock-add-btn");
+            start.setOnAction(ev -> openEntretienWebView(e.getMeetLink(), "Entretien #" + e.getId()));
+
+            Button done = new Button("Terminer");
+            done.setOnAction(ev -> {
+                if (serviceEntretien.updateStatut(e.getId(), "TERMINE")) {
+                    setPageMessage("Entretien marqué TERMINE.", false);
+                    renderEntretienAdminCards();
+                } else {
+                    showError("Mise à jour statut impossible.");
+                }
+            });
+
+            Button cancel = new Button("Annuler");
+            cancel.setOnAction(ev -> {
+                if (serviceEntretien.updateStatut(e.getId(), "ANNULE")) {
+                    setPageMessage("Entretien marqué ANNULE.", false);
+                    renderEntretienAdminCards();
+                } else {
+                    showError("Mise à jour statut impossible.");
+                }
+            });
+
+            actions.getChildren().addAll(start, done, cancel);
+            card.getChildren().add(actions);
+            tableEntretiensAdmin.getChildren().add(card);
         }
     }
 

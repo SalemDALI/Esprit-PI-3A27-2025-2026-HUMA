@@ -39,6 +39,9 @@
             <Button onAction="#openRecrutement" styleClass="nav-button nav-active" text="Recrutement">
                 <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/recrutement.png" /></image></ImageView></graphic>
             </Button>
+            <Button onAction="#openEntretienPage" styleClass="nav-button" text="Entretiens">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/communication.png" /></image></ImageView></graphic>
+            </Button>
             <Button onAction="#openConges" styleClass="nav-button" text="Congés">
                 <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/conge.png" /></image></ImageView></graphic>
             </Button>
@@ -70,7 +73,7 @@
                 <Label styleClass="mock-title" text="Admin - Gestion de Recrutement" />
                 <Region HBox.hgrow="ALWAYS" />
                 <TextField fx:id="txtGlobalSearch" onAction="#refreshModernSections" promptText="Recherche..." styleClass="mock-search" />
-                <Button styleClass="top-icon" text="✈" />
+                <Button onAction="#openEntretienPage" styleClass="top-icon" text="☰" />
                 <Button styleClass="top-icon" text="⚙" />
                 <Button styleClass="top-icon" text="🔔" />
                 <Button styleClass="top-avatar" text="👤" />
