@@ -3,41 +3,87 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controller.PublicationsController"
-            stylesheets="@style.css"
-            styleClass="app-root">
+<BorderPane stylesheets="@publication.css"
+            xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/21"
+            fx:controller="controller.PublicationsController">
 
-    <top>
-        <HBox styleClass="sidebar topbar left-panel" spacing="10">
-            <Label fx:id="welcomeLabel" styleClass="logo" text="Publications"/>
-            <Pane HBox.hgrow="ALWAYS"/>
-            <Button text="Retour" styleClass="nav-button" onAction="#back"/>
-            <Button text="Logout" styleClass="nav-button" onAction="#logout"/>
-        </HBox>
-    </top>
+    <!-- ══ SIDEBAR ══ -->
+    <left>
+        <VBox prefWidth="200" spacing="8"
+              style="-fx-background-color:linear-gradient(to bottom,#1f2937,#111827);-fx-padding:16 8 16 8;">
 
+            <!-- Logo -->
+            <HBox alignment="CENTER" style="-fx-padding:0 0 16 0;">
+                <ImageView fitHeight="60" fitWidth="140" preserveRatio="true">
+                    <image><Image url="@../images/huma.png"/></image>
+                </ImageView>
+            </HBox>
+
+            <!-- Nav label -->
+            <Label text="NAVIGATION"
+                   style="-fx-font-size:10px;-fx-font-weight:bold;-fx-text-fill:#4b5563;-fx-padding:0 0 4 6;"/>
+
+            <Button styleClass="nav-button" text="🏠  Tableau de bord" maxWidth="Infinity"/>
+            <Button styleClass="nav-button nav-active" text="📢  Publications"    maxWidth="Infinity"/>
+            <Button styleClass="nav-button" text="🎓  Formations"       maxWidth="Infinity"/>
+            <Button styleClass="nav-button" text="💬  FeedBack"         maxWidth="Infinity"/>
+            <Button styleClass="nav-button" text="⚙  Paramètres"       maxWidth="Infinity"/>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- Compte -->
+            <Label text="COMPTE"
+                   style="-fx-font-size:10px;-fx-font-weight:bold;-fx-text-fill:#4b5563;-fx-padding:0 0 4 6;"/>
+            <Label fx:id="welcomeLabel"
+                   style="-fx-text-fill:#d1fae5;-fx-font-size:12px;-fx-padding:2 6;"/>
+            <Button onAction="#logout" styleClass="nav-button" text="↩  Logout" maxWidth="Infinity"/>
+        </VBox>
+    </left>
+
+    <!-- ══ MAIN CONTENT ══ -->
     <center>
-        <VBox spacing="10" styleClass="main-content">
-            <Label fx:id="lblInfo" text="" styleClass="page-message"/>
+        <VBox spacing="0"
+              style="-fx-background-color:#eef1f6;">
 
-            <ScrollPane fitToWidth="true" prefHeight="450" styleClass="cards-scroll">
+            <!-- Header bar -->
+            <HBox alignment="CENTER_LEFT" spacing="14"
+                  style="-fx-background-color:white;-fx-padding:18 28 18 28;-fx-border-color:#dce3ec;-fx-border-width:0 0 1 0;">
+                <VBox spacing="3">
+                    <Label style="-fx-font-size:11px;-fx-text-fill:#6b7280;-fx-font-weight:bold;"
+                           text="ESPACE EMPLOYÉ › PUBLICATIONS"/>
+                    <Label style="-fx-font-size:20px;-fx-font-weight:bold;-fx-text-fill:#111827;"
+                           text="Publications &amp; Commentaires"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button onAction="#refreshPublications"
+                        style="-fx-background-color:#f0fdf9;-fx-text-fill:#065f46;-fx-font-size:12px;-fx-font-weight:bold;-fx-cursor:hand;-fx-border-color:#6ee7cb;-fx-border-width:1;-fx-border-radius:20;-fx-background-radius:20;-fx-padding:6 16;"
+                        text="🔄 Actualiser"/>
+                <Label fx:id="lblInfo" text=""
+                       style="-fx-font-size:12px;-fx-padding:5 14;-fx-background-radius:20;"/>
+            </HBox>
+
+            <!-- Liste publications -->
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                        style="-fx-background-color:transparent;-fx-background:transparent;-fx-border-width:0;">
                 <content>
-                    <VBox fx:id="publicationList" spacing="10" styleClass="cards-container"/>
+                    <VBox fx:id="publicationList" spacing="14"
+                          style="-fx-background-color:transparent;">
+                        <padding>
+                            <Insets top="20" right="24" bottom="24" left="24"/>
+                        </padding>
+                    </VBox>
                 </content>
             </ScrollPane>
 
-            <TextArea fx:id="txtComment" promptText="Ecrire un commentaire sur la publication selectionnee" prefRowCount="3" wrapText="true"/>
-            <HBox spacing="10" styleClass="action-row">
-                <Button text="Commenter" styleClass="btn btn-primary" onAction="#addComment"/>
-                <Button text="Actualiser" styleClass="btn" onAction="#refreshPublications"/>
-            </HBox>
         </VBox>
     </center>
 
