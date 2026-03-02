@@ -21,7 +21,7 @@ public class GeminiService {
     // CLE API GROQ - Gratuite, fonctionne en Tunisie
     // Obtenir sur : https://console.groq.com → API Keys
     // =====================================================
-    private static final String API_KEY = "";
+    private static final String API_KEY = "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";
     private static final String BASE_URL = "https://api.groq.com/openai/v1/chat/completions";
 
     private static final String EMERAUDE   = "#50C878";

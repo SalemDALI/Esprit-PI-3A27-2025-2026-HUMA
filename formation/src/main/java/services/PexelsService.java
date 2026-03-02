@@ -21,7 +21,7 @@ public class PexelsService {
     // =====================================================
     // Unsplash Access Key
     // =====================================================
-    private static final String API_KEY  = "";
+    private static final String API_KEY  = "TXghlb9cpi86_S6KKCgoLqqi3CGqFeZfT1PFcVeZf08";
     private static final String BASE_URL = "https://api.unsplash.com/photos/random";
 
     private static final String EMERAUDE   = "#50C878";

@@ -23,7 +23,7 @@ public class WeatherService {
     // REMPLACEZ PAR VOTRE CLE API OpenWeatherMap
     // Inscription gratuite sur : https://openweathermap.org/register
     // =====================================================
-    private static final String API_KEY = "";
+    private static final String API_KEY = "713c7b6626efa9af193bb75e9f1ce972";
     private static final String BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
 
     // Charte graphique HUMA
