@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="15" alignment="CENTER"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.LoginController"
+      stylesheets="@../style.css"
+      styleClass="login-root">
+
+    <Label text="LOGIN" styleClass="title"/>
+
+    <TextField fx:id="emailField" promptText="Email" maxWidth="320"/>
+    <PasswordField fx:id="passwordField" promptText="Mot de passe" maxWidth="320"/>
+    <Button text="Login with Face ID" onAction="#loginWithFace"/>
+    <Button text="Se connecter" styleClass="btn btn-primary" onAction="#login"/>
+    <Button text="Sign up" styleClass="btn" onAction="#openSignup"/>
+    <Hyperlink text="Mot de passe oublié ?"
+               onAction="#showResetSection"
+               styleClass="link"/>
+
+    <!-- SECTION RESET (cachée au début) -->
+    <VBox fx:id="resetBox"
+          spacing="10"
+          alignment="CENTER"
+          visible="false"
+          managed="false">
+
+        <TextField fx:id="resetEmailField"
+                   promptText="Entrer votre email"
+                   maxWidth="320"/>
+
+        <Button text="Envoyer code"
+                styleClass="btn"
+                onAction="#sendResetEmail"/>
+
+        <TextField fx:id="tokenField"
+                   promptText="Entrer le code reçu"
+                   maxWidth="320"/>
+
+        <PasswordField fx:id="newPasswordField"
+                       promptText="Nouveau mot de passe"
+                       maxWidth="320"/>
+
+        <PasswordField fx:id="confirmPasswordField"
+                       promptText="Confirmer mot de passe"
+                       maxWidth="320"/>
+
+        <Button text="Réinitialiser"
+                styleClass="btn btn-primary"
+                onAction="#resetPassword"/>
+
+        <Label fx:id="resetMessageLabel" textFill="#00ffcc"/>
+
+    </VBox>
+    <Label fx:id="messageLabel" textFill="#ff6b6b"/>
+
+</VBox>

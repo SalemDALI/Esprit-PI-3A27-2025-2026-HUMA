@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.shape.Circle?>
+<BorderPane stylesheets="@../style.css"
+            styleClass="app-root"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.DashboardController">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <left>
+        <VBox prefWidth="220" spacing="10" styleClass="sidebar dashboard-sidebar left-panel">
+            <HBox spacing="8" styleClass="brand-row">
+                <ImageView fitHeight="110.0" fitWidth="320.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../../images/huma.png" />
+                    </image>
+                </ImageView>
+            </HBox>
+
+            <Button onAction="#openDashboard" styleClass="nav-button" text="Tableau de bord">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/dashboard.png" /></image></ImageView></graphic>
+            </Button>
+            <Button onAction="#openRecrutement" styleClass="nav-button nav-active" text="Recrutement">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/recrutement.png" /></image></ImageView></graphic>
+            </Button>
+            <Button onAction="#openConges" styleClass="nav-button" text="Congés">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/conge.png" /></image></ImageView></graphic>
+            </Button>
+            <Button onAction="#openAbsences" styleClass="nav-button" text="Absences">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/absences.png" /></image></ImageView></graphic>
+            </Button>
+            <Button onAction="#openCommunication" styleClass="nav-button" text="Communication">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/communication.png" /></image></ImageView></graphic>
+            </Button>
+            <Button onAction="#openFormations" styleClass="nav-button" text="Formations">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/recrutement.png" /></image></ImageView></graphic>
+            </Button>
+            <Button onAction="#openFeedback" styleClass="nav-button" text="FeedBack">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/feedback.png" /></image></ImageView></graphic>
+            </Button>
+            <Button onAction="#openParametres" styleClass="nav-button" text="Paramètres">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/parametre.png" /></image></ImageView></graphic>
+            </Button>
+            <Region VBox.vgrow="ALWAYS" />
+            <Button onAction="#logout" styleClass="nav-button" text="Logout" />
+        </VBox>
+    </left>
+
+    <!-- ================= CENTER ================= -->
+
+    <center>
+        <VBox spacing="20" style="-fx-padding:20;">
+
+            <!-- TOP BAR -->
+            <HBox styleClass="top-toolbar">
+                <Label text="Tableau de bord" styleClass="dashboard-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <StackPane styleClass="profile-wrap">
+                    <ImageView fitHeight="34.0" fitWidth="34.0" preserveRatio="false" styleClass="profile-avatar">
+                        <clip>
+                            <Circle centerX="17.0" centerY="17.0" radius="17.0" />
+                        </clip>
+                        <image>
+                            <Image url="@../../images/huma.png" />
+                        </image>
+                    </ImageView>
+                </StackPane>
+            </HBox>
+
+            <!-- METRIC CARDS -->
+            <HBox spacing="15">
+
+                <VBox styleClass="metric-card metric-green">
+                    <Label text="1,257" styleClass="card-number"/>
+                    <Label text="Candidats" styleClass="card-subtitle"/>
+                </VBox>
+
+                <VBox styleClass="metric-card metric-orange">
+                    <Label text="8" styleClass="card-number"/>
+                    <Label text="Postes ouverts" styleClass="card-subtitle"/>
+                </VBox>
+
+                <VBox styleClass="metric-card metric-blue">
+                    <Label text="32" styleClass="card-number"/>
+                    <Label text="Entretiens" styleClass="card-subtitle"/>
+                </VBox>
+
+            </HBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

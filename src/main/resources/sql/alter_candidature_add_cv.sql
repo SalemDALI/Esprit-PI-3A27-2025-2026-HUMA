@@ -1,0 +1,2 @@
+ALTER TABLE candidature
+    ADD COLUMN cv VARCHAR(255) NULL;

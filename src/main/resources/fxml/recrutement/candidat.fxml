@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.CandidatController"
+            stylesheets="@../style.css"
+            styleClass="app-root">
+
+    <left>
+        <VBox prefWidth="220" spacing="10" styleClass="sidebar dashboard-sidebar left-panel">
+            <HBox spacing="8" styleClass="brand-row">
+                <ImageView fitHeight="110.0" fitWidth="320.0" preserveRatio="true">
+                    <image><Image url="@../../images/huma.png" /></image>
+                </ImageView>
+            </HBox>
+
+            <Button text="Offres" styleClass="nav-button nav-active"/>
+            <Button text="Suivi candidatures" styleClass="nav-button" onAction="#refreshSuiviCandidatures"/>
+            <Region VBox.vgrow="ALWAYS"/>
+            <Button text="Logout" styleClass="nav-button" onAction="#logout"/>
+        </VBox>
+    </left>
+
+    <center>
+        <VBox spacing="12" styleClass="main-content">
+            <HBox styleClass="top-toolbar" spacing="10">
+                <Label styleClass="dashboard-title" text="Espace Candidat"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Uploader CV (PDF)" styleClass="btn btn-warning" onAction="#uploadCv"/>
+                <Button text="Postuler" styleClass="btn btn-primary" onAction="#postuler"/>
+                <StackPane styleClass="profile-wrap">
+                    <ImageView fitHeight="34.0" fitWidth="34.0" preserveRatio="false" styleClass="profile-avatar">
+                        <clip>
+                            <Circle centerX="17.0" centerY="17.0" radius="17.0" />
+                        </clip>
+                        <image>
+                            <Image url="@../../images/huma.png" />
+                        </image>
+                    </ImageView>
+                </StackPane>
+            </HBox>
+
+            <VBox spacing="12" styleClass="content">
+                <Label fx:id="lblPageMessage" text="" styleClass="page-message"/>
+
+                <Label text="Offres disponibles" styleClass="title"/>
+                <ScrollPane fitToWidth="true" prefHeight="220" styleClass="cards-scroll">
+                    <content>
+                        <VBox fx:id="tableOffres" spacing="10" styleClass="cards-container"/>
+                    </content>
+                </ScrollPane>
+
+                <HBox spacing="10" styleClass="action-row">
+                    <Label fx:id="lblCvPath" text="Aucun CV selectionne" styleClass="entity-card-meta"/>
+                </HBox>
+
+                <Label text="Suivi de mes candidatures" styleClass="title"/>
+                <ScrollPane fitToWidth="true" prefHeight="220" styleClass="cards-scroll">
+                    <content>
+                        <VBox fx:id="tableCandidatures" spacing="10" styleClass="cards-container"/>
+                    </content>
+                </ScrollPane>
+            </VBox>
+        </VBox>
+    </center>
+
+</BorderPane>

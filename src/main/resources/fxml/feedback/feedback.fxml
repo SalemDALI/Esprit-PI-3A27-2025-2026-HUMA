@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.collections.FXCollections?>
+
+<BorderPane fx:id="rootPane" styleClass="mock-root" stylesheets="@dash.css"
+            xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.feedback.FeedbackController">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <!-- ================= CENTER ================= -->
+    <center>
+        <ScrollPane fx:id="pageScroll" fitToWidth="true" vbarPolicy="AS_NEEDED">
+            <content>
+                <VBox spacing="12" styleClass="mock-content">
+
+                    <!-- TOP BAR -->
+                    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="mock-topbar">
+                        <Label styleClass="mock-title" text="Admin - Gestion des Feedbacks"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <TextField fx:id="txtSearchFeedback" promptText="Recherche..." onAction="#refreshFeedbacks" styleClass="mock-search"/>
+                        <ComboBox fx:id="cbFilterStatut" promptText="Statut" onAction="#refreshFeedbacks" prefWidth="140"/>
+                        <Button onAction="#addFeedbackQuick" styleClass="mock-add-btn" text="+ Nouveau Feedback"/>
+                    </HBox>
+
+                    <!-- Message d'état -->
+                    <Label fx:id="lblPageMessage" styleClass="page-message" text=""/>
+
+                    <!-- Feedbacks list -->
+                    <ScrollPane fx:id="scrollFeedbacks" fitToWidth="true" prefHeight="600"
+                                styleClass="panel-scroll" VBox.vgrow="ALWAYS">
+                        <content>
+                            <FlowPane fx:id="flowFeedbacks" hgap="10" vgap="10" prefWrapLength="720"/>
+                        </content>
+                    </ScrollPane>
+
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
