@@ -1,4 +1,4 @@
-package tn.esprit;
+package controller;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -6,17 +6,15 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.control.Separator;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import model.Formation;
 import model.Participant;
-import services.CrudFormation;
-import services.CrudParticipant;
-import services.QRCodeService;
-import services.MapService;
-import services.WeatherService;
+import services.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import java.sql.Date;
@@ -135,19 +133,19 @@ public class EspaceParticipantsController {
 
     // ======================== CARTE CATALOGUE ========================
     private VBox creerCardCatalogue(Formation f) {
-        VBox card = new VBox(8);
+        VBox card = new VBox(10);
         card.getStyleClass().add("stat-box");
-        card.setPrefWidth(280);
-        card.setMinHeight(200);
+        card.setPrefWidth(310);
+        card.setMinHeight(230);
         card.setAlignment(Pos.TOP_LEFT);
-        card.setPadding(new Insets(15));
+        card.setPadding(new Insets(18));
 
         // Titre
         Label titre = new Label(f.getSujet());
-        titre.setFont(Font.font("System", FontWeight.BOLD, 15));
+        titre.setFont(Font.font("Segoe UI", FontWeight.BOLD, 15));
         titre.setStyle("-fx-text-fill: #2c3e50;");
         titre.setWrapText(true);
-        titre.setMaxWidth(250);
+        titre.setMaxWidth(270);
 
         // Badge type
         Label badge = new Label(f.getType());
@@ -159,61 +157,83 @@ public class EspaceParticipantsController {
             badge.getStyleClass().add("pending");
         }
 
-        // Détails
-        VBox details = new VBox(3);
+        // Details
+        VBox details = new VBox(5);
         details.getChildren().addAll(
-                infoLabel("  " + f.getFormateur()),
-                infoLabel("  " + f.getDateDebut()),
-                infoLabel("  " + f.getDuree() + " jours"),
-                infoLabel("  " + f.getLocalisation())
+                infoLabel("⬧  " + f.getFormateur()),
+                infoLabel("⬧  " + f.getDateDebut()),
+                infoLabel("⬧  " + f.getDuree() + " jours"),
+                infoLabel("⬧  " + f.getLocalisation())
         );
 
-        // ======================== BOUTONS ========================
-        // Bouton Choisir
-        Button btnChoisir = new Button("✔ Choisir");
-        btnChoisir.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;"
-                + " -fx-padding: 6px 12px; -fx-background-radius: 5px;"
-                + " -fx-cursor: hand; -fx-font-size: 12px; -fx-font-weight: bold;");
-        btnChoisir.setOnAction(e -> selectionnerFormation(f));
+        // Separateur
+        Separator sep = new Separator();
 
-        // ✅ Bouton QR Code
-        Button btnQR = new Button("📱 QR Code");
-        btnQR.setStyle("-fx-background-color: #9b59b6; -fx-text-fill: white;"
-                + " -fx-padding: 6px 12px; -fx-background-radius: 5px;"
-                + " -fx-cursor: hand; -fx-font-size: 12px;");
+        // ===== RANGEE 1 : Choisir + QR Code =====
+        Button btnChoisir = creerBouton("Choisir",        "#3498db");
+        Button btnQR      = creerBouton("QR Code",        "#9b59b6");
+
+        btnChoisir.setOnAction(e -> selectionnerFormation(f));
         btnQR.setOnAction(e -> {
-            // Sélectionne d'abord la formation
             selectionnerFormation(f);
-            // Génère et affiche le QR Code
             QRCodeService.genererEtAfficherQRCode(f);
         });
 
-        // ✅ Bouton Localisation
-        Button btnMap = new Button("🗺️ Localisation");
-        btnMap.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white;"
-                + " -fx-padding: 6px 12px; -fx-background-radius: 5px;"
-                + " -fx-cursor: hand; -fx-font-size: 12px;");
-        btnMap.setOnAction(e -> {
-            // Affiche la carte Google Maps
-            MapService.afficherCarte(f.getLocalisation());
-        });
+        HBox.setHgrow(btnChoisir, Priority.ALWAYS);
+        HBox.setHgrow(btnQR,      Priority.ALWAYS);
+        btnChoisir.setMaxWidth(Double.MAX_VALUE);
+        btnQR.setMaxWidth(Double.MAX_VALUE);
+        HBox rangee1 = new HBox(10, btnChoisir, btnQR);
 
-        // Bouton Meteo
-        Button btnMeteo = new Button("\uD83C\uDF24\uFE0F Météo");
-        btnMeteo.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;"
-                + " -fx-padding: 6px 12px; -fx-background-radius: 5px;"
-                + " -fx-cursor: hand; -fx-font-size: 12px;");
+        // ===== RANGEE 2 : Carte + Meteo + Description IA =====
+        Button btnMap   = creerBouton("Carte",         "#27ae60");
+        Button btnMeteo = creerBouton("Meteo",         "#e67e22");
+        Button btnIA    = creerBouton("Description IA","#303030");
+
+        btnMap.setOnAction(e -> MapService.afficherCarte(f.getLocalisation()));
         btnMeteo.setOnAction(e -> WeatherService.afficherMeteo(f.getLocalisation()));
+        btnIA.setOnAction(e -> GeminiService.genererDescription(
+                f.getSujet(),
+                f.getType() != null ? f.getType() : "Présentiel",
+                f.getFormateur(),
+                f.getDuree(),
+                f.getLocalisation(),
+                description -> {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Description IA");
+                    alert.setHeaderText("Générée par Gemini IA");
+                    alert.setContentText(description);
+                    alert.getDialogPane().setMinWidth(520);
+                    alert.showAndWait();
+                }
+        ));
 
-        // HBox pour aligner les boutons horizontalement
-        HBox boutons = new HBox(6, btnChoisir, btnQR, btnMap, btnMeteo);
-        boutons.setAlignment(Pos.CENTER_LEFT);
-        boutons.setPadding(new Insets(8, 0, 0, 0));
+        HBox.setHgrow(btnMap,   Priority.ALWAYS);
+        HBox.setHgrow(btnMeteo, Priority.ALWAYS);
+        HBox.setHgrow(btnIA,    Priority.ALWAYS);
+        btnMap.setMaxWidth(Double.MAX_VALUE);
+        btnMeteo.setMaxWidth(Double.MAX_VALUE);
+        btnIA.setMaxWidth(Double.MAX_VALUE);
+        HBox rangee2 = new HBox(8, btnMap, btnMeteo, btnIA);
 
-        card.getChildren().addAll(titre, badge, details, boutons);
+        card.getChildren().addAll(titre, badge, details, sep, rangee1, rangee2);
         return card;
     }
 
+    // Helper : bouton uniforme
+    private Button creerBouton(String texte, String couleur) {
+        Button btn = new Button(texte);
+        btn.setStyle(
+                "-fx-background-color: " + couleur + ";"
+                        + "-fx-text-fill: white;"
+                        + "-fx-padding: 9px 14px;"
+                        + "-fx-background-radius: 7px;"
+                        + "-fx-cursor: hand;"
+                        + "-fx-font-size: 12px;"
+                        + "-fx-font-weight: bold;"
+        );
+        return btn;
+    }
     private Label infoLabel(String texte) {
         Label l = new Label(texte);
         l.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 12px;");

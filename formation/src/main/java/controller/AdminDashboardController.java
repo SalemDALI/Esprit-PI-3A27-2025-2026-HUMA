@@ -1,4 +1,4 @@
-package tn.esprit;
+package controller;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;

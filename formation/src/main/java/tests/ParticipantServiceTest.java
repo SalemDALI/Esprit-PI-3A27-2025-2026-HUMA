@@ -15,7 +15,7 @@ public class ParticipantServiceTest {
     static CrudParticipant service;
     static int idParticipantTest = -1;
 
-    static final int EMPLOYE_ID_TEST = 1;
+    static final int EMPLOYE_ID_TEST = 4; // employe "Yassine" dans users
     static final int FORMATION_ID_TEST = 1;
 
     @BeforeAll
