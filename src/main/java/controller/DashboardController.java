@@ -1,5 +1,8 @@
 package controller;
-
+import javafx.scene.layout.Region;
+import models.Reputation;
+import models.PublicationComment;
+import services.ReputationService;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
@@ -247,6 +250,10 @@ public class DashboardController {
     private TextArea txtPublicationContenu;
     @FXML
     private VBox publicationList;
+    @FXML private Label lblCountNouveau;
+    @FXML private Label lblCountActif;
+    @FXML private Label lblCountEngage;
+    @FXML private VBox top3Box;
 
     private final ServiceUser serviceUser = new ServiceUser();
     private final ServiceCandidat serviceCandidat = new ServiceCandidat();
@@ -288,6 +295,7 @@ public class DashboardController {
         if (tableUsers != null) {
             initUserSection();
         }
+
         if (tableCandidats != null) {
             initCandidatSection();
         }
@@ -314,6 +322,9 @@ public class DashboardController {
         }
         if (tableParticipations != null) {
             initParticipationSection();
+        }
+        if (top3Box != null) {
+            renderReputationDashboard();
         }
         setPageMessage("", false);
 
@@ -385,6 +396,9 @@ public class DashboardController {
 
     @FXML
     public void refreshData() {
+        if (top3Box != null) {
+            renderReputationDashboard();
+        }
         if (tableUsers != null) {
             renderUserCards();
         }
@@ -2346,6 +2360,112 @@ public class DashboardController {
                     getClass().getResource("/fxml/chatbot.fxml"))));
             stage.show();
         } catch (IOException e) { e.printStackTrace(); }
+    }
+    private void renderReputationDashboard() {
+        ReputationService reputationService = new ReputationService();
+        List<User> employes = serviceUser.getAll().stream()
+                .filter(u -> "EMPLOYE".equalsIgnoreCase(u.getRole()))
+                .collect(Collectors.toList());
+
+        // ── Comptage par badge ──
+        int countNouveau = 0, countActif = 0, countEngage = 0;
+
+        for (User emp : employes) {
+            Reputation rep = reputationService.getByUserId(emp.getId());
+            String badge = rep != null ? rep.getBadge() : "🎗️ NOUVEAU";
+            if ("🏅 ENGAGE".equals(badge))     countEngage++;
+            else if ("🎖️ ACTIF".equals(badge)) countActif++;
+            else                               countNouveau++;
+        }
+
+        if (lblCountNouveau != null) lblCountNouveau.setText(String.valueOf(countNouveau));
+        if (lblCountActif   != null) lblCountActif.setText(String.valueOf(countActif));
+        if (lblCountEngage  != null) lblCountEngage.setText(String.valueOf(countEngage));
+
+        // ── Top 3 ──
+        if (top3Box == null) return;
+        top3Box.getChildren().clear();
+
+        List<Reputation> top3 = reputationService.getTop10().stream()
+                .limit(3)
+                .collect(Collectors.toList());
+
+        String[] medals = {"🥇", "🥈", "🥉"};
+        int rank = 0;
+
+        for (Reputation rep : top3) {
+            User emp = employes.stream()
+                    .filter(u -> u.getId() == rep.getUserId())
+                    .findFirst().orElse(null);
+            if (emp == null) continue;
+
+            String medal = rank < medals.length ? medals[rank] : "🏅";
+
+            HBox row = new HBox(12);
+            row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+            row.setStyle(
+                    "-fx-background-color:white;" +
+                            "-fx-border-color:#e5e7eb;-fx-border-width:1;" +
+                            "-fx-border-radius:10;-fx-background-radius:10;" +
+                            "-fx-padding:10 16;" +
+                            "-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.05),6,0,0,2);"
+            );
+
+            Label medalLbl = new Label(medal);
+            medalLbl.setStyle("-fx-font-size:20px;");
+
+            Label nomLbl = new Label(emp.getNom() + " " + emp.getPrenom());
+            nomLbl.setStyle("-fx-font-size:13px;-fx-font-weight:bold;-fx-text-fill:#1f2937;");
+
+            Label badgeLbl = new Label(getBadgeLabel(rep.getBadge()));
+            badgeLbl.setStyle(getBadgeStyle(rep.getBadge()));
+
+            Region spacer = new Region();
+            HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+
+            Label scoreLbl = new Label(rep.getTotalScore() + " pts");
+            scoreLbl.setStyle(
+                    "-fx-background-color:#f0fdf9;-fx-text-fill:#065f46;" +
+                            "-fx-font-size:12px;-fx-font-weight:bold;" +
+                            "-fx-padding:4 10;-fx-border-radius:20;-fx-background-radius:20;"
+            );
+
+            row.getChildren().addAll(medalLbl, nomLbl, badgeLbl, spacer, scoreLbl);
+            top3Box.getChildren().add(row);
+            rank++;
+        }
+
+        if (top3.isEmpty()) {
+            Label empty = new Label("Aucun employé avec des points pour le moment.");
+            empty.setStyle("-fx-font-size:12px;-fx-text-fill:#a0aec0;-fx-padding:8 0;");
+            top3Box.getChildren().add(empty);
+        }
+    }
+    // ── Ajouter ces 2 méthodes dans DashboardController.java ──
+
+    private String getBadgeLabel(String badge) {
+        return switch (badge) {
+            case "🏅 ENGAGE" -> "🏅 Engagé";
+            case "🎖️ ACTIF"  -> "🎖️ Actif";
+            default           -> "🎗️ Nouveau";
+        };
+    }
+
+    private String getBadgeStyle(String badge) {
+        String color = switch (badge) {
+            case "🏅 ENGAGE" ->
+                    "-fx-background-color:linear-gradient(to right,#fbbf24,#f59e0b);" +
+                            "-fx-text-fill:white;-fx-border-color:#d97706;";
+            case "🎖️ ACTIF" ->
+                    "-fx-background-color:linear-gradient(to right,#60a5fa,#3b82f6);" +
+                            "-fx-text-fill:white;-fx-border-color:#2563eb;";
+            default ->
+                    "-fx-background-color:linear-gradient(to right,#d1d5db,#9ca3af);" +
+                            "-fx-text-fill:white;-fx-border-color:#6b7280;";
+        };
+        return color +
+                "-fx-font-size:10px;-fx-font-weight:bold;-fx-padding:3 10;" +
+                "-fx-border-width:1;-fx-border-radius:20;-fx-background-radius:20;";
     }
 
 }

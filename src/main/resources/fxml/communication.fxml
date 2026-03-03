@@ -160,7 +160,67 @@
                     </VBox>
                 </content>
             </ScrollPane>
+            <!-- ── TABLEAU DE BORD RÉPUTATION ── -->
+            <VBox styleClass="content" spacing="14">
 
+                <!-- Titre section -->
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label style="-fx-background-color:#20c997;
+                      -fx-min-width:4; -fx-min-height:24;
+                      -fx-background-radius:2;"/>
+                    <Label text="🏅 Tableau de Bord Réputation"
+                           style="-fx-font-size:15px; -fx-font-weight:bold;
+                      -fx-text-fill:#111827;"/>
+                </HBox>
+
+                <!-- Statistiques badges -->
+                <HBox spacing="12" alignment="CENTER_LEFT">
+                    <VBox fx:id="statNouveauBox" alignment="CENTER" spacing="4"
+                          style="-fx-background-color:linear-gradient(to bottom,#f3f4f6,#e5e7eb);
+                     -fx-border-color:#d1d5db;-fx-border-width:1;
+                     -fx-border-radius:12;-fx-background-radius:12;
+                     -fx-padding:14 20;-fx-min-width:110;">
+                        <Label text="🎗️ Nouveau"/>
+                        <Label fx:id="lblCountNouveau" text="0"
+                               style="-fx-font-size:26px;-fx-font-weight:bold;-fx-text-fill:#374151;"/>
+                        <Label text="employés"
+                               style="-fx-font-size:10px;-fx-text-fill:#9ca3af;"/>
+                    </VBox>
+
+                    <VBox fx:id="statActifBox" alignment="CENTER" spacing="4"
+                          style="-fx-background-color:linear-gradient(to bottom,#dbeafe,#bfdbfe);
+                     -fx-border-color:#3b82f6;-fx-border-width:1;
+                     -fx-border-radius:12;-fx-background-radius:12;
+                     -fx-padding:14 20;-fx-min-width:110;">
+                        <Label text="🎖️ Actif"/>
+                        <Label fx:id="lblCountActif" text="0"
+                               style="-fx-font-size:26px;-fx-font-weight:bold;-fx-text-fill:#1d4ed8;"/>
+                        <Label text="employés"
+                               style="-fx-font-size:10px;-fx-text-fill:#9ca3af;"/>
+                    </VBox>
+
+                    <VBox fx:id="statEngageBox" alignment="CENTER" spacing="4"
+                          style="-fx-background-color:linear-gradient(to bottom,#fef3c7,#fde68a);
+                     -fx-border-color:#f59e0b;-fx-border-width:1;
+                     -fx-border-radius:12;-fx-background-radius:12;
+                     -fx-padding:14 20;-fx-min-width:110;">
+                        <Label text="🏅 Engagé"/>
+                        <Label fx:id="lblCountEngage" text="0"
+                               style="-fx-font-size:26px;-fx-font-weight:bold;-fx-text-fill:#92400e;"/>
+                        <Label text="employés"
+                               style="-fx-font-size:10px;-fx-text-fill:#9ca3af;"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Top 3 -->
+                <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding:8 0 0 0;">
+                    <Label text="🥇 Top 3 Meilleurs Employés"
+                           style="-fx-font-size:13px;-fx-font-weight:bold;-fx-text-fill:#1f2937;"/>
+                </HBox>
+
+                <VBox fx:id="top3Box" spacing="8"/>
+
+            </VBox>
         </VBox>
     </center>
 

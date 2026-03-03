@@ -99,12 +99,10 @@ public class PublicationService {
             return false;
         }
     }
-
+    // Après addComment() → mettre à jour la réputation de l'auteur de la publication
     public boolean addComment(int publicationId, String auteur, String contenu) {
         User currentUser = Session.getUser();
-        if (currentUser == null) {
-            return false;
-        }
+        if (currentUser == null) return false;
 
         String sql = "INSERT INTO commentaire (contenu, date_commentaire, publication_id, user_id) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
@@ -112,12 +110,49 @@ public class PublicationService {
             ps.setDate(2, Date.valueOf(LocalDate.now()));
             ps.setInt(3, publicationId);
             ps.setInt(4, currentUser.getId());
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+            boolean ok = ps.executeUpdate() > 0;
+
+            if (ok) {
+                // ✅ Mettre à jour réputation des 2 users
+                ReputationService rs = new ReputationService();
+                rs.calculerEtSauvegarder(currentUser.getId()); // celui qui commente
+                rs.calculerEtSauvegarder(getAuteurIdByPublication(publicationId)); // auteur publication
+            }
+            return ok;
+        } catch (SQLException e) { e.printStackTrace(); return false; }
     }
+
+    // Après addReaction() → mettre à jour la réputation
+    public boolean addReaction(int publicationId, int userId, String type) {
+        String sql = "INSERT INTO reaction_publication (publication_id, user_id, type) " +
+                "VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE type = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, publicationId);
+            ps.setInt(2, userId);
+            ps.setString(3, type);
+            ps.setString(4, type);
+            boolean ok = ps.executeUpdate() > 0;
+
+            if (ok) {
+                // ✅ Mettre à jour réputation de l'auteur de la publication
+                ReputationService rs = new ReputationService();
+                rs.calculerEtSauvegarder(getAuteurIdByPublication(publicationId));
+            }
+            return ok;
+        } catch (SQLException e) { e.printStackTrace(); return false; }
+    }
+
+    // Méthode utilitaire pour récupérer l'auteur d'une publication
+    private int getAuteurIdByPublication(int publicationId) {
+        String sql = "SELECT user_id FROM publication WHERE id = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, publicationId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt("user_id");
+        } catch (SQLException e) { e.printStackTrace(); }
+        return -1;
+    }
+
 
     public boolean deleteById(int publicationId) {
         String deleteCommentsSql = "DELETE FROM commentaire WHERE publication_id = ?";
@@ -255,5 +290,49 @@ public class PublicationService {
             e.printStackTrace();
         }
         return -1;
+    }
+    // ══ AJOUTER CES 3 MÉTHODES dans PublicationService.java ══
+
+
+
+    // Supprimer une réaction (unlike / undislike)
+    public boolean removeReaction(int publicationId, int userId) {
+        String sql = "DELETE FROM reaction_publication WHERE publication_id=? AND user_id=?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, publicationId);
+            ps.setInt(2, userId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) { e.printStackTrace(); return false; }
+    }
+
+    // Récupérer le nombre de likes, dislikes et la réaction de l'utilisateur
+    public Map<String, Object> getReactions(int publicationId, int userId) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("likes", 0);
+        result.put("dislikes", 0);
+        result.put("userReaction", null);
+
+        String countSql = "SELECT " +
+                "SUM(CASE WHEN type='LIKE' THEN 1 ELSE 0 END) as likes, " +
+                "SUM(CASE WHEN type='DISLIKE' THEN 1 ELSE 0 END) as dislikes " +
+                "FROM reaction_publication WHERE publication_id=?";
+        try (PreparedStatement ps = cnx.prepareStatement(countSql)) {
+            ps.setInt(1, publicationId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                result.put("likes", rs.getInt("likes"));
+                result.put("dislikes", rs.getInt("dislikes"));
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+
+        String userSql = "SELECT type FROM reaction_publication WHERE publication_id=? AND user_id=?";
+        try (PreparedStatement ps = cnx.prepareStatement(userSql)) {
+            ps.setInt(1, publicationId);
+            ps.setInt(2, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) result.put("userReaction", rs.getString("type"));
+        } catch (SQLException e) { e.printStackTrace(); }
+
+        return result;
     }
 }
