@@ -18,7 +18,8 @@
 
                     <!-- TOP BAR -->
                     <HBox alignment="CENTER_LEFT" spacing="12" styleClass="mock-topbar">
-                        <Label styleClass="mock-title" text="Admin - Gestion des Feedbacks"/>
+                        <Button text="← Retour" onAction="#goBack" styleClass="mock-add-btn"/>
+                        <Label fx:id="lblTitleFeedback" styleClass="mock-title" text="Feedbacks"/>
                         <Region HBox.hgrow="ALWAYS"/>
                         <TextField fx:id="txtSearchFeedback" promptText="Recherche..." onAction="#refreshFeedbacks" styleClass="mock-search"/>
                         <ComboBox fx:id="cbFilterStatut" promptText="Statut" onAction="#refreshFeedbacks" prefWidth="140"/>

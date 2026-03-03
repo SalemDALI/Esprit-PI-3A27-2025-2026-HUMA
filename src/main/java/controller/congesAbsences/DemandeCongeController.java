@@ -192,6 +192,17 @@ public class DemandeCongeController {
     }
 
     @FXML
+    public void openFeedback(ActionEvent event) {
+        try {
+            Stage stage = (Stage) dateDebut.getScene().getWindow();
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/feedback/feedback.fxml"))));
+            stage.show();
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.ERROR, "Erreur ouverture feedback: " + e.getMessage()).show();
+        }
+    }
+
+    @FXML
     public void openPublications(ActionEvent event) {
         try {
             Stage stage = (Stage) dateDebut.getScene().getWindow();

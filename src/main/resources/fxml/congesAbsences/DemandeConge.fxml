@@ -31,6 +31,7 @@
             </HBox>
 
             <Button text="Mes Congés" styleClass="nav-button nav-active" />
+            <Button text="Feedback" styleClass="nav-button" onAction="#openFeedback"/>
             <Button text="Publications" styleClass="nav-button" onAction="#openPublications" />
             <Region VBox.vgrow="ALWAYS"/>
             <Button text="Logout" styleClass="nav-button" onAction="#logout"/>
