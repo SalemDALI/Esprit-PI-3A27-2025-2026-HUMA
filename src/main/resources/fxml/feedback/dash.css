@@ -4,7 +4,7 @@
 }
 
 .mock-sidebar {
-    -fx-background-color: linear-gradient(to bottom, #303030, #3a3a3a);
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #303030, #3a3a3a);
     -fx-background-radius: 14;
     -fx-padding: 12 8;
     -fx-spacing: 10;
@@ -82,7 +82,7 @@
 }
 
 .kpi-mini-card {
-    -fx-background-color: linear-gradient(to bottom right, #F5F5F5, #e6f7ec);
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #F5F5F5, #e6f7ec);
     -fx-background-radius: 12;
     -fx-padding: 10;
     -fx-pref-width: 220;
@@ -126,7 +126,7 @@
 }
 
 .mock-add-btn {
-    -fx-background-color: linear-gradient(to right, #50C878, #3aad62);
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #50C878, #3aad62);
     -fx-text-fill: white;
     -fx-background-radius: 10;
     -fx-font-weight: 700;
@@ -261,7 +261,7 @@
     -fx-min-width: 40;
     -fx-min-height: 40;
     -fx-background-radius: 20;
-    -fx-background-color: linear-gradient(to bottom right, #c8d5ea, #aebfdc);
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #c8d5ea, #aebfdc);
     -fx-text-fill: #24304d;
     -fx-font-weight: 800;
     -fx-font-size: 12px;
@@ -419,7 +419,7 @@
 }
 
 .feedback-hero {
-    -fx-background-color: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #0f172a, #1e293b, #334155);
     -fx-background-radius: 16;
     -fx-padding: 20 24;
     -fx-effect: dropshadow(three-pass-box, rgba(15, 23, 42, 0.25), 20, 0, 0, 4);
@@ -453,7 +453,7 @@
 }
 
 .feedback-btn-primary {
-    -fx-background-color: linear-gradient(to right, #22c55e, #16a34a);
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #22c55e, #16a34a);
     -fx-text-fill: white;
     -fx-background-radius: 10;
     -fx-font-weight: 700;
@@ -462,7 +462,7 @@
 }
 
 .feedback-btn-primary:hover {
-    -fx-background-color: linear-gradient(to right, #16a34a, #15803d);
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #16a34a, #15803d);
 }
 
 .feedback-btn-secondary {
@@ -502,7 +502,7 @@
 }
 
 .feedback-stat-card.stat-card-total {
-    -fx-background-color: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #22c55e, #16a34a);
     -fx-min-width: 160;
 }
 
