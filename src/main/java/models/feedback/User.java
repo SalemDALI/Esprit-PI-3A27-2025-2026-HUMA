@@ -9,6 +9,8 @@ public class User {
     private String mdp;
     private String role;
     private Integer managerId;
+    private byte[] faceImage; // BLOB en base
+    private boolean actif = true;
 
     public User() {}
 
@@ -51,4 +53,10 @@ public class User {
 
     public Integer getManagerId() { return managerId; }
     public void setManagerId(Integer managerId) { this.managerId = managerId; }
+
+    public byte[] getFaceImage() { return faceImage; }
+    public void setFaceImage(byte[] faceImage) { this.faceImage = faceImage; }
+
+    public boolean isActif() { return actif; }
+    public void setActif(boolean actif) { this.actif = actif; }
 }

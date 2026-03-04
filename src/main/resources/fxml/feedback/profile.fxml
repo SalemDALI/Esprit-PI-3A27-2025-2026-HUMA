@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.feedback.ProfileController" spacing="16" style="-fx-padding: 24;"
+      stylesheets="@dash.css">
+
+    <Label text="Mon profil" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+    <Label text="Modifiez vos informations et mot de passe" style="-fx-text-fill: #606060;"/>
+
+    <Label text="Nom"/>
+    <TextField fx:id="tfNom" promptText="Nom" maxWidth="320"/>
+    <Label text="Prénom"/>
+    <TextField fx:id="tfPrenom" promptText="Prénom" maxWidth="320"/>
+    <Label text="Email"/>
+    <TextField fx:id="tfEmail" promptText="Email" maxWidth="320"/>
+
+    <Button text="Enregistrer les modifications" onAction="#saveProfile" styleClass="mock-add-btn"/>
+
+    <Separator/>
+    <Label text="Changer le mot de passe" style="-fx-font-weight: bold;"/>
+    <PasswordField fx:id="pfCurrent" promptText="Mot de passe actuel" maxWidth="320"/>
+    <PasswordField fx:id="pfNew" promptText="Nouveau mot de passe" maxWidth="320"/>
+    <PasswordField fx:id="pfConfirm" promptText="Confirmer le nouveau mot de passe" maxWidth="320"/>
+    <Button text="Changer le mot de passe" onAction="#changePassword" styleClass="mock-add-btn"/>
+
+    <Label fx:id="lblMessage" wrapText="true" maxWidth="320" style="-fx-text-fill: #505050;"/>
+
+    <Button text="← Retour" onAction="#goBack" styleClass="mock-add-btn"/>
+</VBox>

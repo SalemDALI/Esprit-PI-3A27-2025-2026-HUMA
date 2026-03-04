@@ -314,3 +314,300 @@
     -fx-font-weight: 800;
     -fx-text-fill: #263456;
 }
+
+/* ============ Feedback cards ============ */
+.feedback-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 16;
+    -fx-padding: 16;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 16;
+    -fx-effect: dropshadow(three-pass-box, rgba(15,23,42,0.08), 16, 0, 0, 3);
+    -fx-pref-width: 360;
+}
+
+.feedback-card-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #0f172a;
+}
+
+.feedback-card-meta {
+    -fx-font-size: 11px;
+    -fx-text-fill: #64748b;
+}
+
+.feedback-card-badges {
+    -fx-spacing: 8;
+}
+
+.feedback-card-badge {
+    -fx-font-size: 10px;
+    -fx-font-weight: 700;
+    -fx-padding: 4 10;
+    -fx-background-radius: 20;
+}
+
+.feedback-badge-category {
+    -fx-background-color: #e0f2fe;
+    -fx-text-fill: #0369a1;
+}
+
+.feedback-badge-status-nouveau {
+    -fx-background-color: #fef3c7;
+    -fx-text-fill: #b45309;
+}
+
+.feedback-badge-status-encours {
+    -fx-background-color: #dbeafe;
+    -fx-text-fill: #1d4ed8;
+}
+
+.feedback-badge-status-resolu {
+    -fx-background-color: #d1fae5;
+    -fx-text-fill: #047857;
+}
+
+.feedback-card-body {
+    -fx-font-size: 13px;
+    -fx-text-fill: #334155;
+}
+
+.feedback-card-actions .button {
+    -fx-background-color: #f1f5f9;
+    -fx-text-fill: #334155;
+    -fx-background-radius: 10;
+    -fx-font-weight: 700;
+    -fx-font-size: 11px;
+    -fx-padding: 6 12;
+}
+
+.feedback-card-actions .button:hover {
+    -fx-background-color: #e2e8f0;
+}
+
+.feedback-comments-section {
+    -fx-padding: 12 0 0 0;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1 0 0 0;
+}
+
+.feedback-comment-line {
+    -fx-font-size: 11px;
+    -fx-text-fill: #505050;
+    -fx-padding: 4 0;
+}
+
+/* ============ Modern feedback page ============ */
+.feedback-root {
+    -fx-background-color: #f8fafc;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+.feedback-page-scroll {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+}
+
+.feedback-page-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+.feedback-content {
+    -fx-spacing: 0;
+    -fx-padding: 20 24 24 24;
+}
+
+.feedback-hero {
+    -fx-background-color: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    -fx-background-radius: 16;
+    -fx-padding: 20 24;
+    -fx-effect: dropshadow(three-pass-box, rgba(15, 23, 42, 0.25), 20, 0, 0, 4);
+    -fx-min-height: 100;
+}
+
+.feedback-topbar {
+    -fx-padding: 0 0 12 0;
+}
+
+.feedback-btn-back {
+    -fx-background-color: rgba(255,255,255,0.12);
+    -fx-text-fill: #e2e8f0;
+    -fx-background-radius: 10;
+    -fx-font-weight: 700;
+    -fx-font-size: 12px;
+    -fx-padding: 8 14;
+}
+
+.feedback-btn-back:hover {
+    -fx-background-color: rgba(255,255,255,0.2);
+}
+
+.feedback-search {
+    -fx-pref-width: 280;
+    -fx-background-color: rgba(255,255,255,0.1);
+    -fx-background-radius: 10;
+    -fx-text-fill: #f1f5f9;
+    -fx-font-size: 13px;
+    -fx-prompt-text-fill: #94a3b8;
+}
+
+.feedback-btn-primary {
+    -fx-background-color: linear-gradient(to right, #22c55e, #16a34a);
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-font-weight: 700;
+    -fx-font-size: 12px;
+    -fx-padding: 8 16;
+}
+
+.feedback-btn-primary:hover {
+    -fx-background-color: linear-gradient(to right, #16a34a, #15803d);
+}
+
+.feedback-btn-secondary {
+    -fx-background-color: rgba(255,255,255,0.15);
+    -fx-text-fill: #e2e8f0;
+    -fx-background-radius: 10;
+    -fx-font-weight: 700;
+    -fx-font-size: 12px;
+    -fx-padding: 8 14;
+}
+
+.feedback-btn-secondary:hover {
+    -fx-background-color: rgba(255,255,255,0.25);
+}
+
+.feedback-hero-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #f8fafc;
+}
+
+.feedback-hero-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #94a3b8;
+}
+
+.feedback-stats-strip {
+    -fx-padding: 20 0;
+}
+
+.feedback-stat-card {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+    -fx-padding: 16 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.06), 12, 0, 0, 2);
+    -fx-min-width: 140;
+}
+
+.feedback-stat-card.stat-card-total {
+    -fx-background-color: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    -fx-min-width: 160;
+}
+
+.feedback-stat-card.stat-card-total .feedback-stat-label {
+    -fx-text-fill: rgba(255,255,255,0.9);
+}
+
+.feedback-stat-card.stat-card-total .feedback-stat-value {
+    -fx-text-fill: white;
+}
+
+.feedback-stat-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #64748b;
+    -fx-font-weight: 700;
+}
+
+.feedback-stat-value {
+    -fx-font-size: 28px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #0f172a;
+}
+
+.feedback-stat-card-mini {
+    -fx-min-width: 100;
+    -fx-padding: 12 16;
+}
+
+.feedback-stat-value-mini {
+    -fx-font-size: 20px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #334155;
+}
+
+.feedback-analytics-panel {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-padding: 20 24;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.06), 16, 0, 0, 2);
+}
+
+.feedback-section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1e293b;
+}
+
+.feedback-chart-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #64748b;
+    -fx-padding: 8 0 4 0;
+}
+
+.feedback-chart-container {
+    -fx-padding: 8 0 0 0;
+}
+
+.feedback-analytics-header {
+    -fx-font-size: 11px;
+    -fx-text-fill: #64748b;
+    -fx-font-weight: 700;
+    -fx-padding: 0 12 0 0;
+}
+
+.feedback-analytics-card {
+    -fx-background-color: #f8fafc;
+    -fx-background-radius: 12;
+    -fx-padding: 12 16;
+    -fx-min-width: 90;
+}
+
+.feedback-analytics-card-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #475569;
+}
+
+.feedback-analytics-card-value {
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #0f172a;
+}
+
+.feedback-bar-chart {
+    -fx-background-color: transparent;
+}
+
+.feedback-page-message {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 13px;
+    -fx-padding: 4 0 8 0;
+}
+
+.feedback-list-wrap {
+    -fx-padding: 8 0 0 0;
+}
+
+.feedback-list-title {
+    -fx-padding: 0 0 8 0;
+}
+
+.feedback-list-scroll {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+}
+
+.feedback-list-scroll .viewport {
+    -fx-background-color: transparent;
+}

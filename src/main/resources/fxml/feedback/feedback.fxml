@@ -4,38 +4,53 @@
 <?import javafx.scene.control.*?>
 <?import javafx.collections.FXCollections?>
 
-<BorderPane fx:id="rootPane" styleClass="mock-root" stylesheets="@dash.css"
+<BorderPane fx:id="rootPane" styleClass="feedback-root" stylesheets="@dash.css"
             xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controller.feedback.FeedbackController">
 
-    <!-- ================= SIDEBAR ================= -->
-
-    <!-- ================= CENTER ================= -->
     <center>
-        <ScrollPane fx:id="pageScroll" fitToWidth="true" vbarPolicy="AS_NEEDED">
+        <ScrollPane fx:id="pageScroll" fitToWidth="true" vbarPolicy="AS_NEEDED" styleClass="feedback-page-scroll">
             <content>
-                <VBox spacing="12" styleClass="mock-content">
+                <VBox spacing="0" styleClass="feedback-content">
 
-                    <!-- TOP BAR -->
-                    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="mock-topbar">
-                        <Button text="← Retour" onAction="#goBack" styleClass="mock-add-btn"/>
-                        <Label fx:id="lblTitleFeedback" styleClass="mock-title" text="Feedbacks"/>
-                        <Region HBox.hgrow="ALWAYS"/>
-                        <TextField fx:id="txtSearchFeedback" promptText="Recherche..." onAction="#refreshFeedbacks" styleClass="mock-search"/>
-                        <ComboBox fx:id="cbFilterStatut" promptText="Statut" onAction="#refreshFeedbacks" prefWidth="140"/>
-                        <Button onAction="#addFeedbackQuick" styleClass="mock-add-btn" text="+ Nouveau Feedback"/>
+                    <!-- Hero header -->
+                    <VBox styleClass="feedback-hero">
+                        <HBox alignment="CENTER_LEFT" spacing="12" styleClass="feedback-topbar">
+                            <Button text="← Retour" onAction="#goBack" styleClass="feedback-btn-back"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <TextField fx:id="txtSearchFeedback" promptText="Rechercher un feedback..." onAction="#refreshFeedbacks" styleClass="feedback-search"/>
+                            <Button onAction="#addFeedbackQuick" styleClass="feedback-btn-primary" text="+ Nouveau"/>
+                            <Button fx:id="btnExportCsv" onAction="#exportCsv" styleClass="feedback-btn-secondary" text="Exporter CSV"/>
+                        </HBox>
+                        <Label fx:id="lblTitleFeedback" styleClass="feedback-hero-title" text="Feedbacks"/>
+                        <Label fx:id="lblHeroSubtitle" styleClass="feedback-hero-subtitle" text="Consultez et gérez vos retours"/>
+                    </VBox>
+
+                    <!-- Statistics strip (always visible) -->
+                    <HBox fx:id="statsStrip" spacing="16" styleClass="feedback-stats-strip">
+                        <VBox fx:id="statTotalBox" styleClass="feedback-stat-card stat-card-total"/>
+                        <HBox fx:id="statsExtraHBox" spacing="16" HBox.hgrow="ALWAYS"/>
                     </HBox>
 
-                    <!-- Message d'état -->
-                    <Label fx:id="lblPageMessage" styleClass="page-message" text=""/>
+                    <!-- Admin analytics: categories, statuses, chart -->
+                    <VBox fx:id="analyticsBox" spacing="16" visible="false" managed="false" styleClass="feedback-analytics-panel">
+                        <Label text="Statistiques détaillées" styleClass="feedback-section-title"/>
+                        <HBox fx:id="analyticsCountsHBox" spacing="16"/>
+                        <Label text="Évolution sur 12 mois" styleClass="feedback-chart-label"/>
+                        <VBox fx:id="chartContainer" prefHeight="220" styleClass="feedback-chart-container"/>
+                    </VBox>
+
+                    <Label fx:id="lblPageMessage" styleClass="feedback-page-message" text=""/>
 
                     <!-- Feedbacks list -->
-                    <ScrollPane fx:id="scrollFeedbacks" fitToWidth="true" prefHeight="600"
-                                styleClass="panel-scroll" VBox.vgrow="ALWAYS">
-                        <content>
-                            <FlowPane fx:id="flowFeedbacks" hgap="10" vgap="10" prefWrapLength="720"/>
-                        </content>
-                    </ScrollPane>
+                    <VBox styleClass="feedback-list-wrap" VBox.vgrow="ALWAYS">
+                        <Label text="Liste des feedbacks" styleClass="feedback-section-title feedback-list-title"/>
+                        <ScrollPane fx:id="scrollFeedbacks" fitToWidth="true" prefHeight="600" styleClass="feedback-list-scroll">
+                            <content>
+                                <FlowPane fx:id="flowFeedbacks" hgap="16" vgap="16" prefWrapLength="800"/>
+                            </content>
+                        </ScrollPane>
+                    </VBox>
 
                 </VBox>
             </content>

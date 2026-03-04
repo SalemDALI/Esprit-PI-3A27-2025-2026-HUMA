@@ -44,6 +44,12 @@
             <Button onAction="#openFeedback" styleClass="nav-button" text="FeedBack">
                 <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/feedback.png" /></image></ImageView></graphic>
             </Button>
+            <Button onAction="#openMonProfil" styleClass="nav-button" text="Mon profil">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/parametre.png" /></image></ImageView></graphic>
+            </Button>
+            <Button onAction="#openUtilisateurs" styleClass="nav-button" text="Utilisateurs">
+                <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/recrutement.png" /></image></ImageView></graphic>
+            </Button>
             <Button onAction="#openParametres" styleClass="nav-button" text="Paramètres">
                 <graphic><ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true"><image><Image url="@../../images/parametre.png" /></image></ImageView></graphic>
             </Button>

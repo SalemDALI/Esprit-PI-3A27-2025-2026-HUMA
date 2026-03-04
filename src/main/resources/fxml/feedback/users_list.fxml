@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.feedback.UsersListController" style="-fx-padding: 20;"
+            stylesheets="@dash.css">
+    <center>
+        <VBox spacing="12">
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <Button text="← Retour" onAction="#goBack" styleClass="mock-add-btn"/>
+                <Label text="Utilisateurs" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+            </HBox>
+            <Label fx:id="lblMessage" style="-fx-text-fill: #505050;"/>
+            <ScrollPane fitToWidth="true" prefHeight="500">
+                <VBox fx:id="boxUsers" spacing="8"/>
+            </ScrollPane>
+        </VBox>
+    </center>
+</BorderPane>

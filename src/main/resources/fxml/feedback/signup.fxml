@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 
 <VBox spacing="12" alignment="CENTER"
       xmlns="http://javafx.com/javafx/21"
@@ -20,6 +18,12 @@
     <TextField fx:id="emailField" promptText="Email" maxWidth="320"/>
     <PasswordField fx:id="passwordField" promptText="Mot de passe" maxWidth="320"/>
     <PasswordField fx:id="confirmPasswordField" promptText="Confirmer mot de passe" maxWidth="320"/>
+
+    <Label text="Image pour Face ID (optionnel)" styleClass="subtitle"/>
+    <HBox spacing="6" alignment="CENTER">
+        <TextField fx:id="faceImageField" promptText="Chemin de l'image" maxWidth="260" editable="false"/>
+        <Button text="..." onAction="#chooseFaceImage"/>
+    </HBox>
 
     <Button text="Creer un compte" styleClass="btn btn-primary" onAction="#signup"/>
     <Button text="Retour Login" styleClass="btn" onAction="#backToLogin"/>

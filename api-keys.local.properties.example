@@ -1,0 +1,14 @@
+# Local API keys - DO NOT COMMIT. Copy to api-keys.local.properties and fill in.
+
+# Slack (new feedback → channel). From Slack app Incoming Webhooks
+slack.webhook.url=
+
+# Trello
+trello.api.key=
+trello.token=
+trello.list.id=
+
+# Twilio (SMS OTP on Forgot Password). From https://console.twilio.com
+twilio.sid=
+twilio.token=
+twilio.from=

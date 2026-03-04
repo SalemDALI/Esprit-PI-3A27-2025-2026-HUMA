@@ -587,6 +587,16 @@ public class RecrutementController {
     }
 
     @FXML
+    public void openMonProfil(ActionEvent event) {
+        navigateTo(event, "/fxml/feedback/profile.fxml");
+    }
+
+    @FXML
+    public void openUtilisateurs(ActionEvent event) {
+        navigateTo(event, "/fxml/feedback/users_list.fxml");
+    }
+
+    @FXML
     public void openParametres(ActionEvent event) {
         navigateTo(event, "/fxml/parametres.fxml");
     }

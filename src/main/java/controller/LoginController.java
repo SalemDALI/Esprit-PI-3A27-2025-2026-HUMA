@@ -15,6 +15,8 @@ import javafx.stage.Stage;
 import services.feedback.ServiceUser;
 import tests.Main;
 import utils.Session;
+import utils.FaceCameraUtil;
+import utils.FaceApiClient;
 
 import java.io.IOException;
 import java.text.Normalizer;
@@ -27,10 +29,34 @@ public class LoginController {
 
     ServiceUser serviceUser = new ServiceUser();
 
-    /** Handler for "Login with Face ID" button – not implemented; use email/password. */
     @FXML
     public void loginWithFace(ActionEvent event) {
-        messageLabel.setText("Connexion par Face ID non disponible. Utilisez email et mot de passe.");
+        try {
+            byte[] data = FaceCameraUtil.captureFaceImageOnce();
+            if (data == null || data.length == 0) {
+                messageLabel.setText("Impossible de capturer l'image depuis la caméra.");
+                return;
+            }
+            Integer matchedId = FaceApiClient.verifyFace(data);
+            if (matchedId == null) {
+                messageLabel.setText("Aucun compte ne correspond à ce visage.");
+                return;
+            }
+            User user = serviceUser.getById(matchedId);
+            if (user == null) {
+                messageLabel.setText("Utilisateur introuvable pour ce visage.");
+                return;
+            }
+            if (!user.isActif()) {
+                messageLabel.setText("Ce compte est désactivé.");
+                return;
+            }
+            Session.setUser(user);
+            openHomeFor(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            messageLabel.setText("Erreur Face ID: " + e.getMessage());
+        }
     }
 
     public void login(ActionEvent event) {
@@ -50,44 +76,7 @@ public class LoginController {
         }
 
         Session.setUser(user);
-
-        try {
-            Stage stage = (Stage) emailField.getScene().getWindow();
-            String role = normalizeRole(user.getRole());
-            FXMLLoader loader;
-
-            if (isAdminRole(role)) {
-                loader = new FXMLLoader(getClass().getResource("/fxml/recrutement/dashboard.fxml"));
-                stage.setScene(new Scene(loader.load()));
-            } else if (isCandidatRole(role)) {
-                loader = new FXMLLoader(getClass().getResource("/fxml/recrutement/candidat.fxml"));
-                stage.setScene(new Scene(loader.load()));
-            } else if (isEmployeeRole(role)) {
-                loader = new FXMLLoader(getClass().getResource("/fxml/congesAbsences/DemandeConge.fxml"));
-                Scene employeScene = new Scene(loader.load());
-                DemandeCongeController employeController = loader.getController();
-                employeController.setEmployeId(user.getId());
-                stage.setScene(employeScene);
-            } else if (isManagerRole(role)) {
-                loader = new FXMLLoader(getClass().getResource("/fxml/congesAbsences/ManagerAbsence.fxml"));
-                Scene managerScene = new Scene(loader.load());
-                ManagerAbsenceController managerController = loader.getController();
-                managerController.setManagerId(user.getId());
-                stage.setScene(managerScene);
-            } else {
-                // Fallback: tout role non reconnu ouvre l'espace employe
-                loader = new FXMLLoader(getClass().getResource("/fxml/congesAbsences/DemandeConge.fxml"));
-                Scene employeScene = new Scene(loader.load());
-                DemandeCongeController employeController = loader.getController();
-                employeController.setEmployeId(user.getId());
-                stage.setScene(employeScene);
-            }
-
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-            messageLabel.setText("Erreur d'ouverture de page: " + e.getClass().getSimpleName() + " - " + e.getMessage());
-        }
+        openHomeFor(user);
     }
 
     private String normalizeRole(String role) {
@@ -124,6 +113,45 @@ public class LoginController {
         return compact.contains("MANAG");
     }
 
+    private void openHomeFor(User user) {
+        try {
+            Stage stage = (Stage) emailField.getScene().getWindow();
+            String role = normalizeRole(user.getRole());
+            FXMLLoader loader;
+
+            if (isAdminRole(role)) {
+                loader = new FXMLLoader(getClass().getResource("/fxml/recrutement/dashboard.fxml"));
+                stage.setScene(new Scene(loader.load()));
+            } else if (isCandidatRole(role)) {
+                loader = new FXMLLoader(getClass().getResource("/fxml/recrutement/candidat.fxml"));
+                stage.setScene(new Scene(loader.load()));
+            } else if (isEmployeeRole(role)) {
+                loader = new FXMLLoader(getClass().getResource("/fxml/congesAbsences/DemandeConge.fxml"));
+                Scene employeScene = new Scene(loader.load());
+                DemandeCongeController employeController = loader.getController();
+                employeController.setEmployeId(user.getId());
+                stage.setScene(employeScene);
+            } else if (isManagerRole(role)) {
+                loader = new FXMLLoader(getClass().getResource("/fxml/congesAbsences/ManagerAbsence.fxml"));
+                Scene managerScene = new Scene(loader.load());
+                ManagerAbsenceController managerController = loader.getController();
+                managerController.setManagerId(user.getId());
+                stage.setScene(managerScene);
+            } else {
+                loader = new FXMLLoader(getClass().getResource("/fxml/congesAbsences/DemandeConge.fxml"));
+                Scene employeScene = new Scene(loader.load());
+                DemandeCongeController employeController = loader.getController();
+                employeController.setEmployeId(user.getId());
+                stage.setScene(employeScene);
+            }
+
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            messageLabel.setText("Erreur d'ouverture de page: " + e.getClass().getSimpleName() + " - " + e.getMessage());
+        }
+    }
+
     public void openSignup(ActionEvent event) {
         try {
             Stage stage = (Stage) emailField.getScene().getWindow();
@@ -138,62 +166,9 @@ public class LoginController {
         try {
             Main.loadScene("/fxml/feedback/ForgotPassword.fxml", "Mot de passe oublié");
         } catch (Exception e) {
+            e.printStackTrace();
             messageLabel.setText("Erreur ouverture page reset: " + e.getMessage());
         }
     }
-    @FXML private VBox resetBox;
-
-    @FXML private TextField resetEmailField;
-    @FXML private TextField tokenField;
-    @FXML private PasswordField newPasswordField;
-    @FXML private PasswordField confirmPasswordField;
-    @FXML private Label resetMessageLabel;
-    @FXML
-    private void showResetSection() {
-        resetBox.setVisible(true);
-        resetBox.setManaged(true); // important pour que le VBox prenne l’espace
-    }
-    @FXML
-    private void sendResetEmail() {
-        String email = resetEmailField.getText();
-
-        if (email == null || email.isEmpty()) {
-            resetMessageLabel.setText("Veuillez entrer votre email.");
-            return;
-        }
-
-        // Simulation en attendant ton vrai service
-        System.out.println("Envoi code à : " + email);
-
-        resetMessageLabel.setText("Code envoyé (simulation).");
-    }
-    @FXML
-    private void resetPassword() {
-
-        String token = tokenField.getText();
-        String newPass = newPasswordField.getText();
-        String confirmPass = confirmPasswordField.getText();
-
-        if (token.isEmpty() || newPass.isEmpty() || confirmPass.isEmpty()) {
-            resetMessageLabel.setText("Tous les champs sont obligatoires.");
-            return;
-        }
-
-        if (!newPass.equals(confirmPass)) {
-            resetMessageLabel.setText("Les mots de passe ne correspondent pas.");
-            return;
-        }
-
-        // Simulation reset
-        System.out.println("Reset password avec token: " + token);
-
-        resetMessageLabel.setText("Mot de passe réinitialisé !");
-    }
-    @FXML
-    private void forgotPassword() throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/feedback/ForgotPassword.fxml"));
-        Stage stage = (Stage) emailField.getScene().getWindow();
-        stage.setScene(new Scene(loader.load()));
-        stage.show();
-    }
+    // Ancien flux de reset inline supprimé (on utilise maintenant la vue ForgotPassword.fxml)
 }

@@ -72,6 +72,13 @@
             <version>2.17.2</version>
         </dependency>
 
+        <!-- Webcam capture for Face ID (camera) -->
+        <dependency>
+            <groupId>com.github.sarxos</groupId>
+            <artifactId>webcam-capture</artifactId>
+            <version>0.3.12</version>
+        </dependency>
+
         <!-- Unit tests -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
