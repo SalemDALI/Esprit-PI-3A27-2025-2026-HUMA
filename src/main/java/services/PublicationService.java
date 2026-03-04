@@ -51,8 +51,8 @@ public class PublicationService {
                     String auteur = ((auteurNom == null ? "" : auteurNom) + " " + (auteurPrenom == null ? "" : auteurPrenom)).trim();
                     publication.setAuteur(auteur.isBlank() ? "Utilisateur" : auteur);
 
-                    Date datePublication = rs.getDate("date_publication");
-                    publication.setDatePublication(datePublication == null ? null : datePublication.toLocalDate().atStartOfDay());
+                    java.sql.Timestamp tsPublication = rs.getTimestamp("date_publication");
+                    publication.setDatePublication(tsPublication == null ? null : tsPublication.toLocalDateTime());
                     map.put(publicationId, publication);
                 }
 
@@ -69,8 +69,8 @@ public class PublicationService {
                     String auteurComment = ((nom == null ? "" : nom) + " " + (prenom == null ? "" : prenom)).trim();
                     comment.setAuteur(auteurComment.isBlank() ? "Utilisateur" : auteurComment);
 
-                    Date dateCommentaire = rs.getDate("date_commentaire");
-                    comment.setDateCommentaire(dateCommentaire == null ? null : dateCommentaire.toLocalDate().atStartOfDay());
+                    java.sql.Timestamp tsComment = rs.getTimestamp("date_commentaire");
+                    comment.setDateCommentaire(tsComment == null ? null : tsComment.toLocalDateTime());
                     publication.getCommentaires().add(comment);
                 }
             }
@@ -90,7 +90,7 @@ public class PublicationService {
         String sql = "INSERT INTO publication (contenu, date_publication, type, user_id) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setString(1, contenu);
-            ps.setDate(2, Date.valueOf(LocalDate.now()));
+            ps.setTimestamp(2, java.sql.Timestamp.valueOf(LocalDateTime.now()));
             ps.setString(3, titre);
             ps.setInt(4, currentUser.getId());
             return ps.executeUpdate() > 0;
@@ -107,7 +107,7 @@ public class PublicationService {
         String sql = "INSERT INTO commentaire (contenu, date_commentaire, publication_id, user_id) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setString(1, contenu);
-            ps.setDate(2, Date.valueOf(LocalDate.now()));
+            ps.setTimestamp(2, java.sql.Timestamp.valueOf(LocalDateTime.now()));
             ps.setInt(3, publicationId);
             ps.setInt(4, currentUser.getId());
             boolean ok = ps.executeUpdate() > 0;
@@ -276,7 +276,7 @@ public class PublicationService {
         String sql = "INSERT INTO publication (contenu, date_publication, type, user_id) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, contenu);
-            ps.setDate(2, Date.valueOf(LocalDate.now()));
+            ps.setTimestamp(2, java.sql.Timestamp.valueOf(LocalDateTime.now()));
             ps.setString(3, titre);
             ps.setInt(4, currentUser.getId());
 

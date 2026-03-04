@@ -12,9 +12,6 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.BarChart?>
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.NumberAxis?>
 
 <BorderPane styleClass="app-root"
             stylesheets="@publication.css"
@@ -32,23 +29,21 @@
             </HBox>
 
             <Label text="NAVIGATION"
-                   style="-fx-font-size:10px; -fx-font-weight:bold;
-                          -fx-text-fill:#4b5563; -fx-padding: 8 0 4 14;"/>
+                   style="-fx-font-size:10px;-fx-font-weight:bold;-fx-text-fill:#4b5563;-fx-padding:8 0 4 14;"/>
 
-            <Button onAction="#openDashboard"     styleClass="nav-button" text="🏠  Tableau de bord" maxWidth="Infinity"/>
-            <Button onAction="#openRecrutement"   styleClass="nav-button" text="📋  Recrutement"      maxWidth="Infinity"/>
-            <Button onAction="#openConges"        styleClass="nav-button" text="🗓  Congés"           maxWidth="Infinity"/>
-            <Button onAction="#openAbsences"      styleClass="nav-button" text="📊  Absences"         maxWidth="Infinity"/>
-            <Button onAction="#openCommunication" styleClass="nav-button nav-active" text="📢  Communication" maxWidth="Infinity"/>
-            <Button onAction="#openFormations"    styleClass="nav-button" text="🎓  Formations"       maxWidth="Infinity"/>
-            <Button onAction="#openFeedback"      styleClass="nav-button" text="💬  FeedBack"         maxWidth="Infinity"/>
-            <Button onAction="#openParametres"    styleClass="nav-button" text="⚙  Paramètres"       maxWidth="Infinity"/>
-            <Button onAction="#openChatbot"       styleClass="nav-button" text="🤖  Assistant IA"     maxWidth="Infinity"/>
+            <Button onAction="#openDashboard"     styleClass="nav-button" text="Tableau de bord" maxWidth="Infinity"/>
+            <Button onAction="#openRecrutement"   styleClass="nav-button" text="Recrutement"      maxWidth="Infinity"/>
+            <Button onAction="#openConges"        styleClass="nav-button" text="Conges"           maxWidth="Infinity"/>
+            <Button onAction="#openAbsences"      styleClass="nav-button" text="Absences"         maxWidth="Infinity"/>
+            <Button onAction="#openCommunication" styleClass="nav-button nav-active" text="Communication" maxWidth="Infinity"/>
+            <Button onAction="#openFormations"    styleClass="nav-button" text="Formations"       maxWidth="Infinity"/>
+            <Button onAction="#openFeedback"      styleClass="nav-button" text="FeedBack"         maxWidth="Infinity"/>
+            <Button onAction="#openParametres"    styleClass="nav-button" text="Parametres"       maxWidth="Infinity"/>
+            <Button onAction="#openChatbot"       styleClass="nav-button" text="Assistant IA"     maxWidth="Infinity"/>
             <Region VBox.vgrow="ALWAYS"/>
             <Label text="COMPTE"
-                   style="-fx-font-size:10px; -fx-font-weight:bold;
-                          -fx-text-fill:#4b5563; -fx-padding: 0 0 4 14;"/>
-            <Button onAction="#logout" styleClass="nav-button" text="↩  Logout" maxWidth="Infinity"/>
+                   style="-fx-font-size:10px;-fx-font-weight:bold;-fx-text-fill:#4b5563;-fx-padding:0 0 4 14;"/>
+            <Button onAction="#logout" styleClass="nav-button" text="Logout" maxWidth="Infinity"/>
             <VBox.margin><Insets bottom="12"/></VBox.margin>
         </VBox>
     </left>
@@ -59,20 +54,18 @@
             <content>
                 <VBox styleClass="main-content" spacing="16">
 
-                    <!-- ── Header ── -->
+                    <!-- Header -->
                     <HBox styleClass="top-toolbar" alignment="CENTER_LEFT" spacing="14">
                         <VBox spacing="3">
-                            <Label style="-fx-font-size:11px; -fx-text-fill:#6b7280; -fx-font-weight:bold;"
-                                   text="ESPACE RH  ›  COMMUNICATION"/>
+                            <Label style="-fx-font-size:11px;-fx-text-fill:#6b7280;-fx-font-weight:bold;"
+                                   text="ESPACE RH  >  COMMUNICATION"/>
                             <Label styleClass="title" text="Gestion des Publications"/>
                         </VBox>
                         <Region HBox.hgrow="ALWAYS"/>
                         <Label fx:id="lblInfo" styleClass="page-message" text=""/>
                     </HBox>
 
-                    <!-- ══════════════════════════════════════════ -->
-                    <!-- ── SECTION 1 : FORMULAIRE PUBLICATION ──  -->
-                    <!-- ══════════════════════════════════════════ -->
+                    <!-- ══ SECTION 1 : FORMULAIRE ══ -->
                     <VBox styleClass="content" spacing="14">
                         <HBox alignment="CENTER_LEFT" spacing="10">
                             <Label style="-fx-background-color:#20c997;-fx-min-width:4;-fx-min-height:24;-fx-background-radius:2;"/>
@@ -81,23 +74,23 @@
                         </HBox>
 
                         <TextField fx:id="txtPublicationTitre"
-                                   promptText="✦  Titre de la publication…"
+                                   promptText="Titre de la publication..."
                                    maxWidth="Infinity"/>
 
                         <TextArea fx:id="txtPublicationContenu"
                                   prefRowCount="4"
-                                  promptText="Rédigez votre communication RH…"
+                                  promptText="Redigez votre communication RH..."
                                   wrapText="true"
                                   maxWidth="Infinity"/>
 
                         <HBox spacing="10" alignment="CENTER_LEFT">
                             <Button fx:id="btnSelectImage" onAction="#selectImage"
                                     styleClass="btn btn-secondary"
-                                    text="🖼  Sélectionner Image"/>
+                                    text="Selectionner Image"/>
                             <Button fx:id="btnSelectVideo" onAction="#selectVideo"
                                     styleClass="btn btn-secondary"
-                                    text="🎬  Sélectionner Vidéo"/>
-                            <Label text="PNG · JPG · MP4"
+                                    text="Selectionner Video"/>
+                            <Label text="PNG - JPG - MP4"
                                    style="-fx-font-size:11px;-fx-text-fill:#a0aec0;"/>
                         </HBox>
 
@@ -106,21 +99,19 @@
                         <Region style="-fx-background-color:#f0f4f8;-fx-min-height:1;-fx-max-height:1;" maxWidth="Infinity"/>
 
                         <HBox styleClass="action-row" spacing="10">
-                            <Button onAction="#publishCommunication"         styleClass="btn btn-primary"   text="✉  Publier"/>
-                            <Button onAction="#updateCommunicationPublication" styleClass="btn btn-warning" text="✏  Modifier"/>
-                            <Button onAction="#deleteCommunicationPublication" styleClass="btn btn-danger"  text="🗑  Supprimer"/>
+                            <Button onAction="#publishCommunication"          styleClass="btn btn-primary"  text="Publier"/>
+                            <Button onAction="#updateCommunicationPublication" styleClass="btn btn-warning" text="Modifier"/>
+                            <Button onAction="#deleteCommunicationPublication" styleClass="btn btn-danger"  text="Supprimer"/>
                         </HBox>
                     </VBox>
 
-                    <!-- ══════════════════════════════════════════════════ -->
-                    <!-- ── SECTION 2 : PUBLICATIONS + COMMENTAIRES ──     -->
-                    <!-- ══════════════════════════════════════════════════ -->
+                    <!-- ══ SECTION 2 : PUBLICATIONS + COMMENTAIRES ══ -->
                     <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding:2 0 0 2;">
                         <Label style="-fx-background-color:#20c997;-fx-min-width:4;-fx-min-height:18;-fx-background-radius:2;"/>
-                        <Label text="Publications &amp; Commentaires"
+                        <Label text="Publications et Commentaires"
                                style="-fx-font-size:14px;-fx-font-weight:bold;-fx-text-fill:#1f2937;"/>
                         <Region HBox.hgrow="ALWAYS"/>
-                        <Label text="Cliquez sur une carte pour la sélectionner"
+                        <Label text="Cliquez sur une carte pour la selectionner"
                                style="-fx-font-size:11px;-fx-text-fill:#a0aec0;"/>
                     </HBox>
 
@@ -128,77 +119,74 @@
                         <padding><Insets top="4" right="6" bottom="8" left="4"/></padding>
                     </VBox>
 
-                    <!-- ══════════════════════════════════════════════════ -->
-                    <!-- ── SECTION 3 : TABLEAU DE BORD RÉPUTATION ──      -->
-                    <!-- ══════════════════════════════════════════════════ -->
+                    <!-- ══ SECTION 3 : TABLEAU DE BORD REPUTATION ══ -->
                     <VBox styleClass="content" spacing="16">
 
                         <HBox alignment="CENTER_LEFT" spacing="10">
                             <Label style="-fx-background-color:#20c997;-fx-min-width:4;-fx-min-height:24;-fx-background-radius:2;"/>
-                            <Label text="🏅 Tableau de Bord Réputation Employés"
+                            <Label text="Tableau de Bord Reputation Employes"
                                    style="-fx-font-size:15px;-fx-font-weight:bold;-fx-text-fill:#111827;"/>
                         </HBox>
 
-                        <!-- Statistiques badges -->
+                        <!-- Compteurs badges -->
                         <HBox spacing="12" alignment="CENTER_LEFT">
-
                             <VBox alignment="CENTER" spacing="4"
                                   style="-fx-background-color:linear-gradient(to bottom,#f3f4f6,#e5e7eb);
                                          -fx-border-color:#d1d5db;-fx-border-width:1;
                                          -fx-border-radius:12;-fx-background-radius:12;
-                                         -fx-padding:14 24;-fx-min-width:120;">
-                                <Label text="🎗️ Nouveau"/>
+                                         -fx-padding:14 24;-fx-min-width:130;">
+                                <Label text="Nouveau" style="-fx-font-size:12px;-fx-font-weight:bold;-fx-text-fill:#6b7280;"/>
                                 <Label fx:id="lblCountNouveau" text="0"
                                        style="-fx-font-size:28px;-fx-font-weight:bold;-fx-text-fill:#374151;"/>
-                                <Label text="employés" style="-fx-font-size:10px;-fx-text-fill:#9ca3af;"/>
+                                <Label text="employes" style="-fx-font-size:10px;-fx-text-fill:#9ca3af;"/>
                             </VBox>
 
                             <VBox alignment="CENTER" spacing="4"
                                   style="-fx-background-color:linear-gradient(to bottom,#dbeafe,#bfdbfe);
                                          -fx-border-color:#3b82f6;-fx-border-width:1;
                                          -fx-border-radius:12;-fx-background-radius:12;
-                                         -fx-padding:14 24;-fx-min-width:120;">
-                                <Label text="🎖️ Actif"/>
+                                         -fx-padding:14 24;-fx-min-width:130;">
+                                <Label text="Actif" style="-fx-font-size:12px;-fx-font-weight:bold;-fx-text-fill:#1d4ed8;"/>
                                 <Label fx:id="lblCountActif" text="0"
                                        style="-fx-font-size:28px;-fx-font-weight:bold;-fx-text-fill:#1d4ed8;"/>
-                                <Label text="employés" style="-fx-font-size:10px;-fx-text-fill:#9ca3af;"/>
+                                <Label text="employes" style="-fx-font-size:10px;-fx-text-fill:#9ca3af;"/>
                             </VBox>
 
                             <VBox alignment="CENTER" spacing="4"
                                   style="-fx-background-color:linear-gradient(to bottom,#fef3c7,#fde68a);
                                          -fx-border-color:#f59e0b;-fx-border-width:1;
                                          -fx-border-radius:12;-fx-background-radius:12;
-                                         -fx-padding:14 24;-fx-min-width:120;">
-                                <Label text="🏅 Engagé"/>
+                                         -fx-padding:14 24;-fx-min-width:130;">
+                                <Label text="Engage" style="-fx-font-size:12px;-fx-font-weight:bold;-fx-text-fill:#92400e;"/>
                                 <Label fx:id="lblCountEngage" text="0"
                                        style="-fx-font-size:28px;-fx-font-weight:bold;-fx-text-fill:#92400e;"/>
-                                <Label text="employés" style="-fx-font-size:10px;-fx-text-fill:#9ca3af;"/>
+                                <Label text="employes" style="-fx-font-size:10px;-fx-text-fill:#9ca3af;"/>
                             </VBox>
-
                         </HBox>
 
-                        <!-- Graphe en barres -->
-                        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding:8 0 0 0;">
-                            <Label text="📊 Répartition des Badges par Employé"
+                        <!-- Liste employes par badge -->
+                        <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-padding:8 0 4 0;">
+                            <Label style="-fx-background-color:#6b7280;-fx-min-width:3;-fx-min-height:14;-fx-background-radius:2;"/>
+                            <Label text="Employes par badge"
                                    style="-fx-font-size:13px;-fx-font-weight:bold;-fx-text-fill:#1f2937;"/>
                         </HBox>
+                        <VBox fx:id="badgeChartBox" spacing="0"/>
 
-                        <BarChart fx:id="badgeBarChart" prefHeight="280" animated="true">
-                            <xAxis>
-                                <CategoryAxis label="Employés"/>
-                            </xAxis>
-                            <yAxis>
-                                <NumberAxis label="Score" lowerBound="0" tickUnit="5"/>
-                            </yAxis>
-                        </BarChart>
-
-                        <!-- Top 3 -->
-                        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding:8 0 0 0;">
-                            <Label text="🥇 Top 3 Meilleurs Employés"
+                        <!-- Top 3 employes -->
+                        <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-padding:16 0 4 0;">
+                            <Label style="-fx-background-color:#f59e0b;-fx-min-width:3;-fx-min-height:14;-fx-background-radius:2;"/>
+                            <Label text="Top 3 Meilleurs Employes"
                                    style="-fx-font-size:13px;-fx-font-weight:bold;-fx-text-fill:#1f2937;"/>
                         </HBox>
+                        <VBox fx:id="top3Box" spacing="10"/>
 
-                        <VBox fx:id="top3Box" spacing="8"/>
+                        <!-- Top 3 publications les plus commentees -->
+                        <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-padding:16 0 4 0;">
+                            <Label style="-fx-background-color:#20c997;-fx-min-width:3;-fx-min-height:14;-fx-background-radius:2;"/>
+                            <Label text="Top 3 Publications les plus commentees"
+                                   style="-fx-font-size:13px;-fx-font-weight:bold;-fx-text-fill:#1f2937;"/>
+                        </HBox>
+                        <VBox fx:id="top3PublicationsBox" spacing="10"/>
 
                     </VBox>
 

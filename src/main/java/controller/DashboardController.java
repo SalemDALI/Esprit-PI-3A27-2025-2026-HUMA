@@ -53,7 +53,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class DashboardController {
-
+    @FXML private VBox badgeChartBox;
+    @FXML private VBox top3PublicationsBox;
     @FXML private HBox mediaPreviewBox;
     @FXML private TabPane mainTabPane;
     @FXML private Tab tabUsers;
@@ -155,7 +156,7 @@ public class DashboardController {
     @FXML private Label lblCountActif;
     @FXML private Label lblCountEngage;
     @FXML private VBox top3Box;
-    @FXML private BarChart<String, Number> badgeBarChart;
+
     @FXML private Label lblInfo;
 
     private final ServiceUser serviceUser = new ServiceUser();
@@ -533,102 +534,267 @@ public class DashboardController {
     // ══════════════════════════════════════════════════════════
     private void renderReputationDashboard() {
         ReputationService reputationService = new ReputationService();
+
         List<User> employes = serviceUser.getAll().stream()
                 .filter(u -> "EMPLOYE".equalsIgnoreCase(u.getRole()))
                 .collect(Collectors.toList());
 
-        int countNouveau = 0, countActif = 0, countEngage = 0;
+        // ── Séparer par badge ──
+        List<User> listNouveau = new ArrayList<>();
+        List<User> listActif   = new ArrayList<>();
+        List<User> listEngage  = new ArrayList<>();
+
         for (User emp : employes) {
             Reputation rep = reputationService.getByUserId(emp.getId());
-            String badge = rep != null ? rep.getBadge() : "🎗️ NOUVEAU";
-            if      ("🏅 ENGAGE".equals(badge)) countEngage++;
-            else if ("🎖️ ACTIF".equals(badge))  countActif++;
-            else                                 countNouveau++;
-        }
-        if (lblCountNouveau != null) lblCountNouveau.setText(String.valueOf(countNouveau));
-        if (lblCountActif   != null) lblCountActif.setText(String.valueOf(countActif));
-        if (lblCountEngage  != null) lblCountEngage.setText(String.valueOf(countEngage));
-
-        // ── Graphe barres ──
-        if (badgeBarChart != null) {
-            badgeBarChart.getData().clear();
-            badgeBarChart.setLegendVisible(false);
-            XYChart.Series<String, Number> series = new XYChart.Series<>();
-            series.setName("Score");
-            for (User emp : employes) {
-                Reputation rep = reputationService.getByUserId(emp.getId());
-                int score = rep != null ? rep.getTotalScore() : 0;
-                String name = emp.getNom() + " " + emp.getPrenom();
-                if (name.length() > 12) name = name.substring(0, 12) + "…";
-                series.getData().add(new XYChart.Data<>(name, score));
-            }
-            badgeBarChart.getData().add(series);
+            String badge = rep != null && rep.getBadge() != null ? rep.getBadge() : "";
+            if      (badge.contains("ENGAGE")) listEngage.add(emp);
+            else if (badge.contains("ACTIF"))  listActif.add(emp);
+            else                               listNouveau.add(emp);
         }
 
-        // ── Top 3 ──
-        if (top3Box == null) return;
-        top3Box.getChildren().clear();
+        // ── Compteurs ──
+        if (lblCountNouveau != null) lblCountNouveau.setText(String.valueOf(listNouveau.size()));
+        if (lblCountActif   != null) lblCountActif.setText(String.valueOf(listActif.size()));
+        if (lblCountEngage  != null) lblCountEngage.setText(String.valueOf(listEngage.size()));
 
-        List<Reputation> top3 = reputationService.getTop10().stream()
-                .limit(3).collect(Collectors.toList());
+        // ══════════════════════════════════════
+        // LISTES PAR BADGE
+        // ══════════════════════════════════════
+        if (badgeChartBox != null) {
+            badgeChartBox.getChildren().clear();
 
-        String[] medals = {"🥇", "🥈", "🥉"};
-        String[] rowColors = {
-                "-fx-background-color:linear-gradient(to right,#fef3c7,#fde68a);-fx-border-color:#f59e0b;",
-                "-fx-background-color:linear-gradient(to right,#f3f4f6,#e5e7eb);-fx-border-color:#9ca3af;",
-                "-fx-background-color:linear-gradient(to right,#fef3c7,#fed7aa);-fx-border-color:#cd7f32;"
-        };
-        int rank = 0;
+            badgeChartBox.getChildren().add(
+                    buildBadgeSection("Nouveau", "#6b7280", "#f3f4f6", "#e5e7eb", listNouveau, reputationService)
+            );
+            badgeChartBox.getChildren().add(
+                    buildBadgeSection("Actif", "#3b82f6", "#eff6ff", "#bfdbfe", listActif, reputationService)
+            );
+            badgeChartBox.getChildren().add(
+                    buildBadgeSection("Engage", "#f59e0b", "#fffbeb", "#fde68a", listEngage, reputationService)
+            );
+        }
 
-        for (Reputation rep : top3) {
-            User emp = employes.stream()
-                    .filter(u -> u.getId() == rep.getUserId())
-                    .findFirst().orElse(null);
-            if (emp == null) { rank++; continue; }
+        // ══════════════════════════════════════
+        // TOP 3 EMPLOYES
+        // ══════════════════════════════════════
+        if (top3Box != null) {
+            top3Box.getChildren().clear();
 
-            String medal    = rank < medals.length ? medals[rank] : "🏅";
-            String rowColor = rank < rowColors.length ? rowColors[rank] :
-                    "-fx-background-color:white;-fx-border-color:#e5e7eb;";
+            List<Reputation> top3 = reputationService.getTop10().stream()
+                    .limit(3).collect(Collectors.toList());
 
-            HBox row = new HBox(14);
-            row.setAlignment(Pos.CENTER_LEFT);
-            row.setStyle(
-                    rowColor +
-                            "-fx-border-width:1;-fx-border-radius:12;-fx-background-radius:12;" +
-                            "-fx-padding:12 18;" +
+            if (top3.isEmpty()) {
+                Label empty = new Label("Aucun employe avec des points pour le moment.");
+                empty.setStyle("-fx-font-size:12px;-fx-text-fill:#a0aec0;");
+                top3Box.getChildren().add(empty);
+            } else {
+                String[] rankLabels = {"#1", "#2", "#3"};
+                String[] rankColors = {"#f59e0b", "#9ca3af", "#cd7f32"};
+                String[] bgColors   = {
+                        "-fx-background-color:#fffbeb;-fx-border-color:#f59e0b;",
+                        "-fx-background-color:#f9fafb;-fx-border-color:#d1d5db;",
+                        "-fx-background-color:#fff7ed;-fx-border-color:#cd7f32;"
+                };
+                int rank = 0;
+                for (Reputation rep : top3) {
+                    User emp = employes.stream()
+                            .filter(u -> u.getId() == rep.getUserId())
+                            .findFirst().orElse(null);
+                    if (emp == null) { rank++; continue; }
+
+                    String rankLabel = rank < rankLabels.length ? rankLabels[rank] : "#" + (rank + 1);
+                    String rankColor = rank < rankColors.length ? rankColors[rank] : "#6b7280";
+                    String bgColor   = rank < bgColors.length   ? bgColors[rank]
+                            : "-fx-background-color:white;-fx-border-color:#e5e7eb;";
+
+                    HBox row = new HBox(14);
+                    row.setAlignment(Pos.CENTER_LEFT);
+                    row.setStyle(bgColor +
+                            "-fx-border-width:2;-fx-border-radius:12;-fx-background-radius:12;" +
+                            "-fx-padding:14 20;" +
                             "-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.06),6,0,0,2);"
-            );
+                    );
 
-            Label medalLbl = new Label(medal);
-            medalLbl.setStyle("-fx-font-size:22px;");
+                    // Cercle rang
+                    Label rankLbl = new Label(rankLabel);
+                    rankLbl.setStyle(
+                            "-fx-background-color:" + rankColor + ";" +
+                                    "-fx-text-fill:white;-fx-font-weight:bold;-fx-font-size:13px;" +
+                                    "-fx-min-width:36;-fx-min-height:36;-fx-max-width:36;-fx-max-height:36;" +
+                                    "-fx-background-radius:50;-fx-alignment:center;"
+                    );
 
-            Label nomLbl = new Label(emp.getNom() + " " + emp.getPrenom());
-            nomLbl.setStyle("-fx-font-size:13px;-fx-font-weight:bold;-fx-text-fill:#1f2937;");
+                    // Avatar
+                    Label avatarLbl = makeCommAvatar(emp.getNom() + " " + emp.getPrenom(), 36, 12);
 
-            Label badgeLbl = new Label(getBadgeLabel(rep.getBadge()));
-            badgeLbl.setStyle(getBadgeStyle(rep.getBadge()));
+                    // Nom + badge
+                    VBox nameBox = new VBox(4);
+                    Label nomLbl = new Label(emp.getNom() + " " + emp.getPrenom());
+                    nomLbl.setStyle("-fx-font-size:13px;-fx-font-weight:bold;-fx-text-fill:#1f2937;");
 
-            Region spacer = new Region();
-            HBox.setHgrow(spacer, Priority.ALWAYS);
+                    String badge = rep.getBadge() != null ? rep.getBadge() : "";
+                    String badgeText, badgeStyle;
+                    if (badge.contains("ENGAGE")) {
+                        badgeText  = "Engage";
+                        badgeStyle = "-fx-background-color:#fef3c7;-fx-text-fill:#92400e;-fx-border-color:#f59e0b;";
+                    } else if (badge.contains("ACTIF")) {
+                        badgeText  = "Actif";
+                        badgeStyle = "-fx-background-color:#dbeafe;-fx-text-fill:#1e40af;-fx-border-color:#3b82f6;";
+                    } else {
+                        badgeText  = "Nouveau";
+                        badgeStyle = "-fx-background-color:#f3f4f6;-fx-text-fill:#374151;-fx-border-color:#d1d5db;";
+                    }
+                    Label badgeLbl = new Label(badgeText);
+                    badgeLbl.setStyle(badgeStyle +
+                            "-fx-font-size:10px;-fx-font-weight:bold;-fx-padding:2 8;" +
+                            "-fx-border-width:1;-fx-border-radius:20;-fx-background-radius:20;"
+                    );
+                    nameBox.getChildren().addAll(nomLbl, badgeLbl);
 
-            Label scoreLbl = new Label(rep.getTotalScore() + " pts");
-            scoreLbl.setStyle(
-                    "-fx-background-color:#f0fdf9;-fx-text-fill:#065f46;" +
-                            "-fx-font-size:13px;-fx-font-weight:bold;" +
-                            "-fx-padding:5 12;-fx-border-radius:20;-fx-background-radius:20;"
-            );
+                    Region spacer = new Region();
+                    HBox.setHgrow(spacer, Priority.ALWAYS);
 
-            row.getChildren().addAll(medalLbl, nomLbl, badgeLbl, spacer, scoreLbl);
-            top3Box.getChildren().add(row);
-            rank++;
+                    // Score
+                    VBox scoreBox = new VBox(1);
+                    scoreBox.setAlignment(Pos.CENTER_RIGHT);
+                    Label scoreLbl = new Label(String.valueOf(rep.getTotalScore()));
+                    scoreLbl.setStyle("-fx-font-size:26px;-fx-font-weight:bold;-fx-text-fill:" + rankColor + ";");
+                    Label ptsLbl = new Label("points");
+                    ptsLbl.setStyle("-fx-font-size:10px;-fx-text-fill:#9ca3af;");
+                    scoreBox.getChildren().addAll(scoreLbl, ptsLbl);
+
+                    row.getChildren().addAll(rankLbl, avatarLbl, nameBox, spacer, scoreBox);
+                    top3Box.getChildren().add(row);
+                    rank++;
+                }
+            }
         }
 
-        if (top3.isEmpty()) {
-            Label empty = new Label("Aucun employé avec des points pour le moment.");
-            empty.setStyle("-fx-font-size:12px;-fx-text-fill:#a0aec0;-fx-padding:8 0;");
-            top3Box.getChildren().add(empty);
+
+
+        if (top3PublicationsBox != null) {
+            top3PublicationsBox.getChildren().clear();
+
+            List<Publication> top3Pubs = publicationService.getAll().stream()
+                    .filter(p -> !p.getCommentaires().isEmpty())
+                    .sorted((a, b) -> b.getCommentaires().size() - a.getCommentaires().size())
+                    .limit(3)
+                    .collect(Collectors.toList());
+
+            if (top3Pubs.isEmpty()) {
+                Label empty = new Label("Aucune publication commentee pour le moment.");
+                empty.setStyle("-fx-font-size:12px;-fx-text-fill:#a0aec0;");
+                top3PublicationsBox.getChildren().add(empty);
+            } else {
+                String[] rankLabels = {"#1", "#2", "#3"};
+                String[] rankColors = {"#20c997", "#3b82f6", "#8b5cf6"};
+                int maxComments     = top3Pubs.get(0).getCommentaires().size();
+                if (maxComments == 0) maxComments = 1;
+
+                int rank = 0;
+                for (Publication pub : top3Pubs) {
+                    int nbComments = pub.getCommentaires().size();
+                    String rankLabel = rank < rankLabels.length ? rankLabels[rank] : "#" + (rank + 1);
+                    String rankColor = rank < rankColors.length ? rankColors[rank] : "#6b7280";
+                    double ratio = (double) nbComments / maxComments;
+
+                    VBox pubCard = new VBox(10);
+                    pubCard.setStyle(
+                            "-fx-background-color:white;" +
+                                    "-fx-border-color:#e5e7eb;-fx-border-width:1;" +
+                                    "-fx-border-radius:12;-fx-background-radius:12;" +
+                                    "-fx-padding:16;" +
+                                    "-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.05),6,0,0,2);"
+                    );
+                    VBox.setMargin(pubCard, new Insets(0, 0, 0, 0));
+
+                    // ── Ligne titre + rang + compteur ──
+                    HBox topRow = new HBox(12);
+                    topRow.setAlignment(Pos.CENTER_LEFT);
+
+                    // Cercle rang
+                    Label rankLbl = new Label(rankLabel);
+                    rankLbl.setStyle(
+                            "-fx-background-color:" + rankColor + ";" +
+                                    "-fx-text-fill:white;-fx-font-weight:bold;-fx-font-size:12px;" +
+                                    "-fx-min-width:32;-fx-min-height:32;-fx-max-width:32;-fx-max-height:32;" +
+                                    "-fx-background-radius:50;-fx-alignment:center;"
+                    );
+
+                    VBox pubInfo = new VBox(4);
+                    HBox.setHgrow(pubInfo, Priority.ALWAYS);
+
+                    Label pubTitre = new Label(pub.getTitre());
+                    pubTitre.setStyle("-fx-font-size:13px;-fx-font-weight:bold;-fx-text-fill:#111827;");
+                    pubTitre.setWrapText(true);
+
+                    HBox metaRow = new HBox(12);
+                    metaRow.setAlignment(Pos.CENTER_LEFT);
+
+                    // Avatar auteur
+                    Label auteurAvatar = makeCommAvatar(pub.getAuteur(), 22, 8);
+                    Label auteurLbl = new Label(pub.getAuteur());
+                    auteurLbl.setStyle("-fx-font-size:11px;-fx-text-fill:#6b7280;");
+
+                    String dateStr = pub.getDatePublication() != null ?
+                            pub.getDatePublication().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "";
+                    Label dateLbl = new Label(dateStr);
+                    dateLbl.setStyle("-fx-font-size:11px;-fx-text-fill:#9ca3af;");
+
+                    metaRow.getChildren().addAll(auteurAvatar, auteurLbl, dateLbl);
+                    pubInfo.getChildren().addAll(pubTitre, metaRow);
+
+                    Region spacer = new Region();
+                    HBox.setHgrow(spacer, Priority.ALWAYS);
+
+                    // Compteur commentaires
+                    VBox commentBox = new VBox(2);
+                    commentBox.setAlignment(Pos.CENTER_RIGHT);
+                    Label commentCount = new Label(String.valueOf(nbComments));
+                    commentCount.setStyle("-fx-font-size:26px;-fx-font-weight:bold;-fx-text-fill:" + rankColor + ";");
+                    Label commentLabel = new Label("commentaires");
+                    commentLabel.setStyle("-fx-font-size:10px;-fx-text-fill:#9ca3af;");
+                    commentBox.getChildren().addAll(commentCount, commentLabel);
+
+                    topRow.getChildren().addAll(rankLbl, pubInfo, spacer, commentBox);
+                    pubCard.getChildren().add(topRow);
+
+                    // Apercu contenu
+                    String contenuCourt = pub.getContenu() != null ? pub.getContenu() : "";
+                    if (contenuCourt.length() > 120) contenuCourt = contenuCourt.substring(0, 120) + "...";
+                    if (!contenuCourt.isBlank()) {
+                        Label contenuLbl = new Label(contenuCourt);
+                        contenuLbl.setStyle("-fx-font-size:12px;-fx-text-fill:#6b7280;");
+                        contenuLbl.setWrapText(true);
+                        pubCard.getChildren().add(contenuLbl);
+                    }
+
+                    // Barre progression commentaires
+                    HBox barBg = new HBox();
+                    barBg.setStyle(
+                            "-fx-background-color:#f3f4f6;" +
+                                    "-fx-background-radius:6;-fx-min-height:8;-fx-max-height:8;"
+                    );
+                    barBg.setMaxWidth(Double.MAX_VALUE);
+
+                    Region barFill = new Region();
+                    barFill.setStyle(
+                            "-fx-background-color:" + rankColor + ";" +
+                                    "-fx-background-radius:6;-fx-min-height:8;-fx-max-height:8;"
+                    );
+                    barFill.setPrefWidth(ratio * 700);
+                    barFill.setMaxWidth(ratio * 700);
+                    barBg.getChildren().add(barFill);
+                    pubCard.getChildren().add(barBg);
+
+                    top3PublicationsBox.getChildren().add(pubCard);
+                    rank++;
+                }
+            }
         }
     }
+
+
 
     // ══════════════════════════════════════════════════════════
     // PUBLICATION ACTIONS
@@ -1944,4 +2110,119 @@ public class DashboardController {
             stage.show();
         } catch (IOException e) { e.printStackTrace(); }
     }
+
+    private VBox buildBadgeSection(String badgeLabel, String color, String lightBg, String borderColor,
+                                   List<User> users, ReputationService reputationService) {
+        VBox section = new VBox(0);
+        section.setStyle(
+                "-fx-background-color:white;" +
+                        "-fx-border-color:" + borderColor + ";-fx-border-width:1;" +
+                        "-fx-border-radius:10;-fx-background-radius:10;"
+        );
+        VBox.setMargin(section, new Insets(0, 0, 12, 0));
+
+        // Header de la section
+        HBox sectionHeader = new HBox(10);
+        sectionHeader.setAlignment(Pos.CENTER_LEFT);
+        sectionHeader.setPadding(new Insets(10, 16, 10, 16));
+        sectionHeader.setStyle("-fx-background-color:" + lightBg + ";-fx-background-radius:10 10 0 0;");
+
+        Label dot = new Label("●");
+        dot.setStyle("-fx-text-fill:" + color + ";-fx-font-size:12px;");
+
+        Label titleLbl = new Label(badgeLabel);
+        titleLbl.setStyle("-fx-font-size:13px;-fx-font-weight:bold;-fx-text-fill:" + color + ";");
+
+        Region sp = new Region();
+        HBox.setHgrow(sp, Priority.ALWAYS);
+
+        Label countLbl = new Label(users.size() + " employe(s)");
+        countLbl.setStyle(
+                "-fx-background-color:" + color + ";-fx-text-fill:white;" +
+                        "-fx-font-size:11px;-fx-font-weight:bold;" +
+                        "-fx-padding:3 10;-fx-background-radius:20;"
+        );
+        sectionHeader.getChildren().addAll(dot, titleLbl, sp, countLbl);
+        section.getChildren().add(sectionHeader);
+
+        if (users.isEmpty()) {
+            Label empty = new Label("Aucun employe dans cette categorie.");
+            empty.setStyle("-fx-font-size:12px;-fx-text-fill:#a0aec0;-fx-padding:12 16;");
+            section.getChildren().add(empty);
+            return section;
+        }
+
+        // Calcul score max pour les barres
+        int maxScore = users.stream()
+                .mapToInt(emp -> {
+                    Reputation r = reputationService.getByUserId(emp.getId());
+                    return r != null ? r.getTotalScore() : 0;
+                }).max().orElse(1);
+        if (maxScore == 0) maxScore = 1;
+
+        for (int i = 0; i < users.size(); i++) {
+            User emp = users.get(i);
+            Reputation rep = reputationService.getByUserId(emp.getId());
+            int score = rep != null ? rep.getTotalScore() : 0;
+            double ratio = Math.min(1.0, (double) score / maxScore);
+
+            HBox empRow = new HBox(12);
+            empRow.setAlignment(Pos.CENTER_LEFT);
+            empRow.setPadding(new Insets(10, 16, 10, 16));
+            empRow.setStyle(i % 2 == 0
+                    ? "-fx-background-color:#fafafa;"
+                    : "-fx-background-color:white;"
+            );
+
+            // Avatar
+            Label avatar = makeCommAvatar(emp.getNom() + " " + emp.getPrenom(), 34, 11);
+
+            // Infos nom + email
+            VBox info = new VBox(2);
+            HBox.setHgrow(info, Priority.ALWAYS);
+            Label nameLbl = new Label(emp.getNom() + " " + emp.getPrenom());
+            nameLbl.setStyle("-fx-font-size:12px;-fx-font-weight:bold;-fx-text-fill:#1f2937;");
+            Label emailLbl = new Label(emp.getEmail() != null ? emp.getEmail() : "");
+            emailLbl.setStyle("-fx-font-size:11px;-fx-text-fill:#9ca3af;");
+            info.getChildren().addAll(nameLbl, emailLbl);
+
+            // Barre + score
+            VBox barBox = new VBox(4);
+            barBox.setAlignment(Pos.CENTER_RIGHT);
+            barBox.setMinWidth(180);
+
+            HBox barBg = new HBox();
+            barBg.setStyle(
+                    "-fx-background-color:#e5e7eb;" +
+                            "-fx-background-radius:4;-fx-min-height:6;-fx-max-height:6;"
+            );
+            barBg.setPrefWidth(180);
+
+            Region barFill = new Region();
+            barFill.setPrefWidth(ratio * 180);
+            barFill.setMaxWidth(ratio * 180);
+            barFill.setStyle(
+                    "-fx-background-color:" + color + ";" +
+                            "-fx-background-radius:4;-fx-min-height:6;-fx-max-height:6;"
+            );
+            barBg.getChildren().add(barFill);
+
+            Label scoreLbl = new Label(score + " pts");
+            scoreLbl.setStyle("-fx-font-size:11px;-fx-font-weight:bold;-fx-text-fill:" + color + ";");
+            barBox.getChildren().addAll(barBg, scoreLbl);
+
+            empRow.getChildren().addAll(avatar, info, barBox);
+
+            // Séparateur entre lignes
+            section.getChildren().add(empRow);
+            if (i < users.size() - 1) {
+                Region sepLine = new Region();
+                sepLine.setStyle("-fx-background-color:#f3f4f6;-fx-min-height:1;-fx-max-height:1;");
+                sepLine.setMaxWidth(Double.MAX_VALUE);
+                section.getChildren().add(sepLine);
+            }
+        }
+        return section;
+    }
+
 }
