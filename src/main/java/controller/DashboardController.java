@@ -1,5 +1,5 @@
 package controller;
-
+import utils.PublicationValidator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
@@ -802,13 +802,25 @@ public class DashboardController {
     @FXML
     public void publishCommunication() {
         if (txtPublicationTitre == null || txtPublicationContenu == null) return;
+
         User current = Session.getUser();
         if (current == null) { showError("Session invalide."); return; }
+
         String role = current.getRole() == null ? "" : current.getRole().trim().toUpperCase();
         if (!role.contains("ADMIN")) { showError("Seul ADMIN RH peut publier."); return; }
+
         String titre   = txtPublicationTitre.getText()  == null ? "" : txtPublicationTitre.getText().trim();
         String contenu = txtPublicationContenu.getText() == null ? "" : txtPublicationContenu.getText().trim();
-        if (titre.isBlank() || contenu.isBlank()) { showError("Titre et contenu obligatoires."); return; }
+
+        // ✅ Validation
+        List<String> erreurs = PublicationValidator.validerPublication(titre, contenu);
+        if (!erreurs.isEmpty()) {
+            afficherErreursPublication(erreurs, titre, contenu);
+            return;
+        }
+
+        // ✅ Réinitialiser styles si tout est bon
+        resetStylesPublication();
 
         int pubId = publicationService.addPublicationAndGetId(titre, contenu);
         if (pubId > 0) {
@@ -820,7 +832,7 @@ public class DashboardController {
             txtPublicationTitre.clear();
             txtPublicationContenu.clear();
             renderCommunicationCards();
-            setPageMessage("Publication publiée avec succès.", false);
+            setPageMessage("Publication publiee avec succes.", false);
         } else {
             showError("Echec insertion publication.");
         }
@@ -830,10 +842,20 @@ public class DashboardController {
     public void updateCommunicationPublication() {
         User current = Session.getUser();
         if (current == null) { showError("Session invalide."); return; }
-        if (selectedPublication == null) { showError("Sélectionnez une publication."); return; }
+        if (selectedPublication == null) { showError("Selectionnez une publication."); return; }
+
         String titre   = txtPublicationTitre.getText()  == null ? "" : txtPublicationTitre.getText().trim();
         String contenu = txtPublicationContenu.getText() == null ? "" : txtPublicationContenu.getText().trim();
-        if (titre.isBlank() || contenu.isBlank()) { showError("Titre et contenu obligatoires."); return; }
+
+        // ✅ Validation
+        List<String> erreurs = PublicationValidator.validerPublication(titre, contenu);
+        if (!erreurs.isEmpty()) {
+            afficherErreursPublication(erreurs, titre, contenu);
+            return;
+        }
+
+        resetStylesPublication();
+
         boolean ok = publicationService.updatePublication(
                 selectedPublication.getId(), current.getId(), true, titre, contenu);
         if (ok) {
@@ -845,11 +867,12 @@ public class DashboardController {
                 if (mediaPreviewBox != null) mediaPreviewBox.getChildren().clear();
             }
             renderCommunicationCards();
-            setPageMessage("Publication modifiée.", false);
+            setPageMessage("Publication modifiee.", false);
         } else {
             showError("Echec modification.");
         }
     }
+
 
     @FXML
     public void deleteCommunicationPublication() {
@@ -1335,6 +1358,34 @@ public class DashboardController {
     @FXML public void refuser() {
         if (selectedCandidature != null && serviceCandidature.updateStatut(selectedCandidature.getId(), "REFUSEE"))
             refreshData();
+    }
+    private void afficherErreursPublication(List<String> erreurs, String titre, String contenu) {
+        // Bordure rouge sur les champs invalides
+        List<String> erreursTitre   = PublicationValidator.validerTitre(titre);
+        List<String> erreursContenu = PublicationValidator.validerContenuPublication(contenu);
+
+        if (!erreursTitre.isEmpty() && txtPublicationTitre != null) {
+            txtPublicationTitre.setStyle(
+                    "-fx-border-color:#ef4444;-fx-border-width:2;" +
+                            "-fx-border-radius:6;-fx-background-radius:6;"
+            );
+        }
+        if (!erreursContenu.isEmpty() && txtPublicationContenu != null) {
+            txtPublicationContenu.setStyle(
+                    "-fx-border-color:#ef4444;-fx-border-width:2;" +
+                            "-fx-border-radius:6;-fx-background-radius:6;"
+            );
+        }
+
+        // Message d'erreur
+        showError(PublicationValidator.formaterErreurs(erreurs));
+    }
+
+    private void resetStylesPublication() {
+        if (txtPublicationTitre != null)
+            txtPublicationTitre.setStyle("");
+        if (txtPublicationContenu != null)
+            txtPublicationContenu.setStyle("");
     }
 
     // ══════════════════════════════════════════════════════════

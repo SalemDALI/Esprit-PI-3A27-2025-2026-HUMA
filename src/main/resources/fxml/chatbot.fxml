@@ -2,13 +2,15 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.web.WebView?>
+<?import javafx.geometry.Insets?>
 
 <BorderPane styleClass="app-root"
             stylesheets="@publication.css"
@@ -16,7 +18,7 @@
             xmlns="http://javafx.com/javafx/21"
             fx:controller="controller.chatbotController">
 
-    <!-- SIDEBAR identique au reste de l'application -->
+    <!-- ════════ SIDEBAR ════════ -->
     <left>
         <VBox prefWidth="200" spacing="8" styleClass="sidebar dashboard-sidebar left-panel">
             <HBox alignment="CENTER">
@@ -26,24 +28,99 @@
             </HBox>
             <Label text="NAVIGATION"
                    style="-fx-font-size:10px;-fx-font-weight:bold;-fx-text-fill:#4b5563;-fx-padding:8 0 4 14;"/>
-            <Button onAction="#openDashboard"     styleClass="nav-button" text="🏠  Tableau de bord"  maxWidth="Infinity"/>
-            <Button onAction="#openRecrutement"   styleClass="nav-button" text="📋  Recrutement"       maxWidth="Infinity"/>
-            <Button onAction="#openConges"        styleClass="nav-button" text="🗓  Congés"            maxWidth="Infinity"/>
-            <Button onAction="#openAbsences"      styleClass="nav-button" text="📊  Absences"          maxWidth="Infinity"/>
-            <Button onAction="#openCommunication" styleClass="nav-button" text="📢  Communication"     maxWidth="Infinity"/>
-            <Button onAction="#openFormations"    styleClass="nav-button" text="🎓  Formations"        maxWidth="Infinity"/>
-            <Button onAction="#openFeedback"      styleClass="nav-button" text="💬  FeedBack"          maxWidth="Infinity"/>
-            <Button onAction="#openCommunication" styleClass="nav-button nav-active" text="🤖  Assistant IA"  maxWidth="Infinity"/>
-            <Button onAction="#openParametres"    styleClass="nav-button" text="⚙  Paramètres"        maxWidth="Infinity"/>
+            <Button onAction="#openDashboard"     styleClass="nav-button" text="Tableau de bord"  maxWidth="Infinity"/>
+            <Button onAction="#openRecrutement"   styleClass="nav-button" text="Recrutement"       maxWidth="Infinity"/>
+            <Button onAction="#openConges"        styleClass="nav-button" text="Conges"            maxWidth="Infinity"/>
+            <Button onAction="#openAbsences"      styleClass="nav-button" text="Absences"          maxWidth="Infinity"/>
+            <Button onAction="#openCommunication" styleClass="nav-button" text="Communication"     maxWidth="Infinity"/>
+            <Button onAction="#openFormations"    styleClass="nav-button" text="Formations"        maxWidth="Infinity"/>
+            <Button onAction="#openFeedback"      styleClass="nav-button" text="FeedBack"          maxWidth="Infinity"/>
+            <Button onAction="#openChatbot"       styleClass="nav-button nav-active" text="Assistant IA" maxWidth="Infinity"/>
+            <Button onAction="#openParametres"    styleClass="nav-button" text="Parametres"        maxWidth="Infinity"/>
             <Region VBox.vgrow="ALWAYS"/>
             <Label text="COMPTE" style="-fx-font-size:10px;-fx-font-weight:bold;-fx-text-fill:#4b5563;-fx-padding:0 0 4 14;"/>
-            <Button onAction="#logout" styleClass="nav-button" text="↩  Logout" maxWidth="Infinity"/>
+            <Button onAction="#logout" styleClass="nav-button" text="Logout" maxWidth="Infinity"/>
         </VBox>
     </left>
 
-    <!-- WebView = toute l'interface chatbot -->
+    <!-- ════════ MAIN CHATBOT ════════ -->
     <center>
-        <WebView fx:id="chatbotWebView"/>
+        <VBox style="-fx-background-color:#eef1f6;">
+
+            <!-- ── Header ── -->
+            <HBox alignment="CENTER_LEFT" spacing="14"
+                  style="-fx-background-color:white;-fx-border-color:#dce3ec;-fx-border-width:0 0 1 0;-fx-padding:14 24;">
+                <VBox spacing="2">
+                    <Label text="HUMA RH  >  ASSISTANT IA"
+                           style="-fx-font-size:10px;-fx-font-weight:bold;-fx-text-fill:#6b7280;"/>
+                    <Label text="Assistant Publications"
+                           style="-fx-font-size:18px;-fx-font-weight:bold;-fx-text-fill:#111827;"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="IA Active"
+                       style="-fx-background-color:#d1fae5;-fx-text-fill:#065f46;
+                              -fx-font-size:11px;-fx-font-weight:bold;
+                              -fx-padding:4 12;-fx-background-radius:20;"/>
+            </HBox>
+
+            <!-- ── Boutons rapides ── -->
+            <HBox spacing="8" alignment="CENTER_LEFT"
+                  style="-fx-background-color:white;-fx-border-color:#f0f4f8;
+                         -fx-border-width:0 0 1 0;-fx-padding:10 20;">
+                <Button text="Voir tout" onAction="#quickVoirTout"
+                        style="-fx-background-color:#f8fafc;-fx-border-color:#e2e8f0;
+                               -fx-border-width:1;-fx-border-radius:20;-fx-background-radius:20;
+                               -fx-font-size:12px;-fx-text-fill:#374151;-fx-cursor:hand;-fx-padding:5 13;"/>
+                <Button text="Creer" onAction="#quickCreer"
+                        style="-fx-background-color:#f8fafc;-fx-border-color:#e2e8f0;
+                               -fx-border-width:1;-fx-border-radius:20;-fx-background-radius:20;
+                               -fx-font-size:12px;-fx-text-fill:#374151;-fx-cursor:hand;-fx-padding:5 13;"/>
+                <Button text="Modifier" onAction="#quickModifier"
+                        style="-fx-background-color:#f8fafc;-fx-border-color:#e2e8f0;
+                               -fx-border-width:1;-fx-border-radius:20;-fx-background-radius:20;
+                               -fx-font-size:12px;-fx-text-fill:#374151;-fx-cursor:hand;-fx-padding:5 13;"/>
+                <Button text="Supprimer" onAction="#quickSupprimer"
+                        style="-fx-background-color:#f8fafc;-fx-border-color:#e2e8f0;
+                               -fx-border-width:1;-fx-border-radius:20;-fx-background-radius:20;
+                               -fx-font-size:12px;-fx-text-fill:#374151;-fx-cursor:hand;-fx-padding:5 13;"/>
+                <Button text="Ameliorer" onAction="#quickAmeliorer"
+                        style="-fx-background-color:#f8fafc;-fx-border-color:#e2e8f0;
+                               -fx-border-width:1;-fx-border-radius:20;-fx-background-radius:20;
+                               -fx-font-size:12px;-fx-text-fill:#374151;-fx-cursor:hand;-fx-padding:5 13;"/>
+            </HBox>
+
+            <!-- ── Zone messages ── -->
+            <ScrollPane fx:id="scrollPane" fitToWidth="true" VBox.vgrow="ALWAYS"
+                        style="-fx-background-color:#eef1f6;-fx-background:#eef1f6;-fx-border-width:0;">
+                <content>
+                    <VBox fx:id="messagesBox" spacing="14"
+                          style="-fx-background-color:#eef1f6;-fx-padding:20 24;">
+                    </VBox>
+                </content>
+            </ScrollPane>
+
+            <!-- ── Zone saisie ── -->
+            <VBox style="-fx-background-color:white;-fx-border-color:#dce3ec;-fx-border-width:1 0 0 0;-fx-padding:14 20;">
+                <HBox spacing="10" alignment="BOTTOM_CENTER">
+                    <TextArea fx:id="txtInput"
+                              promptText="Ex: Cree une publication pour annoncer la reunion de demain..."
+                              prefRowCount="2" wrapText="true"
+                              style="-fx-background-color:#f8fafc;-fx-border-color:#e2e8f0;
+                                     -fx-border-width:1.5;-fx-border-radius:12;-fx-background-radius:12;
+                                     -fx-padding:11 16;-fx-font-size:13px;-fx-text-fill:#1f2937;"
+                              HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="btnSend" text="Envoyer" onAction="#send"
+                            style="-fx-background-color:linear-gradient(to bottom,#20c997,#0ea47a);
+                                   -fx-text-fill:white;-fx-font-weight:bold;-fx-font-size:13px;
+                                   -fx-border-radius:12;-fx-background-radius:12;
+                                   -fx-padding:11 18;-fx-cursor:hand;
+                                   -fx-effect:dropshadow(gaussian,rgba(32,201,151,0.35),8,0,0,3);"/>
+                </HBox>
+                <Label text="Entree pour envoyer"
+                       style="-fx-font-size:11px;-fx-text-fill:#a0aec0;-fx-padding:6 0 0 0;"/>
+            </VBox>
+
+        </VBox>
     </center>
 
 </BorderPane>

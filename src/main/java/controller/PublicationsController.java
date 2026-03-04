@@ -1,5 +1,6 @@
 package controller;
-
+import utils.PublicationValidator;
+import java.util.List;
 import models.Reputation;
 import services.ReputationService;
 import javafx.fxml.FXML;
@@ -18,6 +19,7 @@ import models.Publication;
 import models.PublicationComment;
 import models.User;
 import services.PublicationService;
+import utils.PublicationValidator;
 import utils.Session;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -61,10 +63,17 @@ public class PublicationsController {
     public void publishCommunication() {
         String titre = txtPublicationTitre.getText().trim();
         String contenu = txtPublicationContenu.getText().trim();
-        if (titre.isEmpty() || contenu.isEmpty()) {
-            setInfo("Titre et contenu obligatoires", true);
+        List<String> erreurs = PublicationValidator.validerPublication(titre, contenu);
+        if (!erreurs.isEmpty()) {
+            if (!PublicationValidator.validerTitre(titre).isEmpty())
+                txtPublicationTitre.setStyle("-fx-border-color:#ef4444;-fx-border-width:2;-fx-border-radius:6;-fx-background-radius:6;");
+            if (!PublicationValidator.validerContenuPublication(contenu).isEmpty())
+                txtPublicationContenu.setStyle("-fx-border-color:#ef4444;-fx-border-width:2;-fx-border-radius:6;-fx-background-radius:6;");
+            setInfo(PublicationValidator.formaterErreurs(erreurs), true);
             return;
         }
+        txtPublicationTitre.setStyle("");
+        txtPublicationContenu.setStyle("");
         int pubId = publicationService.addPublicationAndGetId(titre, contenu);
         if (pubId > 0) {
             for (String img : imagesToAdd) publicationService.addMedia(pubId, "image", img);
@@ -84,38 +93,61 @@ public class PublicationsController {
     @FXML
     public void selectImage() {
         FileChooser fc = new FileChooser();
-        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg"));
-        File file = fc.showOpenDialog(btnSelectImage != null ? btnSelectImage.getScene().getWindow() : null);
+        fc.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg")
+        );
+        File file = fc.showOpenDialog(
+                btnSelectImage != null ? btnSelectImage.getScene().getWindow() : null
+        );
         if (file != null) {
-            imagesToAdd.add(file.getAbsolutePath());
+            // ✅ Copier dans le dossier images
+            String savedPath = copyFileToFolder(file, "publications");
+            imagesToAdd.add(savedPath);
+
             if (mediaPreviewBox != null) {
-                ImageView iv = new ImageView(new Image("file:" + file.getAbsolutePath()));
+                ImageView iv = new ImageView(new Image("file:" + savedPath));
                 iv.setFitWidth(72);
                 iv.setFitHeight(72);
                 iv.setPreserveRatio(true);
                 VBox w = new VBox(iv);
-                w.setStyle("-fx-background-color:white;-fx-border-color:#6ee7cb;-fx-border-width:1.5;-fx-border-radius:8;-fx-background-radius:8;-fx-padding:3;");
+                w.setStyle(
+                        "-fx-background-color:white;-fx-border-color:#6ee7cb;" +
+                                "-fx-border-width:1.5;-fx-border-radius:8;-fx-background-radius:8;-fx-padding:3;"
+                );
                 w.setMaxWidth(78);
                 w.setMaxHeight(78);
                 mediaPreviewBox.getChildren().add(w);
             }
+            setInfo("Image sauvegardee : " + file.getName(), false);
         }
     }
 
     @FXML
     public void selectVideo() {
         FileChooser fc = new FileChooser();
-        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Vidéos", "*.mp4", "*.avi", "*.mkv"));
-        File file = fc.showOpenDialog(btnSelectVideo != null ? btnSelectVideo.getScene().getWindow() : null);
+        fc.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Videos", "*.mp4", "*.avi", "*.mkv")
+        );
+        File file = fc.showOpenDialog(
+                btnSelectVideo != null ? btnSelectVideo.getScene().getWindow() : null
+        );
         if (file != null) {
-            videosToAdd.add(file.getAbsolutePath());
+            // ✅ Copier dans le dossier videos
+            String savedPath = copyFileToFolder(file, "../videos/publications");
+            videosToAdd.add(savedPath);
+
             if (mediaPreviewBox != null) {
-                Label lbl = new Label("🎬 " + file.getName());
-                lbl.setStyle("-fx-background-color:#f0fdf9;-fx-border-color:#6ee7cb;-fx-border-width:1;-fx-border-radius:6;-fx-padding:4 8;-fx-font-size:11px;");
+                Label lbl = new Label("Video : " + file.getName());
+                lbl.setStyle(
+                        "-fx-background-color:#f0fdf9;-fx-border-color:#6ee7cb;" +
+                                "-fx-border-width:1;-fx-border-radius:6;-fx-padding:4 8;-fx-font-size:11px;"
+                );
                 mediaPreviewBox.getChildren().add(lbl);
             }
+            setInfo("Video sauvegardee : " + file.getName(), false);
         }
     }
+
 
     @FXML public void refreshPublications() { renderPublications(); }
     @FXML public void back() {}
@@ -482,7 +514,21 @@ public class PublicationsController {
         );
         btnSave.setOnAction(e -> {
             String newText = editField.getText().trim();
-            if (newText.isEmpty()) { setInfo("Commentaire vide", true); return; }
+            List<String> erreursEdit = PublicationValidator.validerCommentaire(newText);
+            if (!erreursEdit.isEmpty()) {
+                editField.setStyle(
+                        "-fx-background-color:white;-fx-border-color:#ef4444;" +
+                                "-fx-border-width:1.5;-fx-border-radius:8;-fx-background-radius:8;" +
+                                "-fx-padding:9 14;-fx-font-size:13px;"
+                );
+                setInfo(PublicationValidator.formaterErreurs(erreursEdit), true);
+                return;
+            }
+            editField.setStyle(
+                    "-fx-background-color:white;-fx-border-color:#20c997;" +
+                            "-fx-border-width:1.5;-fx-border-radius:8;-fx-background-radius:8;" +
+                            "-fx-padding:9 14;-fx-font-size:13px;"
+            );
             User u = Session.getUser();
             boolean ok = publicationService.updateComment(
                     comment.getId(), u != null ? u.getId() : 0,
@@ -532,7 +578,7 @@ public class PublicationsController {
         );
         HBox.setHgrow(field, Priority.ALWAYS);
 
-        Button sendBtn = new Button("Envoyer ✉️");
+        Button sendBtn = new Button("Envoyer ");
         sendBtn.setStyle(
                 "-fx-background-color:linear-gradient(to right,#20c997,#0ea47a);" +
                         "-fx-text-fill:white;-fx-font-weight:bold;-fx-font-size:12px;" +
@@ -550,27 +596,34 @@ public class PublicationsController {
         field.setOnAction(e -> sendBtn.fire());
 
         sendBtn.setOnAction(e -> {
-            String text = field.getText().trim();
-            if (text.isEmpty()) return;
 
-            // ✅ Vérification toxicité
+            String text = field.getText().trim();
+
+            List<String> erreursComment = PublicationValidator.validerCommentaire(text);
+            if (!erreursComment.isEmpty()) {
+                field.setStyle(
+                        "-fx-background-color:#fff5f5;-fx-border-color:#ef4444;" +
+                                "-fx-border-width:1.5;-fx-border-radius:20;-fx-background-radius:20;" +
+                                "-fx-padding:8 14;-fx-font-size:13px;"
+                );
+                setInfo(PublicationValidator.formaterErreurs(erreursComment), true);
+                return;
+            }
+            // Vérification toxicité en plus
             if (isCommentToxic(text)) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Commentaire refusé");
-                alert.setHeaderText("⚠️ Commentaire inapproprié");
-                alert.setContentText(
-                        "Votre commentaire contient des mots inappropriés.\n" +
-                                "Merci de respecter vos collègues et de reformuler votre message."
-                );
-                alert.getDialogPane().setStyle("-fx-background-color:white;");
+                alert.setHeaderText("Commentaire inapproprié");
+                alert.setContentText("Votre commentaire contient des mots inappropriés.\nMerci de reformuler.");
                 alert.showAndWait();
                 field.setStyle(
                         "-fx-background-color:#fff5f5;-fx-border-color:#f87171;" +
                                 "-fx-border-width:1.5;-fx-border-radius:20;-fx-background-radius:20;" +
-                                "-fx-padding:8 14;-fx-font-size:13px;-fx-text-fill:#991b1b;"
+                                "-fx-padding:8 14;"
                 );
                 return;
             }
+            field.setStyle("");
 
             // ✅ Commentaire propre → envoyer
             if (user != null) {
@@ -866,6 +919,29 @@ public class PublicationsController {
                 "-fx-font-size:10px;-fx-font-weight:bold;-fx-padding:3 10;" +
                 "-fx-border-width:1;-fx-border-radius:20;-fx-background-radius:20;" +
                 "-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.15),4,0,0,2);";
+    }
+    private String copyFileToFolder(File source, String folderName) {
+        try {
+            // Créer le dossier s'il n'existe pas
+            File folder = new File("src/main/resources/images/" + folderName);
+            if (!folder.exists()) folder.mkdirs();
+
+            // Nom unique pour éviter les conflits
+            String fileName = System.currentTimeMillis() + "_" + source.getName();
+            File dest = new File(folder, fileName);
+
+            // Copier le fichier
+            java.nio.file.Files.copy(
+                    source.toPath(),
+                    dest.toPath(),
+                    java.nio.file.StandardCopyOption.REPLACE_EXISTING
+            );
+
+            return dest.getAbsolutePath();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return source.getAbsolutePath(); // fallback : chemin original
+        }
     }
 
 
